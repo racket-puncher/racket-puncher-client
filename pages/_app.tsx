@@ -1,10 +1,13 @@
 import React from 'react';
 import '../styles/css/reset.css';
+import { RecoilRoot } from 'recoil';
 
 function MyApp({ Component, pageProps }: any) {
 	return (
 		<>
-			<Component {...pageProps} />
+			<RecoilRoot>
+				<Component {...pageProps} />
+			</RecoilRoot>
 		</>
 	);
 }
