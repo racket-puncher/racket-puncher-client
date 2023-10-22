@@ -6,7 +6,7 @@ export default function Main() {
 	return (
 		<>
 			<div>main</div>
-			<FontTest>gdg</FontTest>
+			<FontTest>gdddg</FontTest>
 		</>
 	);
 }
