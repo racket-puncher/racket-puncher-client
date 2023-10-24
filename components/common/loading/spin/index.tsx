@@ -1,23 +1,10 @@
-import { Spin as AntdSpin } from 'antd';
-import React, { ReactNode } from 'react';
-import { useRecoilValue } from 'recoil';
-import { loadingState } from '../../../../lib/store/common';
-import styled from 'styled-components';
+import { Spin } from 'antd';
+import React from 'react';
 
-interface ILayoutProps {
-	children: ReactNode;
-}
-
-export default function LoadingSpin(props: ILayoutProps) {
-	const isShow = useRecoilValue(loadingState);
-
+export default function LoadingSpin() {
 	return (
 		<>
-			<CustomSpin spinning={isShow}>{props.children}</CustomSpin>
+			<Spin />
 		</>
 	);
 }
-
-const CustomSpin = styled(AntdSpin)`
-	min-height: 100vh !important;
-`;
