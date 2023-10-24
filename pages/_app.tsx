@@ -7,13 +7,11 @@ import LayoutContainer from '../components/layouts';
 
 function MyApp({ Component, pageProps }: any) {
 	return (
-		<>
-			<RecoilRoot>
-				<LayoutContainer>
-					<Component {...pageProps} />
-				</LayoutContainer>
-			</RecoilRoot>
-		</>
+		<RecoilRoot>
+			<LayoutContainer>
+				<Component {...pageProps} />
+			</LayoutContainer>
+		</RecoilRoot>
 	);
 }
 
