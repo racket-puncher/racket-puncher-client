@@ -1,23 +1,21 @@
 import React, { ReactNode } from 'react';
-import { loadingState } from '../../lib/store/common/index';
-import { useRecoilValue } from 'recoil';
+import LoadingSpin from '../common/loading/spin';
 import styled from 'styled-components';
 import { rem } from 'polished';
-import SkeletonUI from '../common/loading/skeleton';
 
 interface ILayoutProps {
 	children: ReactNode;
 }
 
 export default function LayoutContainer(props: ILayoutProps) {
-	const isShow = useRecoilValue(loadingState);
 	return (
-		<LayoutWrapper>
-			<LayoutAlign>
-				<div>{props.children}</div>
-			</LayoutAlign>
-			{isShow && <SkeletonUI />}
-		</LayoutWrapper>
+		<>
+			<LoadingSpin>
+				<LayoutWrapper>
+					<LayoutAlign>{props.children}</LayoutAlign>
+				</LayoutWrapper>
+			</LoadingSpin>
+		</>
 	);
 }
 
@@ -28,5 +26,6 @@ const LayoutWrapper = styled.div`
 `;
 
 const LayoutAlign = styled.div`
+	min-height: 100vh;
 	padding: 0 ${rem('30px')};
 `;
