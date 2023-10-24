@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react';
-import LoadingSpin from '../common/loading/spin';
 import { loadingState } from '../../lib/store/common/index';
 import { useRecoilValue } from 'recoil';
 import styled from 'styled-components';
 import { rem } from 'polished';
+import SkeletonUI from '../common/loading/skeleton';
 
 interface ILayoutProps {
 	children: ReactNode;
@@ -17,7 +17,7 @@ export default function LayoutContainer(props: ILayoutProps) {
 				<LayoutAlign>
 					<div>{props.children}</div>
 				</LayoutAlign>
-				{isShow && <LoadingSpin />}
+				{isShow && <SkeletonUI />}
 			</LayoutWrapper>
 		</>
 	);
