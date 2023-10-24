@@ -12,14 +12,12 @@ interface ILayoutProps {
 export default function LayoutContainer(props: ILayoutProps) {
 	const isShow = useRecoilValue(loadingState);
 	return (
-		<>
-			<LayoutWrapper>
-				<LayoutAlign>
-					<div>{props.children}</div>
-				</LayoutAlign>
-				{isShow && <SkeletonUI />}
-			</LayoutWrapper>
-		</>
+		<LayoutWrapper>
+			<LayoutAlign>
+				<div>{props.children}</div>
+			</LayoutAlign>
+			{isShow && <SkeletonUI />}
+		</LayoutWrapper>
 	);
 }
 
