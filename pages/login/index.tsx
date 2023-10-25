@@ -48,7 +48,7 @@ export default function Login() {
 				]}>
 				<p>모달 테스트</p>
 			</ModalBox>
-			<RoundButton />
+			<RoundButton type={'is-disabled'}>테스트</RoundButton>
 		</>
 	);
 }
