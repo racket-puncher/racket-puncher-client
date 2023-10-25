@@ -27,5 +27,7 @@ const LayoutWrapper = styled.div`
 
 const LayoutAlign = styled.div`
 	min-height: 100vh;
+	display: flex;
+	flex-direction: column;
 	padding: 0 ${rem('30px')};
 `;
