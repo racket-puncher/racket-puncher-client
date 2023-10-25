@@ -1,10 +1,25 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { PageMainTitle } from '../../styles/ts/components/titles';
 import { InputBox } from '../../components/common/input';
 import styled from 'styled-components';
+import ModalBox from '../../components/common/modal';
+import { v4 as uuidv4 } from 'uuid';
 
 export default function Login() {
 	// const { success, contextHolder } = useToast();
+	const [isModalOpenVisible, setIsModalOpenVisible] = useState(false);
+	const toggleModal = () => {
+		setIsModalOpenVisible((prev) => !prev);
+	};
+
+	const modalIsOk = () => {
+		console.log('확인');
+	};
+
+	const modalIsCancel = () => {
+		console.log('취소');
+	};
+
 	return (
 		<>
 			<PageMainTitle>로그인</PageMainTitle>
@@ -18,6 +33,20 @@ export default function Login() {
 					<input id='loginPwd' />
 				</InputBox>
 			</InputContainer>
+			<button onClick={toggleModal}>클릭</button>
+			<ModalBox
+				title={'test'}
+				isOpen={isModalOpenVisible}
+				toggleModal={toggleModal}
+				onOk={modalIsOk}
+				onCancel={modalIsCancel}
+				footerButtons={[
+					<button key={uuidv4()} onClick={toggleModal}>
+						확인
+					</button>,
+				]}>
+				<p>모달 테스트</p>
+			</ModalBox>
 		</>
 	);
 }
