@@ -11,7 +11,14 @@ export const RoundButton = styled.button<IButtonProps>`
 	height: ${rem('60px')};
 	font-family: Pretendard-Medium;
 	font-size: ${rem(`${common.FontSizeSm}`)};
-	color: ${common.WhiteColor};
+	color: ${(props) => {
+		switch (props.type) {
+			case 'is-yellow':
+				return common.kakaoFontColor;
+			default:
+				return common.WhiteColor;
+		}
+	}};
 	border: none;
 	border-radius: 20px;
 	cursor: pointer;
@@ -24,8 +31,16 @@ export const RoundButton = styled.button<IButtonProps>`
 				return common.PrimaryColor;
 			case 'is-disabled':
 				return common.DisabledColor;
+			case 'is-yellow':
+				return common.kakaoBgColor;
 			default:
 				return common.BlackColor;
 		}
 	}};
+	div.align-box {
+		display: flex;
+		align-items: center;
+		justify-content: center;
+		gap: 10px;
+	}
 `;
