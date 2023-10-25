@@ -6,7 +6,7 @@ import { rem } from 'polished';
 interface IModalProps {
 	title: string;
 	children: ReactNode;
-	isOpen: Boolean;
+	isOpen: boolean;
 	footerButtons?: ReactElement[];
 	toggleModal: () => void;
 	onOk: () => void;
