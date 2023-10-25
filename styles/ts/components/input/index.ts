@@ -4,7 +4,8 @@ import {
 	InputBorderColor,
 	InputBoxColor,
 	InputLabelColor,
-} from '../../../styles/ts/common';
+	PrimaryColor,
+} from '../../common';
 import { rem } from 'polished';
 
 export const InputBox = styled.div`
@@ -13,7 +14,7 @@ export const InputBox = styled.div`
 
 	label {
 		display: block;
-		font-family: Pretendard;
+		font-family: Pretendard-Regular;
 		font-size: ${FontSizeSpSm};
 		margin-bottom: 10px;
 		color: ${InputLabelColor};
@@ -24,5 +25,10 @@ export const InputBox = styled.div`
 		background: ${InputBoxColor};
 		border-radius: 5px;
 		margin-bottom: 20px;
+		padding: 0 15px;
+		&:focus {
+			border: 1px solid ${PrimaryColor};
+			outline: none;
+		}
 	}
 `;
