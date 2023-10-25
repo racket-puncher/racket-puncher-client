@@ -5,6 +5,13 @@ export const SubColor = '#E9E4D1';
 export const lightSubColor = '#F0EEE2';
 export const BlackColor = '#343434';
 export const WhiteColor = '#FFFFFF';
+export const DisabledColor = '#C9C9C9';
+export const KakaoBgColor = '#F2DE4D';
+export const KakaoFontColor = '#402809';
+export const ReportColor = '#999999';
+export const InputBorderColor = '#DCDCDC';
+export const InputBoxColor = '#f9f9f9';
+export const InputLabelColor = '#343434';
 
 export const FontSizeSpLg = '28px';
 export const FontSizeLg = '20px';
