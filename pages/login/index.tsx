@@ -7,9 +7,10 @@ import { v4 as uuidv4 } from 'uuid';
 import { RoundButton } from '../../styles/ts/components/buttons';
 import { ImageBox } from '../../styles/ts/components/box';
 import { PrimaryColor } from '../../styles/ts/common';
+import useRouterHook from '../../utils/useRouterHook';
 
 export default function Login() {
-	// const { success, contextHolder } = useToast();
+	const { movePage } = useRouterHook();
 	const [isModalOpenVisible, setIsModalOpenVisible] = useState(false);
 	const toggleModal = () => {
 		setIsModalOpenVisible((prev) => !prev);
@@ -60,7 +61,7 @@ export default function Login() {
 
 			<BottomUnderLineBox>
 				<p>아이디가 없으신가요?</p>
-				<UnderLineTexts>회원가입하기</UnderLineTexts>
+				<UnderLineTexts onClick={() => movePage('/register')}>회원가입하기</UnderLineTexts>
 			</BottomUnderLineBox>
 
 			<ModalBox
