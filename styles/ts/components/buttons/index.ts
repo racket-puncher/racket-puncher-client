@@ -14,7 +14,7 @@ export const RoundButton = styled.button<IButtonProps>`
 	color: ${(props) => {
 		switch (props.type) {
 			case 'is-yellow':
-				return common.kakaoFontColor;
+				return common.KakaoFontColor;
 			default:
 				return common.WhiteColor;
 		}
@@ -32,7 +32,7 @@ export const RoundButton = styled.button<IButtonProps>`
 			case 'is-disabled':
 				return common.DisabledColor;
 			case 'is-yellow':
-				return common.kakaoBgColor;
+				return common.KakaoBgColor;
 			default:
 				return common.BlackColor;
 		}
@@ -43,4 +43,32 @@ export const RoundButton = styled.button<IButtonProps>`
 		justify-content: center;
 		gap: 10px;
 	}
+`;
+export const SquareButton = styled.button<IButtonProps>`
+	width: 100%;
+	height: ${rem('60px')};
+	font-family: Pretendard-Medium;
+	font-size: ${rem(`${common.FontSizeSm}`)};
+	color: ${(props) => {
+		switch (props.type) {
+			case 'is-black':
+				return common.ReportColor;
+			default:
+				return common.WhiteColor;
+		}
+	}};
+	border: none;
+	border-radius: 5px;
+	cursor: pointer;
+	-webkit-tap-highlight-color: transparent !important;
+	background-color: ${(props) => {
+		switch (props.type) {
+			case 'is-black':
+				return common.BlackColor;
+			case 'is-white':
+				return common.WhiteColor;
+			default:
+				return common.BlackColor;
+		}
+	}};
 `;
