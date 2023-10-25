@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import { PageMainTitle } from '../../styles/ts/components/titles';
-import { InputBox } from '../../components/common/input';
+import { InputBox } from '../../styles/ts/components/input';
 import styled from 'styled-components';
 import ModalBox from '../../components/common/modal';
 import { v4 as uuidv4 } from 'uuid';
