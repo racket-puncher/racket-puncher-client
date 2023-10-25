@@ -3,6 +3,8 @@ import LoadingSpin from '../common/loading/spin';
 import styled from 'styled-components';
 import { rem } from 'polished';
 
+import Header from '../common/header/Header';
+
 interface ILayoutProps {
 	children: ReactNode;
 }
@@ -12,6 +14,7 @@ export default function LayoutContainer(props: ILayoutProps) {
 		<>
 			<LoadingSpin>
 				<LayoutWrapper>
+					<Header />
 					<LayoutAlign>{props.children}</LayoutAlign>
 				</LayoutWrapper>
 			</LoadingSpin>
