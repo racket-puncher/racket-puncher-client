@@ -4,6 +4,7 @@ import { InputBox } from '../../styles/ts/components/input';
 import styled from 'styled-components';
 import ModalBox from '../../components/common/modal';
 import { v4 as uuidv4 } from 'uuid';
+import { RoundButton } from '../../styles/ts/components/buttons';
 
 export default function Login() {
 	// const { success, contextHolder } = useToast();
@@ -47,6 +48,7 @@ export default function Login() {
 				]}>
 				<p>모달 테스트</p>
 			</ModalBox>
+			<RoundButton />
 		</>
 	);
 }
