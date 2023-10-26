@@ -20,10 +20,21 @@ interface FormData {
 }
 
 const schema = yup.object().shape({
-	email: yup.string().required('이메일은 필수입니다.'),
-	password: yup.string().required('비밀번호는 필수입니다.'),
+	email: yup
+		.string()
+		.required('이메일은 필수입니다.')
+		.matches(
+			/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+			'이메일 형식이 올바르지 않습니다.'
+		),
+	password: yup
+		.string()
+		.required('비밀번호는 필수입니다.')
+		.matches(
+			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
+			'비밀번호는 8자 이상, 숫자/소문자/대문자/특수문자를 각 최소 하나씩 포함해야 합니다.'
+		),
 });
-
 export default function Login() {
 	const { movePage } = useRouterHook();
 
