@@ -1,4 +1,6 @@
 import styled from 'styled-components';
+import { rem } from 'polished';
+
 import {
 	FontSizeSpSm,
 	InputBorderColor,
@@ -6,11 +8,11 @@ import {
 	InputLabelColor,
 	PrimaryColor,
 } from '../../common';
-import { rem } from 'polished';
 
 export const InputBox = styled.div`
 	display: flex;
 	flex-direction: column;
+	margin-bottom: 20px;
 
 	label {
 		display: block;
@@ -24,11 +26,13 @@ export const InputBox = styled.div`
 		border: 1px solid ${InputBorderColor};
 		background: ${InputBoxColor};
 		border-radius: 5px;
-		margin-bottom: 20px;
 		padding: 0 15px;
 		&:focus {
 			border: 1px solid ${PrimaryColor};
 			outline: none;
 		}
+	}
+	p {
+		margin-top: 5px;
 	}
 `;

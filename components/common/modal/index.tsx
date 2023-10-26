@@ -1,7 +1,7 @@
-import { Modal as AntdModal } from 'antd';
 import React, { ReactElement, ReactNode } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
+import { Modal as AntdModal } from 'antd';
 
 interface IModalProps {
 	title: string;

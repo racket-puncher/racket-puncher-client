@@ -1,9 +1,10 @@
-import styled from 'styled-components';
-import { PageMainTitle } from '../../styles/ts/components/titles';
 import React, { useRef } from 'react';
+import styled from 'styled-components';
+
 import { InputBox } from '../../styles/ts/components/input';
 import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
 import { CustomSelect } from '../../styles/ts/components/select';
+import { PageMainTitle } from '../../styles/ts/components/titles';
 import { ImageBox } from '../../styles/ts/components/box';
 
 export default function register() {
@@ -115,7 +116,7 @@ export default function register() {
 				</InputContainer>
 
 				<ButtonBox>
-					<RoundButton type={'is-green'}>다음</RoundButton>
+					<RoundButton colorstyle={'is-green'}>다음</RoundButton>
 				</ButtonBox>
 			</RegisterViewContainer>
 		</>

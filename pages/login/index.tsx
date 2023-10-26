@@ -1,16 +1,40 @@
 import React, { useState } from 'react';
-import { PageMainTitle } from '../../styles/ts/components/titles';
-import { InputBox } from '../../styles/ts/components/input';
 import styled from 'styled-components';
-import ModalBox from '../../components/common/modal';
 import { v4 as uuidv4 } from 'uuid';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+
 import { RoundButton } from '../../styles/ts/components/buttons';
 import { ImageBox } from '../../styles/ts/components/box';
 import { PrimaryColor } from '../../styles/ts/common';
 import useRouterHook from '../../utils/useRouterHook';
+import { PageMainTitle } from '../../styles/ts/components/titles';
+import ModalBox from '../../components/common/modal';
+import { InputBox } from '../../styles/ts/components/input';
+import { InputErrorText } from '../../styles/ts/components/text';
+
+interface FormData {
+	email: string;
+	password: string;
+}
+
+const schema = yup.object().shape({
+	email: yup.string().required('이메일은 필수입니다.'),
+	password: yup.string().required('비밀번호는 필수입니다.'),
+});
 
 export default function Login() {
 	const { movePage } = useRouterHook();
+
+	const {
+		register,
+		handleSubmit,
+		formState: { errors },
+	} = useForm({
+		resolver: yupResolver(schema),
+	});
+
 	const [isModalOpenVisible, setIsModalOpenVisible] = useState(false);
 	const toggleModal = () => {
 		setIsModalOpenVisible((prev) => !prev);
@@ -24,41 +48,51 @@ export default function Login() {
 		console.log('취소');
 	};
 
+	const clickLoginBtn = (data: FormData) => {
+		console.log(data);
+	};
+
 	return (
 		<>
 			<LoginViewContainer>
-				<PageMainTitle>로그인</PageMainTitle>
-				<InputContainer>
-					<InputBox>
-						<label htmlFor='loginEmail'>이메일</label>
-						<input id='loginEmail' />
-					</InputBox>
-					<InputBox>
-						<label htmlFor='loginPwd'>비밀번호</label>
-						<input id='loginPwd' />
-					</InputBox>
-				</InputContainer>
+				<form onSubmit={handleSubmit(clickLoginBtn)}>
+					<PageMainTitle>로그인</PageMainTitle>
+					<InputContainer>
+						<InputBox>
+							<label htmlFor='loginEmail'>이메일</label>
+							<input id='loginEmail' {...register('email')} />
+							<InputErrorText>{errors.email?.message}</InputErrorText>
+						</InputBox>
+						<InputBox>
+							<label htmlFor='loginPwd'>비밀번호</label>
+							<input id='loginPwd' type={'password'} {...register('password')} />
+							<InputErrorText>{errors.password?.message}</InputErrorText>
+						</InputBox>
+					</InputContainer>
 
-				<UnderLineBox>
-					<UnderLineTexts>아이디찾기</UnderLineTexts>
-					<UnderLineTexts>비밀번호 찾기</UnderLineTexts>
-				</UnderLineBox>
+					<UnderLineBox>
+						<UnderLineTexts>아이디찾기</UnderLineTexts>
+						<UnderLineTexts>비밀번호 찾기</UnderLineTexts>
+					</UnderLineBox>
 
-				<ButtonContainer>
-					<ButtonBox>
-						<RoundButton type={'is-black'}>로그인</RoundButton>
-					</ButtonBox>
-					<ButtonBox>
-						<RoundButton type={'is-yellow'}>
-							<div className='align-box'>
-								<ImageBox width={'15px'} height={'14px'}>
-									<img src='/images/kakao-icon.png' alt='kakao-icon' />
-								</ImageBox>
-								<p>카카오 로그인</p>
-							</div>
-						</RoundButton>
-					</ButtonBox>
-				</ButtonContainer>
+					<ButtonContainer>
+						<ButtonBox>
+							<RoundButton colorstyle={'is-black'} type={'submit'}>
+								로그인
+							</RoundButton>
+						</ButtonBox>
+						<ButtonBox>
+							<RoundButton colorstyle={'is-yellow'}>
+								<div className='align-box'>
+									<ImageBox width={'15px'} height={'14px'}>
+										<img src='/images/kakao-icon.png' alt='kakao-icon' />
+									</ImageBox>
+									<p>카카오 로그인</p>
+								</div>
+							</RoundButton>
+						</ButtonBox>
+					</ButtonContainer>
+				</form>
 
 				<BottomUnderLineBox>
 					<p>아이디가 없으신가요?</p>
