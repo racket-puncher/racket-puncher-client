@@ -26,60 +26,66 @@ export default function Login() {
 
 	return (
 		<>
-			<PageMainTitle>로그인</PageMainTitle>
-			<InputContainer>
-				<InputBox>
-					<label htmlFor='loginEmail'>이메일</label>
-					<input id='loginEmail' />
-				</InputBox>
-				<InputBox>
-					<label htmlFor='loginPwd'>비밀번호</label>
-					<input id='loginPwd' />
-				</InputBox>
-			</InputContainer>
+			<LoginViewContainer>
+				<PageMainTitle>로그인</PageMainTitle>
+				<InputContainer>
+					<InputBox>
+						<label htmlFor='loginEmail'>이메일</label>
+						<input id='loginEmail' />
+					</InputBox>
+					<InputBox>
+						<label htmlFor='loginPwd'>비밀번호</label>
+						<input id='loginPwd' />
+					</InputBox>
+				</InputContainer>
 
-			<UnderLineBox>
-				<UnderLineTexts>아이디찾기</UnderLineTexts>
-				<UnderLineTexts>비밀번호 찾기</UnderLineTexts>
-			</UnderLineBox>
+				<UnderLineBox>
+					<UnderLineTexts>아이디찾기</UnderLineTexts>
+					<UnderLineTexts>비밀번호 찾기</UnderLineTexts>
+				</UnderLineBox>
 
-			<ButtonContainer>
-				<ButtonBox>
-					<RoundButton type={'is-black'}>로그인</RoundButton>
-				</ButtonBox>
-				<ButtonBox>
-					<RoundButton type={'is-yellow'}>
-						<div className='align-box'>
-							<ImageBox width={'15px'} height={'14px'}>
-								<img src='/images/kakao-icon.png' alt='kakao-icon' />
-							</ImageBox>
-							<p>카카오 로그인</p>
-						</div>
-					</RoundButton>
-				</ButtonBox>
-			</ButtonContainer>
+				<ButtonContainer>
+					<ButtonBox>
+						<RoundButton type={'is-black'}>로그인</RoundButton>
+					</ButtonBox>
+					<ButtonBox>
+						<RoundButton type={'is-yellow'}>
+							<div className='align-box'>
+								<ImageBox width={'15px'} height={'14px'}>
+									<img src='/images/kakao-icon.png' alt='kakao-icon' />
+								</ImageBox>
+								<p>카카오 로그인</p>
+							</div>
+						</RoundButton>
+					</ButtonBox>
+				</ButtonContainer>
 
-			<BottomUnderLineBox>
-				<p>아이디가 없으신가요?</p>
-				<UnderLineTexts onClick={() => movePage('/register')}>회원가입하기</UnderLineTexts>
-			</BottomUnderLineBox>
+				<BottomUnderLineBox>
+					<p>아이디가 없으신가요?</p>
+					<UnderLineTexts onClick={() => movePage('/register')}>회원가입하기</UnderLineTexts>
+				</BottomUnderLineBox>
 
-			<ModalBox
-				title={'test'}
-				isOpen={isModalOpenVisible}
-				toggleModal={toggleModal}
-				onOk={modalIsOk}
-				onCancel={modalIsCancel}
-				footerButtons={[
-					<button key={uuidv4()} onClick={toggleModal}>
-						확인
-					</button>,
-				]}>
-				<p>모달 테스트</p>
-			</ModalBox>
+				<ModalBox
+					title={'test'}
+					isOpen={isModalOpenVisible}
+					toggleModal={toggleModal}
+					onOk={modalIsOk}
+					onCancel={modalIsCancel}
+					footerButtons={[
+						<button key={uuidv4()} onClick={toggleModal}>
+							확인
+						</button>,
+					]}>
+					<p>모달 테스트</p>
+				</ModalBox>
+			</LoginViewContainer>
 		</>
 	);
 }
+
+const LoginViewContainer = styled.div`
+	margin-top: 50px;
+`;
 
 const InputContainer = styled.div`
 	margin-top: 50px;
