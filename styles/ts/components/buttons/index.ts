@@ -1,9 +1,10 @@
 import styled from 'styled-components';
 import { rem } from 'polished';
+
 import * as common from '../../common';
 
 interface IButtonProps {
-	type?: string;
+	colorstyle?: string;
 	height?: string;
 }
 
@@ -13,7 +14,7 @@ export const RoundButton = styled.button<IButtonProps>`
 	font-family: Pretendard-Medium;
 	font-size: ${rem(`${common.FontSizeSm}`)};
 	color: ${(props) => {
-		switch (props.type) {
+		switch (props.colorstyle) {
 			case 'is-yellow':
 				return common.KakaoFontColor;
 			default:
@@ -25,7 +26,7 @@ export const RoundButton = styled.button<IButtonProps>`
 	cursor: pointer;
 	-webkit-tap-highlight-color: transparent !important;
 	background-color: ${(props) => {
-		switch (props.type) {
+		switch (props.colorstyle) {
 			case 'is-black':
 				return common.BlackColor;
 			case 'is-green':
@@ -52,7 +53,7 @@ export const SquareButton = styled.button<IButtonProps>`
 	font-family: Pretendard-Medium;
 	font-size: ${rem(`${common.FontSizeSm}`)};
 	color: ${(props) => {
-		switch (props.type) {
+		switch (props.colorstyle) {
 			case 'is-black':
 				return common.ReportColor;
 			default:
@@ -64,7 +65,7 @@ export const SquareButton = styled.button<IButtonProps>`
 	cursor: pointer;
 	-webkit-tap-highlight-color: transparent !important;
 	background-color: ${(props) => {
-		switch (props.type) {
+		switch (props.colorstyle) {
 			case 'is-black':
 				return common.BlackColor;
 			case 'is-white':

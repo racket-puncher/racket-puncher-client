@@ -12,6 +12,7 @@ export const ReportColor = '#999999';
 export const InputBorderColor = '#DCDCDC';
 export const InputBoxColor = '#f9f9f9';
 export const InputLabelColor = '#343434';
+export const InputErrorColor = '#D73333';
 
 export const FontSizeSpLg = '28px';
 export const FontSizeLg = '20px';

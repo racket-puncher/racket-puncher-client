@@ -1,8 +1,9 @@
-import { Spin as AntdSpin } from 'antd';
 import React, { ReactNode } from 'react';
-import { useRecoilValue } from 'recoil';
-import { loadingState } from '../../../../lib/store/common';
 import styled from 'styled-components';
+import { useRecoilValue } from 'recoil';
+import { Spin as AntdSpin } from 'antd';
+
+import { loadingState } from '../../../../lib/store/common';
 
 interface ILayoutProps {
 	children: ReactNode;
