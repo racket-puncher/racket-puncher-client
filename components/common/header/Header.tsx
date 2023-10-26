@@ -6,7 +6,6 @@ import { useRouter } from 'next/router';
 import BackIcon from '../../../assets/svg/BackIcon';
 import MenuIcon from '../../../assets/svg/MenuIcon';
 import LogoSVG from '../../../assets/svg/LogoSVG';
-import Menu from './Menu';
 
 const Header = () => {
 	const router = useRouter();
