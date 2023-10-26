@@ -3,7 +3,8 @@ import { rem } from 'polished';
 import * as common from '../../common';
 
 interface IButtonProps {
-	type: String;
+	type?: string;
+	height?: string;
 }
 
 export const RoundButton = styled.button<IButtonProps>`
@@ -37,6 +38,7 @@ export const RoundButton = styled.button<IButtonProps>`
 				return common.BlackColor;
 		}
 	}};
+
 	div.align-box {
 		display: flex;
 		align-items: center;
@@ -46,7 +48,7 @@ export const RoundButton = styled.button<IButtonProps>`
 `;
 export const SquareButton = styled.button<IButtonProps>`
 	width: 100%;
-	height: ${rem('60px')};
+	height: ${(props) => rem(props.height || '60px')};
 	font-family: Pretendard-Medium;
 	font-size: ${rem(`${common.FontSizeSm}`)};
 	color: ${(props) => {
@@ -57,7 +59,7 @@ export const SquareButton = styled.button<IButtonProps>`
 				return common.WhiteColor;
 		}
 	}};
-	border: none;
+	border: 1px solid transparent;
 	border-radius: 5px;
 	cursor: pointer;
 	-webkit-tap-highlight-color: transparent !important;
