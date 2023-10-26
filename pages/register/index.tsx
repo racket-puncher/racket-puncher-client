@@ -1,4 +1,4 @@
-import React, { useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 
 import { InputBox } from '../../styles/ts/components/input';
@@ -8,6 +8,7 @@ import { PageMainTitle } from '../../styles/ts/components/titles';
 import { ImageBox } from '../../styles/ts/components/box';
 
 export default function register() {
+	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
 
 	const clickImgFile = () => {
@@ -22,6 +23,10 @@ export default function register() {
 			const selectedFile = files[0];
 			console.log(selectedFile);
 		}
+	};
+
+	const clickCertifyBtn = () => {
+		setCertifyNumVisible(true);
 	};
 
 	return (
@@ -53,16 +58,21 @@ export default function register() {
 							<label htmlFor='registerPhoneNum'>휴대폰 번호</label>
 							<input id='registerPhoneNum' />
 						</InputBox>
-						<SquareButton height={'50px'}>인증번호 전송</SquareButton>
+						<SquareButton height={'50px'} onClick={clickCertifyBtn}>
+							인증번호 전송
+						</SquareButton>
 					</InputButtonBox>
 
-					<InputButtonBox>
-						<InputBox>
-							<label htmlFor='registerCertifyNum'>인증 번호</label>
-							<input id='registerCertifyNum' />
-						</InputBox>
-						<SquareButton height={'50px'}>확인</SquareButton>
-					</InputButtonBox>
+					{certifyNumVisible && (
+						<InputButtonBox>
+							<InputBox certify>
+								<label htmlFor='registerCertifyNum'>인증 번호</label>
+								<input id='registerCertifyNum' />
+								<span className={'limit-time'}>00:00</span>
+							</InputBox>
+							<SquareButton height={'50px'}>확인</SquareButton>
+						</InputButtonBox>
+					)}
 
 					<SelectBox>
 						<InputBox>
