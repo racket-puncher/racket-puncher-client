@@ -5,7 +5,13 @@ const useRouterHook = () => {
 	const movePage = (url: string) => {
 		route.push(url);
 	};
-	return { movePage };
+	const moveToBack = () => {
+		route.back();
+	};
+	const pathNameStartsWith = (url: string) => {
+		return route.pathname.startsWith(url);
+	};
+	return { movePage, moveToBack, pathNameStartsWith };
 };
 
 export default useRouterHook;
