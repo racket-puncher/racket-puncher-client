@@ -1,9 +1,10 @@
-import { PageMainTitle } from '../../styles/ts/components/titles';
 import React, { useState } from 'react';
-import { InputBox } from '../../styles/ts/components/input';
-import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
 import styled from 'styled-components';
 import { rem } from 'polished';
+
+import { PageMainTitle } from '../../styles/ts/components/titles';
+import { InputBox } from '../../styles/ts/components/input';
+import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
 import { FontSizeLg } from '../../styles/ts/common';
 
 export default function FindId() {
@@ -42,8 +43,8 @@ export default function FindId() {
 						<InputContainer>
 							<InputButtonBox>
 								<InputBox>
-									<label htmlFor='registerPhoneNum'>휴대폰 번호</label>
-									<input id='registerPhoneNum' type={'number'} />
+									<label htmlFor='findIdPhoneNum'>휴대폰 번호</label>
+									<input id='findIdPhoneNum' type={'number'} />
 								</InputBox>
 								<SquareButton height={'50px'} onClick={sendCertifyNumBtn}>
 									인증번호 전송
@@ -53,9 +54,9 @@ export default function FindId() {
 							{certifyNumVisible && (
 								<InputButtonBox>
 									<InputBox certify>
-										<label htmlFor='registerCertifyNum'>인증 번호</label>
+										<label htmlFor='findIdCertifyNum'>인증 번호</label>
 										<input
-											id='registerCertifyNum'
+											id='findIdCertifyNum'
 											type={'number'}
 											onChange={handleCertifyInputChange}
 										/>
