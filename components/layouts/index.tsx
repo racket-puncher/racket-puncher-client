@@ -1,9 +1,9 @@
 import React, { ReactNode } from 'react';
-import LoadingSpin from '../common/loading/spin';
 import styled from 'styled-components';
 import { rem } from 'polished';
 
-import Header from './Header';
+import LoadingSpin from '../common/loading/spin';
+import Header from '../common/header/Header';
 
 interface ILayoutProps {
 	children: ReactNode;

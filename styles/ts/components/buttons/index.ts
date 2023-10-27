@@ -75,16 +75,3 @@ export const SquareButton = styled.button<IButtonProps>`
 		}
 	}};
 `;
-
-export const ImgButton = styled.button`
-	display: flex;
-	align-items: center;
-	justify-content: center;
-
-	width: fit-content;
-	height: fit-content;
-	padding: 0px;
-	border: none;
-	background-color: transparent;
-	cursor: pointer;
-`;
