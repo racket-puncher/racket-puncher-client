@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
 
@@ -14,6 +14,7 @@ export default function FindId() {
 
 	const [isClickNextBtn, setIsClickNextBtn] = useState(false);
 	const [timer, setTimer] = useState(30);
+	const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
 
 	// 인증번호 전송
 	// const sendCertifyNumBtn = () => {
@@ -35,33 +36,45 @@ export default function FindId() {
 		setCertifyNumVisible(false);
 	};
 
-	// 인증번호 받기
-	const getVerificatoin = () => {
-		try {
-			setCertifyNumVisible(true);
-			console.log('dd');
-			setCertTimer();
-			setTimer(30);
-		} catch (e) {
-			console.log(e);
-		}
-	};
-
 	// 인증번호 타이머
 	const setCertTimer = () => {
-		const interval = setInterval(() => {
+		if (intervalId) {
+			clearInterval(intervalId); // 이전 타이머 중지
+		}
+		const newIntervalId = setInterval(() => {
 			setTimer((prevTimer) => {
-				if (prevTimer === 0) {
-					clearInterval(interval);
+				if (prevTimer === 1) {
+					clearInterval(newIntervalId);
 					setCertifyInputValue('');
+					setCertifyNumVisible(false);
 					return 0;
 				} else {
 					return prevTimer - 1;
 				}
 			});
 		}, 1000);
+		setIntervalId(newIntervalId); // 새로운 타이머 Id 저장
 	};
 
+	// 인증번호 받기
+	const getVerificatoin = () => {
+		try {
+			setCertifyNumVisible(true);
+			setTimer(30);
+			setCertifyInputValue('');
+			setCertTimer();
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
+	useEffect(() => {
+		setCertTimer();
+		return () => {
+			// 컴포넌트가 언마운트될 때 타이머 중지
+			clearInterval(intervalId);
+		};
+	}, []);
 	return (
 		<>
 			<FindIdViewContainer>
