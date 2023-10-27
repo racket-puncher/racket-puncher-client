@@ -17,7 +17,7 @@ export default function FindId() {
 		setCertifyNumVisible(true);
 	};
 
-	const handleCertifyInputChange = (event) => {
+	const handleCertifyInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setCertifyInputValue(event.target.value);
 	};
 
