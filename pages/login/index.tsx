@@ -82,8 +82,8 @@ export default function Login() {
 					</InputContainer>
 
 					<UnderLineBox>
-						<UnderLineTexts>아이디찾기</UnderLineTexts>
-						<UnderLineTexts>비밀번호 찾기</UnderLineTexts>
+						<UnderLineTexts onClick={() => movePage('/findId')}>아이디찾기</UnderLineTexts>
+						<UnderLineTexts onClick={() => movePage('/findPwd')}>비밀번호 찾기</UnderLineTexts>
 					</UnderLineBox>
 
 					<ButtonContainer>
