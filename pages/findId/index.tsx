@@ -13,21 +13,48 @@ export default function FindId() {
 	const [isClickCheckBtn, setIsClickCheckBtn] = useState(false);
 
 	const [isClickNextBtn, setIsClickNextBtn] = useState(false);
+	const [timer, setTimer] = useState(180);
 
-	const sendCertifyNumBtn = () => {
-		setCertifyNumVisible(true);
-	};
+	// 인증번호 전송
+	// const sendCertifyNumBtn = () => {
+	// 	setCertifyNumVisible(true);
+	// };
 
 	const handleCertifyInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setCertifyInputValue(event.target.value);
 	};
 
+	// 인증번호확인
 	const checkCertifyNum = () => {
 		setIsClickCheckBtn(true);
 	};
 
+	// 다음버튼 클릭
 	const clickNextBtn = () => {
 		setIsClickNextBtn(!isClickNextBtn);
+	};
+
+	// 인증번호 받기
+	const getVerificatoin = () => {
+		try {
+			setCertifyNumVisible(true);
+			console.log('dd');
+			setCertTimer();
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
+	// 인증번호 타이머
+	const setCertTimer = () => {
+		const interval = setInterval(() => {
+			setTimer((prevTimer) => prevTimer - 1);
+		}, 1000);
+
+		if (timer === 0) {
+			clearInterval(interval);
+			setCertifyInputValue('');
+		}
 	};
 
 	return (
@@ -46,7 +73,7 @@ export default function FindId() {
 									<label htmlFor='findIdPhoneNum'>휴대폰 번호</label>
 									<input id='findIdPhoneNum' type={'number'} />
 								</InputBox>
-								<SquareButton height={'50px'} onClick={sendCertifyNumBtn}>
+								<SquareButton height={'50px'} onClick={getVerificatoin}>
 									인증번호 전송
 								</SquareButton>
 							</InputButtonBox>
@@ -60,7 +87,10 @@ export default function FindId() {
 											type={'number'}
 											onChange={handleCertifyInputChange}
 										/>
-										<span className={'limit-time'}>00:00</span>
+										<span className={'limit-time'}>
+											{String(Math.floor(timer / 60)).padStart(2, '0')}:
+											{String(timer % 60).padStart(2, '0')}
+										</span>
 									</InputBox>
 									<SquareButton
 										height={'50px'}
