@@ -27,18 +27,18 @@ export default function MenuModal(props: MenuModalProps) {
 				</ImgButton>
 			</TopArea>
 			<MenuArea>
-				<RoundButton onClick={() => movePage('/main')} type={'is-green'}>
+				<RoundButton onClick={() => movePage('/main')} colorstyle={'is-green'}>
 					소셜 매치
 				</RoundButton>
-				<RoundButton onClick={() => movePage('/my')} type={'is-green'}>
+				<RoundButton onClick={() => movePage('/my')} colorstyle={'is-green'}>
 					마이페이지
 				</RoundButton>
 			</MenuArea>
 			<BottomArea>
-				<RoundButton onClick={() => movePage('/login')} type={'is-black'}>
+				<RoundButton onClick={() => movePage('/login')} colorstyle={'is-black'}>
 					로그인
 				</RoundButton>
-				<RoundButton onClick={() => movePage('/register')} type={'is-black'}>
+				<RoundButton onClick={() => movePage('/register')} colorstyle={'is-black'}>
 					회원가입
 				</RoundButton>
 			</BottomArea>
