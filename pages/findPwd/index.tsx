@@ -143,7 +143,7 @@ export default function FindPwd() {
 
 							{certifyNumVisible && (
 								<InputButtonBox>
-									<InputBox certify>
+									<InputBox certify='true'>
 										<label htmlFor='findPwdCertifyNum'>인증 번호</label>
 										<input
 											id='findPwdCertifyNum'

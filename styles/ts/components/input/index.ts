@@ -11,14 +11,14 @@ import {
 } from '../../common';
 
 interface IInputBox {
-	certify?: boolean;
+	certify?: string;
 }
 
 export const InputBox = styled.div<IInputBox>`
 	display: flex;
 	flex-direction: column;
 	margin-bottom: 20px;
-	position: ${(props) => props.certify && 'relative'};
+	position: ${(props) => props.certify === 'true' && 'relative'};
 
 	label {
 		display: block;

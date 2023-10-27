@@ -12,15 +12,15 @@ const http = axios.create({
 http.interceptors.request.use(
 	(config) => {
 		return config;
-	},
-	(ignore) => {}
+	}
+	// (ignore) => {}
 );
 
 http.interceptors.response.use(
 	(res) => {
 		return res;
-	},
-	(ignore) => {}
+	}
+	// (ignore) => {}
 );
 
 export default http;
