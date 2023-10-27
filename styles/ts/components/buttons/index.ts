@@ -6,14 +6,15 @@ import * as common from '../../common';
 interface IButtonProps {
 	colorstyle?: string;
 	height?: string;
+	disabled?: boolean;
 }
 
 export const RoundButton = styled.button<IButtonProps>`
-	width: 100%;
-	height: ${rem('60px')};
-	font-family: Pretendard-Medium;
-	font-size: ${rem(`${common.FontSizeSm}`)};
-	color: ${(props) => {
+  width: 100%;
+  height: ${rem('60px')};
+  font-family: Pretendard-Medium;
+  font-size: ${rem(`${common.FontSizeSm}`)};
+  color: ${(props) => {
 		switch (props.colorstyle) {
 			case 'is-yellow':
 				return common.KakaoFontColor;
@@ -21,11 +22,11 @@ export const RoundButton = styled.button<IButtonProps>`
 				return common.WhiteColor;
 		}
 	}};
-	border: none;
-	border-radius: 20px;
-	cursor: pointer;
-	-webkit-tap-highlight-color: transparent !important;
-	background-color: ${(props) => {
+  border: none;
+  border-radius: 20px;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent !important;
+  background-color: ${(props) => {
 		switch (props.colorstyle) {
 			case 'is-black':
 				return common.BlackColor;
@@ -40,12 +41,18 @@ export const RoundButton = styled.button<IButtonProps>`
 		}
 	}};
 
-	div.align-box {
-		display: flex;
-		align-items: center;
-		justify-content: center;
-		gap: 10px;
-	}
+  &:disabled {
+    background-color: ${(props) => props.disabled && common.DisabledColor}
+  }
+;
+}
+
+div.align-box {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+}
 `;
 export const SquareButton = styled.button<IButtonProps>`
 	width: 100%;
@@ -74,6 +81,9 @@ export const SquareButton = styled.button<IButtonProps>`
 				return common.BlackColor;
 		}
 	}};
+	&:disabled {
+		background-color: ${(props) => props.disabled && common.DisabledColor}};
+	}
 `;
 
 export const ImgButton = styled.button`
