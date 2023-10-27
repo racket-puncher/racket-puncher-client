@@ -6,10 +6,12 @@ import useRouterHook from '../../utils/useRouterHook';
 import { ImageBox } from '../../styles/ts/components/box';
 import { ImgButton } from '../../styles/ts/components/buttons';
 import MenuModal from './MenuModal';
+import { useRouter } from 'next/router';
 
 export default function Header() {
 	// To do
 	// - 메뉴 모달 토글
+	const router = useRouter();
 
 	const [isBackBtnVisible, setIisBackBtnVisible] = useState(false);
 	const { movePage, moveToBack, pathNameStartsWith } = useRouterHook();
@@ -24,7 +26,7 @@ export default function Header() {
 		} else {
 			setIisBackBtnVisible(false);
 		}
-	}, []);
+	}, [router.pathname]);
 
 	const [isModalOpen, setisModalOpen] = useState(false);
 	const showMadal = () => setisModalOpen(true);
