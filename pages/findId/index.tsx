@@ -14,7 +14,7 @@ export default function FindId() {
 
 	const [isClickNextBtn, setIsClickNextBtn] = useState(false);
 	const [timer, setTimer] = useState(30);
-	const [intervalId, setIntervalId] = useState<NodeJS.Timeout | null>(null);
+	const [intervalId, setIntervalId] = useState<number | null>(null);
 
 	// 인증번호 전송
 	// const sendCertifyNumBtn = () => {
@@ -39,7 +39,7 @@ export default function FindId() {
 	// 인증번호 타이머
 	const setCertTimer = () => {
 		if (intervalId) {
-			clearInterval(intervalId); // 이전 타이머 중지
+			clearInterval(intervalId);
 		}
 		const newIntervalId = setInterval(() => {
 			setTimer((prevTimer) => {
@@ -53,7 +53,7 @@ export default function FindId() {
 				}
 			});
 		}, 1000);
-		setIntervalId(newIntervalId); // 새로운 타이머 Id 저장
+		setIntervalId(Number(newIntervalId));
 	};
 
 	// 인증번호 받기
@@ -72,9 +72,10 @@ export default function FindId() {
 		setCertTimer();
 		return () => {
 			// 컴포넌트가 언마운트될 때 타이머 중지
-			clearInterval(intervalId);
+			clearInterval(Number(intervalId));
 		};
 	}, []);
+
 	return (
 		<>
 			<FindIdViewContainer>
@@ -98,7 +99,7 @@ export default function FindId() {
 
 							{certifyNumVisible && (
 								<InputButtonBox>
-									<InputBox certify>
+									<InputBox certify='true'>
 										<label htmlFor='findIdCertifyNum'>인증 번호</label>
 										<input
 											id='findIdCertifyNum'

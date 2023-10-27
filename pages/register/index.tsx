@@ -65,7 +65,7 @@ export default function register() {
 
 					{certifyNumVisible && (
 						<InputButtonBox>
-							<InputBox certify>
+							<InputBox certify='true'>
 								<label htmlFor='registerCertifyNum'>인증 번호</label>
 								<input id='registerCertifyNum' />
 								<span className={'limit-time'}>00:00</span>
