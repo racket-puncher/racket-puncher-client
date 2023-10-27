@@ -6,10 +6,13 @@ import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
 import { CustomSelect } from '../../styles/ts/components/select';
 import { PageMainTitle } from '../../styles/ts/components/titles';
 import { ImageBox } from '../../styles/ts/components/box';
+import DrawerBox from '../../components/common/drawer';
 
 export default function register() {
 	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
+
+	const [addressDrawer, setAddressDrawer] = useState(false);
 
 	const clickImgFile = () => {
 		if (fileInputRef.current) {
@@ -29,6 +32,9 @@ export default function register() {
 		setCertifyNumVisible(true);
 	};
 
+	const handleAddressDrawer = () => {
+		setAddressDrawer((prev) => !prev);
+	};
 	return (
 		<>
 			<RegisterViewContainer>
@@ -118,7 +124,9 @@ export default function register() {
 							<label htmlFor='registerAddress'>주소</label>
 							<input id='registerAddress' placeholder={'우편번호'} />
 						</InputBox>
-						<SquareButton height={'50px'}>주소 검색</SquareButton>
+						<SquareButton height={'50px'} onClick={handleAddressDrawer}>
+							주소 검색
+						</SquareButton>
 					</InputButtonBox>
 					<InputBox>
 						<input id='registerDetailAddress' placeholder={'상세주소'} />
@@ -129,6 +137,15 @@ export default function register() {
 					<RoundButton colorstyle={'is-green'}>다음</RoundButton>
 				</ButtonBox>
 			</RegisterViewContainer>
+
+			<DrawerBox
+				title={'주소 검색'}
+				isOpen={addressDrawer}
+				placement={'bottom'}
+				height={'100%'}
+				toggleDrawer={handleAddressDrawer}>
+				sample
+			</DrawerBox>
 		</>
 	);
 }
