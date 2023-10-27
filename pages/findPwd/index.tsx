@@ -46,7 +46,7 @@ export default function FindPwd() {
 
 	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
 	const [certifyInputValue, setCertifyInputValue] = useState('');
-	const [timer, setTimer] = useState(180);
+	const [timer, setTimer] = useState(5);
 
 	const [isClickCheckBtn, setIsClickCheckBtn] = useState(false);
 
@@ -90,13 +90,16 @@ export default function FindPwd() {
 	// 인증번호 타이머
 	const setCertTimer = () => {
 		const interval = setInterval(() => {
-			setTimer((prevTimer) => prevTimer - 1);
+			setTimer((prevTimer) => {
+				if (prevTimer === 0) {
+					clearInterval(interval);
+					setCertifyInputValue('');
+					return 0;
+				} else {
+					return prevTimer - 1;
+				}
+			});
 		}, 1000);
-
-		if (timer === 0) {
-			clearInterval(interval);
-			setCertifyInputValue('');
-		}
 	};
 
 	return (
@@ -147,7 +150,10 @@ export default function FindPwd() {
 											type={'number'}
 											onChange={handleCertifyInputChange}
 										/>
-										<span className={'limit-time'}>00:00</span>
+										<span className={'limit-time'}>
+											{String(Math.floor(timer / 60)).padStart(2, '0')}:
+											{String(timer % 60).padStart(2, '0')}
+										</span>
 									</InputBox>
 									<SquareButton
 										height={'50px'}

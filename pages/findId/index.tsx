@@ -13,7 +13,7 @@ export default function FindId() {
 	const [isClickCheckBtn, setIsClickCheckBtn] = useState(false);
 
 	const [isClickNextBtn, setIsClickNextBtn] = useState(false);
-	const [timer, setTimer] = useState(180);
+	const [timer, setTimer] = useState(30);
 
 	// 인증번호 전송
 	// const sendCertifyNumBtn = () => {
@@ -32,6 +32,7 @@ export default function FindId() {
 	// 다음버튼 클릭
 	const clickNextBtn = () => {
 		setIsClickNextBtn(!isClickNextBtn);
+		setCertifyNumVisible(false);
 	};
 
 	// 인증번호 받기
@@ -40,6 +41,7 @@ export default function FindId() {
 			setCertifyNumVisible(true);
 			console.log('dd');
 			setCertTimer();
+			setTimer(30);
 		} catch (e) {
 			console.log(e);
 		}
