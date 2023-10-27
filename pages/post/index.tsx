@@ -52,7 +52,7 @@ export default function Post() {
 					<label htmlFor='postContent'>본문 내용</label>
 					<input id='postContent' type='text' />
 				</InputBox>
-				<RoundButton type={'is-black'}>등록하기</RoundButton>
+				<RoundButton colorstyle={'is-black'}>등록하기</RoundButton>
 			</PostForm>
 		</>
 	);
