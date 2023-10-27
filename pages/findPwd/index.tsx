@@ -46,6 +46,8 @@ export default function FindPwd() {
 
 	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
 	const [certifyInputValue, setCertifyInputValue] = useState('');
+	const [timer, setTimer] = useState(180);
+
 	const [isClickCheckBtn, setIsClickCheckBtn] = useState(false);
 
 	const [isClickNextBtn, setIsClickNextBtn] = useState<boolean>(false);
@@ -62,10 +64,6 @@ export default function FindPwd() {
 		setEmailValue(e.target.value);
 	};
 
-	const sendCertifyNumBtn = () => {
-		setCertifyNumVisible(true);
-	};
-
 	const handleCertifyInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setCertifyInputValue(event.target.value);
 	};
@@ -76,6 +74,29 @@ export default function FindPwd() {
 
 	const clickNextBtn = () => {
 		setIsClickNextBtn(true);
+	};
+
+	// 인증번호 받기
+	const getVerificatoin = () => {
+		try {
+			setCertifyNumVisible(true);
+			console.log('dd');
+			setCertTimer();
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
+	// 인증번호 타이머
+	const setCertTimer = () => {
+		const interval = setInterval(() => {
+			setTimer((prevTimer) => prevTimer - 1);
+		}, 1000);
+
+		if (timer === 0) {
+			clearInterval(interval);
+			setCertifyInputValue('');
+		}
 	};
 
 	return (
@@ -112,7 +133,7 @@ export default function FindPwd() {
 									<label htmlFor='findPwdPhoneNum'>휴대폰 번호</label>
 									<input id='findPwdPhoneNum' type={'number'} />
 								</InputBox>
-								<SquareButton height={'50px'} onClick={sendCertifyNumBtn}>
+								<SquareButton height={'50px'} onClick={getVerificatoin}>
 									인증번호 전송
 								</SquareButton>
 							</InputButtonBox>
