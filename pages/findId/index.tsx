@@ -48,13 +48,16 @@ export default function FindId() {
 	// 인증번호 타이머
 	const setCertTimer = () => {
 		const interval = setInterval(() => {
-			setTimer((prevTimer) => prevTimer - 1);
+			setTimer((prevTimer) => {
+				if (prevTimer === 0) {
+					clearInterval(interval);
+					setCertifyInputValue('');
+					return 0;
+				} else {
+					return prevTimer - 1;
+				}
+			});
 		}, 1000);
-
-		if (timer === 0) {
-			clearInterval(interval);
-			setCertifyInputValue('');
-		}
 	};
 
 	return (
