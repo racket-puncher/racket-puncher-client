@@ -25,6 +25,8 @@ const schema = yup.object().shape({
 			/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
 			'이메일 형식이 올바르지 않습니다.'
 		),
+	phoneNumber: yup.string().required('휴대폰 번호는 필수입니다.'),
+	certifyNumber: yup.string().required('인증번호는 필수입니다.'),
 	password: yup
 		.string()
 		.required('비밀번호는 필수입니다.')
@@ -54,7 +56,7 @@ export default function FindPwd() {
 
 	const {
 		register,
-		// handleSubmit,
+		handleSubmit,
 		formState: { errors },
 	} = useForm({
 		resolver: yupResolver(schema),
@@ -64,9 +66,9 @@ export default function FindPwd() {
 		setEmailValue(e.target.value);
 	};
 
-	const handleCertifyInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setCertifyInputValue(event.target.value);
-	};
+	// const handleCertifyInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	// 	setCertifyInputValue(event.target.value);
+	// };
 
 	const checkCertifyNum = () => {
 		setIsClickCheckBtn(true);
@@ -74,6 +76,11 @@ export default function FindPwd() {
 
 	const clickNextBtn = () => {
 		setIsClickNextBtn(true);
+		if (isClickNextBtn) {
+			// 비밀번호 변경
+		} else {
+			// 비밀번호 찾기
+		}
 	};
 
 	// 인증번호 받기
@@ -134,7 +141,8 @@ export default function FindPwd() {
 							<InputButtonBox>
 								<InputBox>
 									<label htmlFor='findPwdPhoneNum'>휴대폰 번호</label>
-									<input id='findPwdPhoneNum' type={'number'} />
+									<input id='findPwdPhoneNum' type={'number'} {...register('phoneNumber')} />
+									<InputErrorText>{errors.phoneNumber?.message}</InputErrorText>
 								</InputBox>
 								<SquareButton height={'50px'} onClick={getVerificatoin}>
 									인증번호 전송
@@ -145,15 +153,12 @@ export default function FindPwd() {
 								<InputButtonBox>
 									<InputBox certify='true'>
 										<label htmlFor='findPwdCertifyNum'>인증 번호</label>
-										<input
-											id='findPwdCertifyNum'
-											type={'number'}
-											onChange={handleCertifyInputChange}
-										/>
+										<input id='findPwdCertifyNum' type={'number'} {...register('certifyNumber')} />
 										<span className={'limit-time'}>
 											{String(Math.floor(timer / 60)).padStart(2, '0')}:
 											{String(timer % 60).padStart(2, '0')}
 										</span>
+										<InputErrorText>{errors.certifyNumber?.message}</InputErrorText>
 									</InputBox>
 									<SquareButton
 										height={'50px'}
@@ -170,7 +175,7 @@ export default function FindPwd() {
 				<ButtonBox>
 					<RoundButton
 						colorstyle={'is-green'}
-						onClick={clickNextBtn}
+						onClick={handleSubmit(clickNextBtn)}
 						disabled={!isClickCheckBtn || !emailValue}>
 						{isClickNextBtn ? '비밀번호 변경' : '다음'}
 					</RoundButton>
