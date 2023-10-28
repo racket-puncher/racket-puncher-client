@@ -104,7 +104,10 @@ export default function FindPwd() {
 								<InputErrorText>{errors.phoneNumber.message}</InputErrorText>
 							)}
 						</InputBox>
-						<SquareButton height={'50px'} onClick={getVerificatoin}>
+						<SquareButton
+							height={'50px'}
+							onClick={getVerificatoin}
+							disabled={!watch('phoneNumber')}>
 							인증번호 전송
 						</SquareButton>
 					</InputButtonBox>

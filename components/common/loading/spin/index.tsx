@@ -6,7 +6,7 @@ import { Spin as AntdSpin } from 'antd';
 import { loadingState } from '../../../../lib/store/common';
 
 interface ILayoutProps {
-	children: ReactNode;
+	readonly children: ReactNode;
 }
 
 export default function LoadingSpin(props: ILayoutProps) {

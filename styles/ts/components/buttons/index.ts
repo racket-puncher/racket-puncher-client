@@ -4,9 +4,9 @@ import { rem } from 'polished';
 import * as common from '../../common';
 
 interface IButtonProps {
-	colorstyle?: string;
-	height?: string;
-	disabled?: boolean;
+	readonly colorstyle?: string;
+	readonly height?: string;
+	readonly disabled?: boolean;
 }
 
 export const RoundButton = styled.button<IButtonProps>`
