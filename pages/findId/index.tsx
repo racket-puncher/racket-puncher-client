@@ -19,7 +19,7 @@ const schema = yup.object().shape({
 
 export default function FindId() {
 	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
-	const [certifyInputValue, setCertifyInputValue] = useState('');
+	// const [certifyInputValue, setCertifyInputValue] = useState('');
 	const [isClickCheckBtn, setIsClickCheckBtn] = useState(false);
 
 	const [isClickNextBtn, setIsClickNextBtn] = useState(false);
@@ -29,15 +29,15 @@ export default function FindId() {
 	const {
 		register,
 		handleSubmit,
-		watch,
+		// watch,
 		formState: { errors },
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
 
-	const handleCertifyInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setCertifyInputValue(event.target.value);
-	};
+	// const handleCertifyInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	// 	setCertifyInputValue(event.target.value);
+	// };
 
 	// 인증번호확인
 	const checkCertifyNum = () => {
@@ -59,7 +59,7 @@ export default function FindId() {
 			setTimer((prevTimer) => {
 				if (prevTimer === 1) {
 					clearInterval(newIntervalId);
-					setCertifyInputValue('');
+					// setCertifyInputValue('');
 					setCertifyNumVisible(false);
 					return 0;
 				} else {
@@ -75,7 +75,7 @@ export default function FindId() {
 		try {
 			setCertifyNumVisible(true);
 			setTimer(30);
-			setCertifyInputValue('');
+			// setCertifyInputValue('');
 			setCertTimer();
 		} catch (e) {
 			console.log(e);
@@ -122,12 +122,7 @@ export default function FindId() {
 								<InputButtonBox>
 									<InputBox certify='true'>
 										<label htmlFor='findIdCertifyNum'>인증 번호</label>
-										<input
-											id='findIdCertifyNum'
-											type={'number'}
-											onChange={handleCertifyInputChange}
-											{...register('certifyNumber')}
-										/>
+										<input id='findIdCertifyNum' type={'number'} {...register('certifyNumber')} />
 										<span className={'limit-time'}>
 											{String(Math.floor(timer / 60)).padStart(2, '0')}:
 											{String(timer % 60).padStart(2, '0')}
@@ -136,7 +131,7 @@ export default function FindId() {
 									</InputBox>
 									<SquareButton
 										height={'50px'}
-										disabled={!watch('certifyNumber')}
+										// disabled={!watch('certifyNumber')}
 										onClick={checkCertifyNum}>
 										확인
 									</SquareButton>

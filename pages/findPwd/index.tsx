@@ -66,9 +66,9 @@ export default function FindPwd() {
 		setEmailValue(e.target.value);
 	};
 
-	const handleCertifyInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		setCertifyInputValue(event.target.value);
-	};
+	// const handleCertifyInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+	// 	setCertifyInputValue(event.target.value);
+	// };
 
 	const checkCertifyNum = () => {
 		setIsClickCheckBtn(true);
@@ -153,12 +153,7 @@ export default function FindPwd() {
 								<InputButtonBox>
 									<InputBox certify='true'>
 										<label htmlFor='findPwdCertifyNum'>인증 번호</label>
-										<input
-											id='findPwdCertifyNum'
-											type={'number'}
-											onChange={handleCertifyInputChange}
-											{...register('certifyNumber')}
-										/>
+										<input id='findPwdCertifyNum' type={'number'} {...register('certifyNumber')} />
 										<span className={'limit-time'}>
 											{String(Math.floor(timer / 60)).padStart(2, '0')}:
 											{String(timer % 60).padStart(2, '0')}
