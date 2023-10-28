@@ -9,14 +9,7 @@ import { InputErrorText } from '../../styles/ts/components/text';
 import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
 import { PageMainTitle } from '../../styles/ts/components/titles';
 import { onlyNumber } from '../../utils/fomatter';
-
-// interface FormData {
-// 	email?: string;
-// 	phone?: string;
-// 	certifyNum?: string;
-// 	password?: string;
-// 	rePassword?: string;
-// }
+import useRouterHook from '../../utils/useRouterHook';
 
 const schema = yup.object().shape({
 	email: yup
@@ -31,7 +24,7 @@ const schema = yup.object().shape({
 });
 
 export default function FindPwd() {
-	const [emailValue, setEmailValue] = useState('');
+	const { movePage } = useRouterHook();
 
 	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
 	const [certifyInputValue, setCertifyInputValue] = useState('');
@@ -39,27 +32,18 @@ export default function FindPwd() {
 
 	const [isClickCheckBtn, setIsClickCheckBtn] = useState(false);
 
-	const [isClickNextBtn, setIsClickNextBtn] = useState<boolean>(false);
-
 	const {
 		register,
 		handleSubmit,
 		watch,
+		setValue,
 		formState: { errors },
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
 
-	const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-		setEmailValue(e.target.value);
-	};
-
 	const checkCertifyNum = () => {
 		setIsClickCheckBtn(true);
-	};
-
-	const clickNextBtn = () => {
-		setIsClickNextBtn(true);
 	};
 
 	// 인증번호 받기
@@ -88,6 +72,10 @@ export default function FindPwd() {
 		}, 1000);
 	};
 
+	const clickNextBtn = () => {
+		movePage('/findPwd/result');
+	};
+
 	return (
 		<>
 			<FindPwdViewContainer>
@@ -96,7 +84,7 @@ export default function FindPwd() {
 				<InputContainer>
 					<InputBox>
 						<label htmlFor='findPwdEmail'>이메일</label>
-						<input id='findPwdEmail' {...register('email')} onChange={handleEmailChange} />
+						<input id='findPwdEmail' {...register('email')} />
 						{errors.email?.message && <InputErrorText>{errors.email.message}</InputErrorText>}
 					</InputBox>
 
@@ -108,7 +96,9 @@ export default function FindPwd() {
 								type={'text'}
 								maxLength={11}
 								{...register('phoneNumber')}
-								onChange={(e) => onlyNumber(e)}
+								onChange={(e) => {
+									setValue('phoneNumber', onlyNumber(e.target.value));
+								}}
 							/>
 							{errors.phoneNumber?.message && (
 								<InputErrorText>{errors.phoneNumber.message}</InputErrorText>
@@ -124,11 +114,13 @@ export default function FindPwd() {
 							<InputBox certify='true'>
 								<label htmlFor='findPwdCertifyNum'>인증 번호</label>
 								<input
-									id='findPwdCertifyNum'
+									id='findIdCertifyNum'
 									type={'text'}
 									maxLength={6}
 									{...register('certifyNumber')}
-									onChange={(e) => onlyNumber(e)}
+									onChange={(e) => {
+										setValue('certifyNumber', onlyNumber(e.target.value));
+									}}
 								/>
 								<span className={'limit-time'}>
 									{String(Math.floor(timer / 60)).padStart(2, '0')}:
@@ -151,8 +143,13 @@ export default function FindPwd() {
 				<ButtonBox>
 					<RoundButton
 						colorstyle={'is-green'}
-						onClick={() => handleSubmit(clickNextBtn)}
-						disabled={!watch[('email', 'phoneNumber', 'certifyNumber')]}>
+						onClick={handleSubmit(clickNextBtn)}
+						disabled={
+							!watch('email') ||
+							!watch('phoneNumber') ||
+							!watch('certifyNumber') ||
+							!isClickCheckBtn
+						}>
 						다음
 					</RoundButton>
 				</ButtonBox>

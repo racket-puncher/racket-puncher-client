@@ -31,6 +31,7 @@ export default function FindId() {
 		register,
 		handleSubmit,
 		watch,
+		setValue,
 		formState: { errors },
 	} = useForm({
 		resolver: yupResolver(schema),
@@ -101,7 +102,9 @@ export default function FindId() {
 								type={'text'}
 								maxLength={11}
 								{...register('phoneNumber')}
-								onChange={(e) => onlyNumber(e)}
+								onChange={(e) => {
+									setValue('phoneNumber', onlyNumber(e.target.value));
+								}}
 							/>
 							{errors.phoneNumber?.message && (
 								<InputErrorText>{errors.phoneNumber.message}</InputErrorText>
@@ -121,7 +124,9 @@ export default function FindId() {
 									type={'text'}
 									maxLength={6}
 									{...register('certifyNumber')}
-									onChange={(e) => onlyNumber(e)}
+									onChange={(e) => {
+										setValue('certifyNumber', onlyNumber(e.target.value));
+									}}
 								/>
 								<span className={'limit-time'}>
 									{String(Math.floor(timer / 60)).padStart(2, '0')}:

@@ -34,7 +34,9 @@ export default function FindPwdResult() {
 		resolver: yupResolver(schema),
 	});
 
-	const changePwdBtn = () => {};
+	const changePwdBtn = () => {
+		console.log('비밀번호 변경');
+	};
 
 	return (
 		<>
@@ -57,8 +59,8 @@ export default function FindPwdResult() {
 				<ButtonBox>
 					<RoundButton
 						colorstyle={'is-green'}
-						onClick={() => handleSubmit(changePwdBtn)}
-						disabled={!watch[('password', 'rePassword')]}>
+						onClick={handleSubmit(changePwdBtn)}
+						disabled={!watch('password') || !watch('rePassword')}>
 						비밀번호 변경
 					</RoundButton>
 				</ButtonBox>
