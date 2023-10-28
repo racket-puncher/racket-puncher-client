@@ -22,7 +22,7 @@ export default function FindId() {
 	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
 	const [isClickCheckBtn, setIsClickCheckBtn] = useState(false);
 
-	const [timer, setTimer] = useState(30);
+	const [timer, setTimer] = useState(180);
 	const [intervalId, setIntervalId] = useState<number | null>(null);
 
 	const { movePage } = useRouterHook();
@@ -72,7 +72,7 @@ export default function FindId() {
 	const getVerificatoin = () => {
 		try {
 			setCertifyNumVisible(true);
-			setTimer(30);
+			setTimer(180);
 			// setCertifyInputValue('');
 			setCertTimer();
 		} catch (e) {
@@ -83,7 +83,6 @@ export default function FindId() {
 	useEffect(() => {
 		setCertTimer();
 		return () => {
-			// 컴포넌트가 언마운트될 때 타이머 중지
 			clearInterval(Number(intervalId));
 		};
 	}, []);
@@ -110,7 +109,10 @@ export default function FindId() {
 								<InputErrorText>{errors.phoneNumber.message}</InputErrorText>
 							)}
 						</InputBox>
-						<SquareButton height={'50px'} onClick={getVerificatoin}>
+						<SquareButton
+							height={'50px'}
+							onClick={getVerificatoin}
+							disabled={!watch('phoneNumber')}>
 							인증번호 전송
 						</SquareButton>
 					</InputButtonBox>

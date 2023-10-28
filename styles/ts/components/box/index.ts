@@ -2,8 +2,8 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 
 interface IImageProps {
-	width?: string;
-	height?: string;
+	readonly width?: string;
+	readonly height?: string;
 }
 
 export const ImageBox = styled.div<IImageProps>`

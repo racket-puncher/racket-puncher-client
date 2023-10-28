@@ -6,8 +6,8 @@ import { RoundButton, ImgButton } from '../../styles/ts/components/buttons';
 import { ImageBox } from '../../styles/ts/components/box';
 
 interface MenuModalProps {
-	isOpen: boolean;
-	toggleModal: (prev: boolean) => void;
+	readonly isOpen: boolean;
+	readonly toggleModal: (prev: boolean) => void;
 }
 
 export default function MenuModal(props: MenuModalProps) {

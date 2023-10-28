@@ -8,13 +8,13 @@ import { ImageBox } from '../../../styles/ts/components/box';
 import { BlackColor, FontSizeSpLg } from '../../../styles/ts/common';
 
 interface IDrawerProps {
-	title?: string;
-	isOpen: boolean;
-	children: ReactNode;
-	placement: DrawerProps['placement'];
-	height?: string;
-	width?: string;
-	toggleDrawer: () => void;
+	readonly title?: string;
+	readonly isOpen: boolean;
+	readonly children: ReactNode;
+	readonly placement: DrawerProps['placement'];
+	readonly height?: string;
+	readonly width?: string;
+	readonly toggleDrawer: () => void;
 }
 
 export default function DrawerBox(props: IDrawerProps) {

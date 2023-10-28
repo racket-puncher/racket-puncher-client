@@ -4,13 +4,13 @@ import { rem } from 'polished';
 import { Modal as AntdModal } from 'antd';
 
 interface IModalProps {
-	title: string;
-	children: ReactNode;
-	isOpen: boolean;
-	footerButtons?: ReactElement[];
-	toggleModal: () => void;
-	onOk: () => void;
-	onCancel: () => void;
+	readonly title: string;
+	readonly children: ReactNode;
+	readonly isOpen: boolean;
+	readonly footerButtons?: ReactElement[];
+	readonly toggleModal: () => void;
+	readonly onOk: () => void;
+	readonly onCancel: () => void;
 }
 
 export default function ModalBox(props: IModalProps) {

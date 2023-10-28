@@ -15,8 +15,8 @@ import { InputBox } from '../../styles/ts/components/input';
 import { InputErrorText } from '../../styles/ts/components/text';
 
 interface FormData {
-	email: string;
-	password: string;
+	readonly email: string;
+	readonly password: string;
 }
 
 const schema = yup.object().shape({

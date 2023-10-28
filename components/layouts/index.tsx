@@ -6,7 +6,7 @@ import { rem } from 'polished';
 import Header from './Header';
 
 interface ILayoutProps {
-	children: ReactNode;
+	readonly children: ReactNode;
 }
 
 export default function LayoutContainer(props: ILayoutProps) {

@@ -11,7 +11,7 @@ import {
 } from '../../common';
 
 interface IInputBox {
-	certify?: string;
+	readonly certify?: string;
 }
 
 export const InputBox = styled.div<IInputBox>`
