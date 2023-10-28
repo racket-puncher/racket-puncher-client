@@ -66,44 +66,42 @@ export default function Login() {
 	return (
 		<>
 			<LoginViewContainer>
-				<form onSubmit={handleSubmit(clickLoginBtn)}>
-					<PageMainTitle>로그인</PageMainTitle>
-					<InputContainer>
-						<InputBox>
-							<label htmlFor='loginEmail'>이메일</label>
-							<input id='loginEmail' {...register('email')} />
-							<InputErrorText>{errors.email?.message}</InputErrorText>
-						</InputBox>
-						<InputBox>
-							<label htmlFor='loginPwd'>비밀번호</label>
-							<input id='loginPwd' type={'password'} {...register('password')} />
-							<InputErrorText>{errors.password?.message}</InputErrorText>
-						</InputBox>
-					</InputContainer>
+				<PageMainTitle>로그인</PageMainTitle>
+				<InputContainer>
+					<InputBox>
+						<label htmlFor='loginEmail'>이메일</label>
+						<input id='loginEmail' {...register('email')} />
+						<InputErrorText>{errors.email?.message}</InputErrorText>
+					</InputBox>
+					<InputBox>
+						<label htmlFor='loginPwd'>비밀번호</label>
+						<input id='loginPwd' type={'password'} {...register('password')} />
+						<InputErrorText>{errors.password?.message}</InputErrorText>
+					</InputBox>
+				</InputContainer>
 
-					<UnderLineBox>
-						<UnderLineTexts onClick={() => movePage('/findId')}>아이디찾기</UnderLineTexts>
-						<UnderLineTexts onClick={() => movePage('/findPwd')}>비밀번호 찾기</UnderLineTexts>
-					</UnderLineBox>
+				<UnderLineBox>
+					<UnderLineTexts onClick={() => movePage('/findId')}>아이디찾기</UnderLineTexts>
+					<UnderLineTexts onClick={() => movePage('/findPwd')}>비밀번호 찾기</UnderLineTexts>
+				</UnderLineBox>
 
-					<ButtonContainer>
-						<ButtonBox>
-							<RoundButton colorstyle={'is-black'} type={'submit'}>
-								로그인
-							</RoundButton>
-						</ButtonBox>
-						<ButtonBox>
-							<RoundButton colorstyle={'is-yellow'}>
-								<div className='align-box'>
-									<ImageBox width={'15px'} height={'14px'}>
-										<img src='/images/kakao-icon.png' alt='kakao-icon' />
-									</ImageBox>
-									<p>카카오 로그인</p>
-								</div>
-							</RoundButton>
-						</ButtonBox>
-					</ButtonContainer>
-				</form>
+				<ButtonContainer>
+					<ButtonBox>
+						<RoundButton colorstyle={'is-black'} onClick={handleSubmit(clickLoginBtn)}>
+							로그인
+						</RoundButton>
+					</ButtonBox>
+					<ButtonBox>
+						<RoundButton colorstyle={'is-yellow'}>
+							<div className='align-box'>
+								<ImageBox width={'15px'} height={'14px'}>
+									<img src='/images/kakao-icon.png' alt='kakao-icon' />
+								</ImageBox>
+								<p>카카오 로그인</p>
+							</div>
+						</RoundButton>
+					</ButtonBox>
+				</ButtonContainer>
 
 				<BottomUnderLineBox>
 					<p>아이디가 없으신가요?</p>

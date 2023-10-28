@@ -6,6 +6,16 @@ import { PageMainTitle } from '../../styles/ts/components/titles';
 import { InputBox } from '../../styles/ts/components/input';
 import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
 import { FontSizeLg } from '../../styles/ts/common';
+import { useForm } from 'react-hook-form';
+import { yupResolver } from '@hookform/resolvers/yup';
+import * as yup from 'yup';
+import { onlyNumber } from '../../utils/fomatter';
+import { InputErrorText } from '../../styles/ts/components/text';
+
+const schema = yup.object().shape({
+	phoneNumber: yup.string().required('휴대폰 번호는 필수입니다.'),
+	certifyNumber: yup.string().required('인증번호는 필수입니다.'),
+});
 
 export default function FindId() {
 	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
@@ -16,10 +26,14 @@ export default function FindId() {
 	const [timer, setTimer] = useState(30);
 	const [intervalId, setIntervalId] = useState<number | null>(null);
 
-	// 인증번호 전송
-	// const sendCertifyNumBtn = () => {
-	// 	setCertifyNumVisible(true);
-	// };
+	const {
+		register,
+		handleSubmit,
+		watch,
+		formState: { errors },
+	} = useForm({
+		resolver: yupResolver(schema),
+	});
 
 	const handleCertifyInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		setCertifyInputValue(event.target.value);
@@ -90,7 +104,14 @@ export default function FindId() {
 							<InputButtonBox>
 								<InputBox>
 									<label htmlFor='findIdPhoneNum'>휴대폰 번호</label>
-									<input id='findIdPhoneNum' type={'number'} />
+									<input
+										id='findIdPhoneNum'
+										type={'text'}
+										maxLength={11}
+										{...register('phoneNumber')}
+										onChange={(e) => onlyNumber(e)}
+									/>
+									<InputErrorText>{errors.phoneNumber?.message}</InputErrorText>
 								</InputBox>
 								<SquareButton height={'50px'} onClick={getVerificatoin}>
 									인증번호 전송
@@ -105,15 +126,17 @@ export default function FindId() {
 											id='findIdCertifyNum'
 											type={'number'}
 											onChange={handleCertifyInputChange}
+											{...register('certifyNumber')}
 										/>
 										<span className={'limit-time'}>
 											{String(Math.floor(timer / 60)).padStart(2, '0')}:
 											{String(timer % 60).padStart(2, '0')}
 										</span>
+										<InputErrorText>{errors.certifyNumber?.message}</InputErrorText>
 									</InputBox>
 									<SquareButton
 										height={'50px'}
-										disabled={!certifyInputValue}
+										disabled={!watch('certifyNumber')}
 										onClick={checkCertifyNum}>
 										확인
 									</SquareButton>
@@ -124,7 +147,10 @@ export default function FindId() {
 				)}
 
 				<ButtonBox>
-					<RoundButton colorstyle={'is-green'} onClick={clickNextBtn} disabled={!isClickCheckBtn}>
+					<RoundButton
+						colorstyle={'is-green'}
+						onClick={handleSubmit(clickNextBtn)}
+						disabled={!isClickCheckBtn}>
 						{isClickNextBtn ? '돌아가기' : '다음'}
 					</RoundButton>
 				</ButtonBox>
