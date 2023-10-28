@@ -6,6 +6,6 @@ export const dateFomatter = (date: string) => {
 };
 
 // 휴대폰번호 포맷터
-export const onlyNumber = (event: any) => {
-	event.target.value = event.target.value.replace(/[^0-9]/g, '');
+export const onlyNumber = (value: string) => {
+	return value.replace(/[^0-9]/g, '');
 };
