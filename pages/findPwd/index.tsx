@@ -57,6 +57,7 @@ export default function FindPwd() {
 	const {
 		register,
 		handleSubmit,
+		watch,
 		formState: { errors },
 	} = useForm({
 		resolver: yupResolver(schema),
@@ -65,10 +66,6 @@ export default function FindPwd() {
 	const handleEmailChange = (e: React.ChangeEvent<HTMLInputElement>) => {
 		setEmailValue(e.target.value);
 	};
-
-	// const handleCertifyInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-	// 	setCertifyInputValue(event.target.value);
-	// };
 
 	const checkCertifyNum = () => {
 		setIsClickCheckBtn(true);
@@ -120,12 +117,16 @@ export default function FindPwd() {
 							<InputBox>
 								<label htmlFor='changePwd'>신규 비밀번호</label>
 								<input id='changePwd' type={'password'} {...register('password')} />
-								<InputErrorText>{errors.password?.message}</InputErrorText>
+								{errors.password?.message && (
+									<InputErrorText>{errors.password.message}</InputErrorText>
+								)}
 							</InputBox>
 							<InputBox>
 								<label htmlFor='changeRePwd'>신규 비밀번호 확인</label>
 								<input id='changeRePwd' type={'password'} {...register('rePassword')} />
-								<InputErrorText>{errors.rePassword?.message}</InputErrorText>
+								{errors.rePassword?.message && (
+									<InputErrorText>{errors.rePassword.message}</InputErrorText>
+								)}
 							</InputBox>
 						</InputContainer>
 					</>
@@ -135,14 +136,16 @@ export default function FindPwd() {
 							<InputBox>
 								<label htmlFor='findPwdEmail'>이메일</label>
 								<input id='findPwdEmail' {...register('email')} onChange={handleEmailChange} />
-								<InputErrorText>{errors.email?.message}</InputErrorText>
+								{errors.email?.message && <InputErrorText>{errors.email.message}</InputErrorText>}
 							</InputBox>
 
 							<InputButtonBox>
 								<InputBox>
 									<label htmlFor='findPwdPhoneNum'>휴대폰 번호</label>
 									<input id='findPwdPhoneNum' type={'number'} {...register('phoneNumber')} />
-									<InputErrorText>{errors.phoneNumber?.message}</InputErrorText>
+									{errors.phoneNumber?.message && (
+										<InputErrorText>{errors.phoneNumber.message}</InputErrorText>
+									)}
 								</InputBox>
 								<SquareButton height={'50px'} onClick={getVerificatoin}>
 									인증번호 전송
@@ -158,11 +161,13 @@ export default function FindPwd() {
 											{String(Math.floor(timer / 60)).padStart(2, '0')}:
 											{String(timer % 60).padStart(2, '0')}
 										</span>
-										<InputErrorText>{errors.certifyNumber?.message}</InputErrorText>
+										{errors.certifyNumber?.message && (
+											<InputErrorText>{errors.certifyNumber.message}</InputErrorText>
+										)}
 									</InputBox>
 									<SquareButton
 										height={'50px'}
-										disabled={!certifyInputValue}
+										disabled={!watch('certifyNumber')}
 										onClick={checkCertifyNum}>
 										확인
 									</SquareButton>
@@ -175,8 +180,8 @@ export default function FindPwd() {
 				<ButtonBox>
 					<RoundButton
 						colorstyle={'is-green'}
-						onClick={handleSubmit(clickNextBtn)}
-						disabled={!isClickCheckBtn || !emailValue}>
+						onClick={() => handleSubmit(clickNextBtn)}
+						disabled={!watch('email')}>
 						{isClickNextBtn ? '비밀번호 변경' : '다음'}
 					</RoundButton>
 				</ButtonBox>

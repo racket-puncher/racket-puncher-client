@@ -11,6 +11,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
 import { onlyNumber } from '../../utils/fomatter';
 import { InputErrorText } from '../../styles/ts/components/text';
+import useRouterHook from '../../utils/useRouterHook';
 
 const schema = yup.object().shape({
 	phoneNumber: yup.string().required('휴대폰 번호는 필수입니다.'),
@@ -19,25 +20,21 @@ const schema = yup.object().shape({
 
 export default function FindId() {
 	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
-	// const [certifyInputValue, setCertifyInputValue] = useState('');
 	const [isClickCheckBtn, setIsClickCheckBtn] = useState(false);
 
-	const [isClickNextBtn, setIsClickNextBtn] = useState(false);
 	const [timer, setTimer] = useState(30);
 	const [intervalId, setIntervalId] = useState<number | null>(null);
+
+	const { movePage } = useRouterHook();
 
 	const {
 		register,
 		handleSubmit,
-		// watch,
+		watch,
 		formState: { errors },
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
-
-	// const handleCertifyInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-	// 	setCertifyInputValue(event.target.value);
-	// };
 
 	// 인증번호확인
 	const checkCertifyNum = () => {
@@ -46,8 +43,8 @@ export default function FindId() {
 
 	// 다음버튼 클릭
 	const clickNextBtn = () => {
-		setIsClickNextBtn(!isClickNextBtn);
 		setCertifyNumVisible(false);
+		movePage('/findId/result');
 	};
 
 	// 인증번호 타이머
@@ -94,59 +91,56 @@ export default function FindId() {
 		<>
 			<FindIdViewContainer>
 				<PageMainTitle>아이디 찾기</PageMainTitle>
-				{isClickNextBtn ? (
-					<>
-						<FoundIdContainer>가입 정보가 없습니다.</FoundIdContainer>
-					</>
-				) : (
-					<>
-						<InputContainer>
-							<InputButtonBox>
-								<InputBox>
-									<label htmlFor='findIdPhoneNum'>휴대폰 번호</label>
-									<input
-										id='findIdPhoneNum'
-										type={'text'}
-										maxLength={11}
-										{...register('phoneNumber')}
-										onChange={(e) => onlyNumber(e)}
-									/>
-									<InputErrorText>{errors.phoneNumber?.message}</InputErrorText>
-								</InputBox>
-								<SquareButton height={'50px'} onClick={getVerificatoin}>
-									인증번호 전송
-								</SquareButton>
-							</InputButtonBox>
 
-							{certifyNumVisible && (
-								<InputButtonBox>
-									<InputBox certify='true'>
-										<label htmlFor='findIdCertifyNum'>인증 번호</label>
-										<input id='findIdCertifyNum' type={'number'} {...register('certifyNumber')} />
-										<span className={'limit-time'}>
-											{String(Math.floor(timer / 60)).padStart(2, '0')}:
-											{String(timer % 60).padStart(2, '0')}
-										</span>
-										<InputErrorText>{errors.certifyNumber?.message}</InputErrorText>
-									</InputBox>
-									<SquareButton
-										height={'50px'}
-										// disabled={!watch('certifyNumber')}
-										onClick={checkCertifyNum}>
-										확인
-									</SquareButton>
-								</InputButtonBox>
+				<InputContainer>
+					<InputButtonBox>
+						<InputBox>
+							<label htmlFor='findIdPhoneNum'>휴대폰 번호</label>
+							<input
+								id='findIdPhoneNum'
+								type={'text'}
+								maxLength={11}
+								{...register('phoneNumber')}
+								onChange={(e) => onlyNumber(e)}
+							/>
+							{errors.phoneNumber?.message && (
+								<InputErrorText>{errors.phoneNumber.message}</InputErrorText>
 							)}
-						</InputContainer>
-					</>
-				)}
+						</InputBox>
+						<SquareButton height={'50px'} onClick={getVerificatoin}>
+							인증번호 전송
+						</SquareButton>
+					</InputButtonBox>
+
+					{certifyNumVisible && (
+						<InputButtonBox>
+							<InputBox certify='true'>
+								<label htmlFor='findIdCertifyNum'>인증 번호</label>
+								<input id='findIdCertifyNum' type={'number'} {...register('certifyNumber')} />
+								<span className={'limit-time'}>
+									{String(Math.floor(timer / 60)).padStart(2, '0')}:
+									{String(timer % 60).padStart(2, '0')}
+								</span>
+								{errors.certifyNumber?.message && (
+									<InputErrorText>{errors.certifyNumber.message}</InputErrorText>
+								)}
+							</InputBox>
+							<SquareButton
+								height={'50px'}
+								disabled={!watch('certifyNumber')}
+								onClick={checkCertifyNum}>
+								확인
+							</SquareButton>
+						</InputButtonBox>
+					)}
+				</InputContainer>
 
 				<ButtonBox>
 					<RoundButton
 						colorstyle={'is-green'}
 						onClick={handleSubmit(clickNextBtn)}
 						disabled={!isClickCheckBtn}>
-						{isClickNextBtn ? '돌아가기' : '다음'}
+						다음
 					</RoundButton>
 				</ButtonBox>
 			</FindIdViewContainer>
