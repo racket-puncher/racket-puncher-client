@@ -8,6 +8,7 @@ import { InputBox } from '../../styles/ts/components/input';
 import { InputErrorText } from '../../styles/ts/components/text';
 import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
 import { PageMainTitle } from '../../styles/ts/components/titles';
+import { onlyNumber } from '../../utils/fomatter';
 
 // interface FormData {
 // 	email?: string;
@@ -27,20 +28,6 @@ const schema = yup.object().shape({
 		),
 	phoneNumber: yup.string().required('휴대폰 번호는 필수입니다.'),
 	certifyNumber: yup.string().required('인증번호는 필수입니다.'),
-	password: yup
-		.string()
-		.required('비밀번호는 필수입니다.')
-		.matches(
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
-			'비밀번호는 8자 이상, 숫자/소문자/대문자/특수문자를 각 최소 하나씩 포함해야 합니다.'
-		),
-	rePassword: yup
-		.string()
-		.required('비밀번호는 필수입니다.')
-		.matches(
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
-			'비밀번호는 8자 이상, 숫자/소문자/대문자/특수문자를 각 최소 하나씩 포함해야 합니다.'
-		),
 });
 
 export default function FindPwd() {
@@ -73,11 +60,6 @@ export default function FindPwd() {
 
 	const clickNextBtn = () => {
 		setIsClickNextBtn(true);
-		if (isClickNextBtn) {
-			// 비밀번호 변경
-		} else {
-			// 비밀번호 찾기
-		}
 	};
 
 	// 인증번호 받기
@@ -109,80 +91,69 @@ export default function FindPwd() {
 	return (
 		<>
 			<FindPwdViewContainer>
-				<PageMainTitle>{isClickNextBtn ? '비밀번호 변경' : '비밀번호 찾기'}</PageMainTitle>
+				<PageMainTitle>비밀번호 찾기</PageMainTitle>
 
-				{isClickNextBtn ? (
-					<>
-						<InputContainer>
-							<InputBox>
-								<label htmlFor='changePwd'>신규 비밀번호</label>
-								<input id='changePwd' type={'password'} {...register('password')} />
-								{errors.password?.message && (
-									<InputErrorText>{errors.password.message}</InputErrorText>
-								)}
-							</InputBox>
-							<InputBox>
-								<label htmlFor='changeRePwd'>신규 비밀번호 확인</label>
-								<input id='changeRePwd' type={'password'} {...register('rePassword')} />
-								{errors.rePassword?.message && (
-									<InputErrorText>{errors.rePassword.message}</InputErrorText>
-								)}
-							</InputBox>
-						</InputContainer>
-					</>
-				) : (
-					<>
-						<InputContainer>
-							<InputBox>
-								<label htmlFor='findPwdEmail'>이메일</label>
-								<input id='findPwdEmail' {...register('email')} onChange={handleEmailChange} />
-								{errors.email?.message && <InputErrorText>{errors.email.message}</InputErrorText>}
-							</InputBox>
+				<InputContainer>
+					<InputBox>
+						<label htmlFor='findPwdEmail'>이메일</label>
+						<input id='findPwdEmail' {...register('email')} onChange={handleEmailChange} />
+						{errors.email?.message && <InputErrorText>{errors.email.message}</InputErrorText>}
+					</InputBox>
 
-							<InputButtonBox>
-								<InputBox>
-									<label htmlFor='findPwdPhoneNum'>휴대폰 번호</label>
-									<input id='findPwdPhoneNum' type={'number'} {...register('phoneNumber')} />
-									{errors.phoneNumber?.message && (
-										<InputErrorText>{errors.phoneNumber.message}</InputErrorText>
-									)}
-								</InputBox>
-								<SquareButton height={'50px'} onClick={getVerificatoin}>
-									인증번호 전송
-								</SquareButton>
-							</InputButtonBox>
-
-							{certifyNumVisible && (
-								<InputButtonBox>
-									<InputBox certify='true'>
-										<label htmlFor='findPwdCertifyNum'>인증 번호</label>
-										<input id='findPwdCertifyNum' type={'number'} {...register('certifyNumber')} />
-										<span className={'limit-time'}>
-											{String(Math.floor(timer / 60)).padStart(2, '0')}:
-											{String(timer % 60).padStart(2, '0')}
-										</span>
-										{errors.certifyNumber?.message && (
-											<InputErrorText>{errors.certifyNumber.message}</InputErrorText>
-										)}
-									</InputBox>
-									<SquareButton
-										height={'50px'}
-										disabled={!watch('certifyNumber')}
-										onClick={checkCertifyNum}>
-										확인
-									</SquareButton>
-								</InputButtonBox>
+					<InputButtonBox>
+						<InputBox>
+							<label htmlFor='findPwdPhoneNum'>휴대폰 번호</label>
+							<input
+								id='findPwdPhoneNum'
+								type={'text'}
+								maxLength={11}
+								{...register('phoneNumber')}
+								onChange={(e) => onlyNumber(e)}
+							/>
+							{errors.phoneNumber?.message && (
+								<InputErrorText>{errors.phoneNumber.message}</InputErrorText>
 							)}
-						</InputContainer>
-					</>
-				)}
+						</InputBox>
+						<SquareButton height={'50px'} onClick={getVerificatoin}>
+							인증번호 전송
+						</SquareButton>
+					</InputButtonBox>
+
+					{certifyNumVisible && (
+						<InputButtonBox>
+							<InputBox certify='true'>
+								<label htmlFor='findPwdCertifyNum'>인증 번호</label>
+								<input
+									id='findPwdCertifyNum'
+									type={'text'}
+									maxLength={6}
+									{...register('certifyNumber')}
+									onChange={(e) => onlyNumber(e)}
+								/>
+								<span className={'limit-time'}>
+									{String(Math.floor(timer / 60)).padStart(2, '0')}:
+									{String(timer % 60).padStart(2, '0')}
+								</span>
+								{errors.certifyNumber?.message && (
+									<InputErrorText>{errors.certifyNumber.message}</InputErrorText>
+								)}
+							</InputBox>
+							<SquareButton
+								height={'50px'}
+								disabled={!watch('certifyNumber')}
+								onClick={checkCertifyNum}>
+								확인
+							</SquareButton>
+						</InputButtonBox>
+					)}
+				</InputContainer>
 
 				<ButtonBox>
 					<RoundButton
 						colorstyle={'is-green'}
 						onClick={() => handleSubmit(clickNextBtn)}
-						disabled={!watch('email')}>
-						{isClickNextBtn ? '비밀번호 변경' : '다음'}
+						disabled={!watch[('email', 'phoneNumber', 'certifyNumber')]}>
+						다음
 					</RoundButton>
 				</ButtonBox>
 			</FindPwdViewContainer>

@@ -116,7 +116,13 @@ export default function FindId() {
 						<InputButtonBox>
 							<InputBox certify='true'>
 								<label htmlFor='findIdCertifyNum'>인증 번호</label>
-								<input id='findIdCertifyNum' type={'number'} {...register('certifyNumber')} />
+								<input
+									id='findIdCertifyNum'
+									type={'text'}
+									maxLength={6}
+									{...register('certifyNumber')}
+									onChange={(e) => onlyNumber(e)}
+								/>
 								<span className={'limit-time'}>
 									{String(Math.floor(timer / 60)).padStart(2, '0')}:
 									{String(timer % 60).padStart(2, '0')}
@@ -170,12 +176,6 @@ const InputButtonBox = styled.div`
 		margin-bottom: 20px;
 		margin-left: 20px;
 	}
-`;
-
-const FoundIdContainer = styled.div`
-	margin: ${rem('100px')} auto;
-	text-align: center;
-	font-size: ${FontSizeLg};
 `;
 
 const ButtonBox = styled.div`
