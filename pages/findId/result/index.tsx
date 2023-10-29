@@ -2,9 +2,9 @@ import styled from 'styled-components';
 import { PageMainTitle } from '../../../styles/ts/components/titles';
 import React from 'react';
 import { rem } from 'polished';
+
 import { FontSizeLg } from '../../../styles/ts/common';
 import { RoundButton } from '../../../styles/ts/components/buttons';
-
 import useRouterHook from '../../../utils/useRouterHook';
 
 export default function FindIDResult() {

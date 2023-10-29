@@ -1,10 +1,10 @@
 import React, { ReactNode, useEffect, useState } from 'react';
-import LoadingSpin from '../common/loading/spin';
 import styled from 'styled-components';
 import { rem } from 'polished';
+import { useRouter } from 'next/router';
 
 import Header from './Header';
-import { useRouter } from 'next/router';
+import LoadingSpin from '../common/loading/spin';
 
 interface ILayoutProps {
 	readonly children: ReactNode;
@@ -20,7 +20,6 @@ export default function LayoutContainer(props: ILayoutProps) {
 
 	useEffect(() => {
 		if (router.pathname === '/') {
-			console.log('진입!!');
 			setIsPadding(false);
 		} else {
 			setIsPadding(true);

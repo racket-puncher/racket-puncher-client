@@ -1,11 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
-import { rem } from 'polished';
 
 import { PageMainTitle } from '../../styles/ts/components/titles';
 import { InputBox } from '../../styles/ts/components/input';
 import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
-import { FontSizeLg } from '../../styles/ts/common';
 import { useForm } from 'react-hook-form';
 import { yupResolver } from '@hookform/resolvers/yup';
 import * as yup from 'yup';
@@ -57,7 +55,6 @@ export default function FindId() {
 			setTimer((prevTimer) => {
 				if (prevTimer === 1) {
 					clearInterval(newIntervalId);
-					// setCertifyInputValue('');
 					setCertifyNumVisible(false);
 					return 0;
 				} else {
@@ -69,23 +66,15 @@ export default function FindId() {
 	};
 
 	// 인증번호 받기
-	const getVerificatoin = () => {
+	const getVerification = () => {
 		try {
 			setCertifyNumVisible(true);
 			setTimer(180);
-			// setCertifyInputValue('');
 			setCertTimer();
 		} catch (e) {
 			console.log(e);
 		}
 	};
-
-	useEffect(() => {
-		setCertTimer();
-		return () => {
-			clearInterval(Number(intervalId));
-		};
-	}, []);
 
 	return (
 		<>
@@ -111,7 +100,7 @@ export default function FindId() {
 						</InputBox>
 						<SquareButton
 							height={'50px'}
-							onClick={getVerificatoin}
+							onClick={getVerification}
 							disabled={!watch('phoneNumber')}>
 							인증번호 전송
 						</SquareButton>

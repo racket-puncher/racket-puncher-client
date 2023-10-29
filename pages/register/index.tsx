@@ -111,7 +111,6 @@ export default function register() {
 			setTimer((prevTimer) => {
 				if (prevTimer === 1) {
 					clearInterval(newIntervalId);
-					// setCertifyInputValue('');
 					setCertifyNumVisible(false);
 					return 0;
 				} else {
@@ -123,11 +122,10 @@ export default function register() {
 	};
 
 	// 인증번호 받기
-	const getVerificatoin = () => {
+	const getVerification = () => {
 		try {
 			setCertifyNumVisible(true);
 			setTimer(180);
-			// setCertifyInputValue('');
 			setCertTimer();
 		} catch (e) {
 			console.log(e);
@@ -142,7 +140,7 @@ export default function register() {
 		console.log('주소 검색');
 	};
 
-	const checkValidatin = () => {
+	const checkValidation = () => {
 		if (
 			!signupWatch('userName') ||
 			!signupWatch('phoneNumber') ||
@@ -163,13 +161,6 @@ export default function register() {
 	const signUpComplete = () => {
 		console.log('회원가입');
 	};
-
-	useEffect(() => {
-		setCertTimer();
-		return () => {
-			clearInterval(Number(intervalId));
-		};
-	}, []);
 
 	return (
 		<>
@@ -213,7 +204,7 @@ export default function register() {
 						</InputBox>
 						<SquareButton
 							height={'50px'}
-							onClick={getVerificatoin}
+							onClick={getVerification}
 							disabled={!signupWatch('phoneNumber')}>
 							인증번호 전송
 						</SquareButton>
@@ -323,7 +314,7 @@ export default function register() {
 				<ButtonBox>
 					<RoundButton
 						colorstyle={'is-green'}
-						disabled={checkValidatin()}
+						disabled={checkValidation()}
 						onClick={signupHandleSubmit(signUpComplete)}>
 						회원가입
 					</RoundButton>
@@ -476,7 +467,6 @@ const AddLeftWrap = styled.div`
 
 const AddressBox = styled.div`
 	display: flex;
-	//justify-content: center;
 	align-items: center;
 
 	&:first-child {

@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 import styled from 'styled-components';
 import Slider from 'react-slick';
 import { rem } from 'polished';
-import type { RadioChangeEvent, TabsProps } from 'antd';
-import { Tabs } from 'antd';
+import type { TabsProps } from 'antd';
+import { Tabs as AntdTabs } from 'antd';
 
 import { ImageBox } from '../styles/ts/components/box';
 
@@ -66,7 +66,7 @@ const MainContainer = styled.div`
 	padding: 0 ${rem('30px')};
 `;
 
-const CustomTab = styled(Tabs)`
+const CustomTab = styled(AntdTabs)`
 	width: 100% !important;
 	font-size: inherit !important;
 	line-height: 1 !important;
