@@ -63,6 +63,7 @@ const SliderContainer = styled.div`
 
 const MainContainer = styled.div`
 	margin-top: 30px;
+	padding: 0 ${rem('30px')};
 `;
 
 const CustomTab = styled(Tabs)`
