@@ -1,5 +1,6 @@
 import styled from 'styled-components';
 import { rem } from 'polished';
+import { InputBorderColor } from '../../common';
 
 interface IImageProps {
 	readonly width?: string;
@@ -13,4 +14,10 @@ export const ImageBox = styled.div<IImageProps>`
 		max-width: 100%;
 		display: block;
 	}
+`;
+
+export const GrayLine = styled.div`
+	width: 100%;
+	height: 1px;
+	background-color: ${InputBorderColor};
 `;
