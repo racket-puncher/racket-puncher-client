@@ -15,10 +15,8 @@ import { onlyNumber } from '../../utils/fomatter';
 import { InputErrorText } from '../../styles/ts/components/text';
 import {
 	BlackColor,
-	FontSizeLg,
 	FontSizeMd,
 	FontSizeMdLg,
-	FontSizeSm,
 	FontSizeSpSm,
 	InputBorderColor,
 	InputBoxColor,
