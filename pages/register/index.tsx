@@ -1,17 +1,31 @@
 import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
+import { rem } from 'polished';
 
 import { InputBox } from '../../styles/ts/components/input';
 import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
 import { CustomSelect } from '../../styles/ts/components/select';
 import { PageMainTitle } from '../../styles/ts/components/titles';
-import { ImageBox } from '../../styles/ts/components/box';
+import { GrayLine, ImageBox } from '../../styles/ts/components/box';
 import DrawerBox from '../../components/common/drawer';
-import * as yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { onlyNumber } from '../../utils/fomatter';
 import { InputErrorText } from '../../styles/ts/components/text';
+import {
+	BlackColor,
+	FontSizeLg,
+	FontSizeMd,
+	FontSizeMdLg,
+	FontSizeSm,
+	FontSizeSpSm,
+	InputBorderColor,
+	InputBoxColor,
+	LightBlackColor,
+	PrimaryColor,
+} from '../../styles/ts/common';
+import { CustomBadge } from '../../styles/ts/components/badge';
 
 const schema = yup.object().shape({
 	userName: yup.string().required('이름은 필수입니다.'),
@@ -53,11 +67,21 @@ export default function register() {
 	const [addressDrawer, setAddressDrawer] = useState(false);
 
 	const {
-		register,
-		handleSubmit,
-		setValue,
-		watch,
-		formState: { errors },
+		register: signUpRegister,
+		handleSubmit: signupHandleSubmit,
+		setValue: signupSetValue,
+		watch: signupWatch,
+		formState: { errors: signErrors },
+	} = useForm({
+		resolver: yupResolver(schema),
+	});
+
+	const {
+		register: addressRegister,
+		handleSubmit: addressHandleSubmit,
+		setValue: addressSetValue,
+		watch: addressWatch,
+		formState: { errors: addressErrors },
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
@@ -116,22 +140,30 @@ export default function register() {
 		setAddressDrawer((prev) => !prev);
 	};
 
+	const searchAddress = () => {
+		console.log('주소 검색');
+	};
+
 	const checkValidatin = () => {
 		if (
-			!watch('userName') ||
-			!watch('phoneNumber') ||
-			!watch('certifyNumber') ||
-			!watch('email') ||
-			!watch('password') ||
-			!watch('rePassword') ||
-			!watch('nickName') ||
-			!watch('address') ||
-			!watch('detailAddress')
+			!signupWatch('userName') ||
+			!signupWatch('phoneNumber') ||
+			!signupWatch('certifyNumber') ||
+			!signupWatch('email') ||
+			!signupWatch('password') ||
+			!signupWatch('rePassword') ||
+			!signupWatch('nickName') ||
+			!signupWatch('address') ||
+			!signupWatch('detailAddress')
 		) {
 			return true;
 		} else {
 			return false;
 		}
+	};
+
+	const signUpComplete = () => {
+		console.log('회원가입');
 	};
 
 	useEffect(() => {
@@ -162,7 +194,7 @@ export default function register() {
 				<InputContainer>
 					<InputBox>
 						<label htmlFor='registerUserName'>이름</label>
-						<input id='registerUserName' type={'text'} {...register('userName')} />
+						<input id='registerUserName' type={'text'} {...signUpRegister('userName')} />
 					</InputBox>
 
 					<InputButtonBox>
@@ -172,19 +204,19 @@ export default function register() {
 								id='registerPhoneNum'
 								type={'text'}
 								maxLength={11}
-								{...register('phoneNumber')}
+								{...signUpRegister('phoneNumber')}
 								onChange={(e) => {
-									setValue('phoneNumber', onlyNumber(e.target.value));
+									signupSetValue('phoneNumber', onlyNumber(e.target.value));
 								}}
 							/>
-							{errors.phoneNumber?.message && (
-								<InputErrorText>{errors.phoneNumber.message}</InputErrorText>
+							{signErrors.phoneNumber?.message && (
+								<InputErrorText>{signErrors.phoneNumber.message}</InputErrorText>
 							)}
 						</InputBox>
 						<SquareButton
 							height={'50px'}
 							onClick={getVerificatoin}
-							disabled={!watch('phoneNumber')}>
+							disabled={!signupWatch('phoneNumber')}>
 							인증번호 전송
 						</SquareButton>
 					</InputButtonBox>
@@ -197,20 +229,20 @@ export default function register() {
 									id='registerCertifyNum'
 									type={'text'}
 									maxLength={6}
-									{...register('certifyNumber')}
+									{...signUpRegister('certifyNumber')}
 									onChange={(e) => {
-										setValue('certifyNumber', onlyNumber(e.target.value));
+										signupSetValue('certifyNumber', onlyNumber(e.target.value));
 									}}
 								/>
 								<span className={'limit-time'}>
 									{String(Math.floor(timer / 60)).padStart(2, '0')}:
 									{String(timer % 60).padStart(2, '0')}
 								</span>
-								{errors.certifyNumber?.message && (
-									<InputErrorText>{errors.certifyNumber.message}</InputErrorText>
+								{signErrors.certifyNumber?.message && (
+									<InputErrorText>{signErrors.certifyNumber.message}</InputErrorText>
 								)}
 							</InputBox>
-							<SquareButton height={'50px'} disabled={!watch('certifyNumber')}>
+							<SquareButton height={'50px'} disabled={!signupWatch('certifyNumber')}>
 								확인
 							</SquareButton>
 						</InputButtonBox>
@@ -234,30 +266,34 @@ export default function register() {
 
 					<InputBox>
 						<label htmlFor='registerEmail'>이메일</label>
-						<input id='registerEmail' {...register('email')} />
-						{errors.email?.message && <InputErrorText>{errors.email.message}</InputErrorText>}
+						<input id='registerEmail' {...signUpRegister('email')} />
+						{signErrors.email?.message && (
+							<InputErrorText>{signErrors.email.message}</InputErrorText>
+						)}
 					</InputBox>
 
 					<InputBox>
 						<label htmlFor='registerPassword'>비밀번호</label>
-						<input id='registerPassword' type={'password'} {...register('password')} />
-						{errors.password?.message && <InputErrorText>{errors.password.message}</InputErrorText>}
+						<input id='registerPassword' type={'password'} {...signUpRegister('password')} />
+						{signErrors.password?.message && (
+							<InputErrorText>{signErrors.password.message}</InputErrorText>
+						)}
 					</InputBox>
 
 					<InputBox>
 						<label htmlFor='registerRePwd'>비밀번호 확인</label>
-						<input id='registerRePwd' type={'password'} {...register('rePassword')} />
-						{errors.rePassword?.message && (
-							<InputErrorText>{errors.rePassword.message}</InputErrorText>
+						<input id='registerRePwd' type={'password'} {...signUpRegister('rePassword')} />
+						{signErrors.rePassword?.message && (
+							<InputErrorText>{signErrors.rePassword.message}</InputErrorText>
 						)}
 					</InputBox>
 
 					<InputButtonBox>
 						<InputBox>
 							<label htmlFor='registerNickNm'>닉네임</label>
-							<input id='registerNickNm' type={'text'} {...register('nickName')} />
+							<input id='registerNickNm' type={'text'} {...signUpRegister('nickName')} />
 						</InputBox>
-						<SquareButton height={'50px'} disabled={!watch('nickName')}>
+						<SquareButton height={'50px'} disabled={!signupWatch('nickName')}>
 							중복체크
 						</SquareButton>
 					</InputButtonBox>
@@ -268,7 +304,7 @@ export default function register() {
 							<input
 								id='registerAddress'
 								placeholder={'우편번호'}
-								{...register('address')}
+								{...signUpRegister('address')}
 								readOnly
 							/>
 						</InputBox>
@@ -281,25 +317,82 @@ export default function register() {
 							id='registerDetailAddress'
 							type={'text'}
 							placeholder={'상세주소'}
-							{...register('detailAddress')}
+							{...signUpRegister('detailAddress')}
 						/>
 					</InputBox>
 				</InputContainer>
 
 				<ButtonBox>
-					<RoundButton colorstyle={'is-green'} disabled={checkValidatin()}>
-						다음
+					<RoundButton
+						colorstyle={'is-green'}
+						disabled={checkValidatin()}
+						onClick={signupHandleSubmit(signUpComplete)}>
+						회원가입
 					</RoundButton>
 				</ButtonBox>
 			</RegisterViewContainer>
 
+			{/* 주소검색 모달 */}
 			<DrawerBox
 				title={'주소 검색'}
 				isOpen={addressDrawer}
 				placement={'bottom'}
 				height={'100%'}
 				toggleDrawer={handleAddressDrawer}>
-				sample
+				<>
+					<InputButtonBox>
+						<InputBox>
+							<input
+								id='registerAddress'
+								placeholder={'우편번호'}
+								{...addressRegister('address')}
+							/>
+						</InputBox>
+						<SquareButton height={'50px'} onClick={addressHandleSubmit(searchAddress)}>
+							주소 검색
+						</SquareButton>
+					</InputButtonBox>
+
+					<DescTextBox>
+						<p>
+							찾으시려는 도로명주소, 동(읍/면/리) 또는 건물명을 입력해주세요.
+							<br />
+							(예 : 판교동, 판교원로 68, 판교실리콘파크)
+						</p>
+					</DescTextBox>
+
+					<GrayLine />
+
+					<AddressContainer>
+						<AddressBoxWrap>
+							<AddLeftWrap>
+								<AddressBox>
+									<CustomBadge color={PrimaryColor}>도로명</CustomBadge>
+									<p>경기도 성남시 분당구 판교공원4길 27(판교동)</p>
+								</AddressBox>
+								<AddressBox>
+									<CustomBadge>지번</CustomBadge>
+									<p>경기도 성남시 분당구 판교공원4길 27(판교동)</p>
+								</AddressBox>
+							</AddLeftWrap>
+							<AddRightWrap>13477</AddRightWrap>
+						</AddressBoxWrap>
+
+						<AddressBoxWrap>
+							<AddLeftWrap>
+								<AddressBox>
+									<CustomBadge color={PrimaryColor}>도로명</CustomBadge>
+									<p>경기도 성남시 분당구 판교공원4길 27(판교동)</p>
+								</AddressBox>
+								<AddressBox>
+									<CustomBadge>지번</CustomBadge>
+									<p>경기도 성남시 분당구 판교공원4길 27(판교동)</p>
+								</AddressBox>
+							</AddLeftWrap>
+							<AddRightWrap>13477</AddRightWrap>
+						</AddressBoxWrap>
+					</AddressContainer>
+				</>
 			</DrawerBox>
 		</>
 	);
@@ -328,7 +421,7 @@ const SelectBox = styled.div`
 		flex-basis: 280px;
 
 		&:first-child {
-			margin-right: 20px;
+			margin-right: ${rem('20px')};
 		}
 	}
 `;
@@ -345,11 +438,66 @@ const InputButtonBox = styled.div`
 	.buttons__SquareButton-sc-xhpq7c-1 {
 		flex-basis: 180px;
 		margin-bottom: 20px;
-		margin-left: 20px;
+		margin-left: ${rem('20px')};
 	}
 `;
 
 const ButtonBox = styled.div`
 	margin-top: 30px;
 	margin-bottom: 50px;
+`;
+
+const DescTextBox = styled.div`
+	margin-bottom: 20px;
+
+	p {
+		font-size: ${rem(FontSizeSpSm)};
+		color: ${LightBlackColor};
+		font-family: Pretendard-Regular;
+		line-height: ${rem(FontSizeMdLg)};
+	}
+`;
+
+const AddressContainer = styled.div`
+	margin-top: 20px;
+`;
+
+const AddressBoxWrap = styled.div`
+	display: flex;
+	justify-content: space-between;
+	background-color: ${InputBoxColor};
+	border: 1px solid ${InputBorderColor};
+	border-radius: 5px;
+	padding: ${rem('15px')};
+	margin-bottom: 10px;
+`;
+
+const AddLeftWrap = styled.div`
+	margin-right: ${rem('20px')};
+`;
+
+const AddressBox = styled.div`
+	display: flex;
+	//justify-content: center;
+	align-items: center;
+
+	&:first-child {
+		margin-bottom: 10px;
+	}
+
+	p {
+		margin-left: ${rem('10px')};
+		font-size: ${rem(FontSizeSpSm)};
+		font-family: Pretendard-Regular;
+		line-height: ${rem(FontSizeMd)};
+	}
+`;
+
+const AddRightWrap = styled.div`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	font-size: ${rem(FontSizeMd)};
+	font-family: Pretendard-Regular;
+	color: ${BlackColor};
 `;
