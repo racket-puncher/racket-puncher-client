@@ -27,7 +27,8 @@ export default function FindPwd() {
 	const { movePage } = useRouterHook();
 
 	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
-	const [certifyInputValue, setCertifyInputValue] = useState('');
+
+	const [intervalId, setIntervalId] = useState<number | null>(null);
 	const [timer, setTimer] = useState(5);
 
 	const [isClickCheckBtn, setIsClickCheckBtn] = useState(false);
@@ -47,10 +48,10 @@ export default function FindPwd() {
 	};
 
 	// 인증번호 받기
-	const getVerificatoin = () => {
+	const getVerification = () => {
 		try {
 			setCertifyNumVisible(true);
-			console.log('dd');
+			setTimer(180);
 			setCertTimer();
 		} catch (e) {
 			console.log(e);
@@ -59,17 +60,21 @@ export default function FindPwd() {
 
 	// 인증번호 타이머
 	const setCertTimer = () => {
-		const interval = setInterval(() => {
+		if (intervalId) {
+			clearInterval(intervalId);
+		}
+		const newIntervalId = setInterval(() => {
 			setTimer((prevTimer) => {
-				if (prevTimer === 0) {
-					clearInterval(interval);
-					setCertifyInputValue('');
+				if (prevTimer === 1) {
+					clearInterval(newIntervalId);
+					setCertifyNumVisible(false);
 					return 0;
 				} else {
 					return prevTimer - 1;
 				}
 			});
 		}, 1000);
+		setIntervalId(Number(newIntervalId));
 	};
 
 	const clickNextBtn = () => {
@@ -106,7 +111,7 @@ export default function FindPwd() {
 						</InputBox>
 						<SquareButton
 							height={'50px'}
-							onClick={getVerificatoin}
+							onClick={getVerification}
 							disabled={!watch('phoneNumber')}>
 							인증번호 전송
 						</SquareButton>
