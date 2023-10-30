@@ -5,9 +5,9 @@ import { rem } from 'polished';
 import type { TabsProps } from 'antd';
 import { Tabs as AntdTabs } from 'antd';
 
-import { ImageBox } from '../styles/ts/components/box';
-import { RoundButton } from '../styles/ts/components/buttons';
-import { FontSizeSm } from '../styles/ts/common';
+import { GrayLine, ImageBox } from '../styles/ts/components/box';
+import MatchingList from '../components/contents/main/matchingList';
+import MyAroundMatching from '../components/contents/main/myAroundMatching';
 
 const settings = {
 	arrows: false,
@@ -24,12 +24,12 @@ export default function MainPage() {
 		{
 			key: 'matchingList',
 			label: '매칭리스트',
-			children: '매칭리스트입니다',
+			children: <MatchingList />,
 		},
 		{
 			key: 'myAroundMatching',
 			label: '내 주변 매칭',
-			children: '내 주변 매칭입니다',
+			children: <MyAroundMatching />,
 		},
 	];
 
@@ -49,18 +49,7 @@ export default function MainPage() {
 
 				<MainContainer>
 					<CustomTab defaultActiveKey='1' items={items} />
-
-					<ControlBox>
-						<RoundButton colorstyle={'is-black'} width={'150px'}>
-							<ImageBox width={'20px'} height={'20px'}>
-								<img src='/images/pencil.png' alt='pencil' />
-							</ImageBox>
-							<p>매칭등록</p>
-						</RoundButton>
-						<ImageBox>
-							<img src='/images/filtering-menu.png' alt='filtering-menu' />
-						</ImageBox>
-					</ControlBox>
+					<GrayLine />
 				</MainContainer>
 			</MainViewContainer>
 		</>
@@ -133,23 +122,6 @@ const CustomTab = styled(AntdTabs)`
 		}
 		div.ant-tabs-nav-operations {
 			display: none !important;
-		}
-	}
-`;
-
-const ControlBox = styled.div`
-	display: flex;
-	justify-content: space-between;
-	.buttons__RoundButton-sc-xhpq7c-0 {
-		display: flex;
-		justify-content: center;
-		align-items: center;
-		padding: 10px ${rem('30px')};
-		border-radius: 10px;
-		p {
-			font-family: Pretendard-Medium;
-			font-size: ${rem(FontSizeSm)};
-			margin-left: ${rem('6px')};
 		}
 	}
 `;
