@@ -11,8 +11,8 @@ interface IButtonProps {
 }
 
 export const RoundButton = styled.button<IButtonProps>`
-  width: ${(props) => (props.width ? rem(props.width) : '100%')}
-  height: ${(props) => (props.height ? rem(props.height) : rem('60px'))}
+  width: ${(props) => (props.width ? rem(props.width) : '100%')};
+  height: ${(props) => (props.height ? rem(props.height) : rem('60px'))};
   font-family: Pretendard-Medium;
   font-size: ${rem(`${common.FontSizeSm}`)};
   color: ${(props) => {
