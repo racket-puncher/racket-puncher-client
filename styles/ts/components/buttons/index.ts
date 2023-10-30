@@ -5,13 +5,14 @@ import * as common from '../../common';
 
 interface IButtonProps {
 	readonly colorstyle?: string;
+	readonly width?: string;
 	readonly height?: string;
 	readonly disabled?: boolean;
 }
 
 export const RoundButton = styled.button<IButtonProps>`
-  width: 100%;
-  height: ${rem('60px')};
+  width: ${(props) => (props.width ? rem(props.width) : '100%')}
+  height: ${(props) => (props.height ? rem(props.height) : rem('60px'))}
   font-family: Pretendard-Medium;
   font-size: ${rem(`${common.FontSizeSm}`)};
   color: ${(props) => {
