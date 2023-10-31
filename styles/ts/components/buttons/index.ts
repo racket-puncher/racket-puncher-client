@@ -56,13 +56,15 @@ div.align-box {
 }
 `;
 export const SquareButton = styled.button<IButtonProps>`
-	width: 100%;
+	width:  ${(props) => (props.width ? rem(props.width) : '100%')};
 	height: ${(props) => rem(props.height || '60px')};
 	font-family: Pretendard-Medium;
 	font-size: ${rem(`${common.FontSizeSm}`)};
 	color: ${(props) => {
 		switch (props.colorstyle) {
 			case 'is-black':
+				return common.WhiteColor;
+			case 'is-white':
 				return common.ReportColor;
 			default:
 				return common.WhiteColor;
