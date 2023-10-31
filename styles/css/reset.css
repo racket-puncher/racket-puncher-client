@@ -58,3 +58,9 @@ input[type="number"]::-webkit-outer-spin-button {
 *, *::before, *::after {
     box-sizing: border-box!important;
 }
+
+div.ant-drawer {
+    max-width: 40rem !important;
+    margin: 0 auto !important;
+    overflow: hidden !important;
+}
