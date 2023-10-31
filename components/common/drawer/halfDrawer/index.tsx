@@ -59,6 +59,7 @@ const CustomHalfDrawer = styled(AntdDrawer)`
 	width: 90% !important;
 	margin: 0 auto;
 	border-radius: 20px 20px 0 0;
+
 	&.ant-drawer-content-wrapper {
 	}
 	div.ant-drawer-header {
@@ -71,7 +72,7 @@ const CustomHalfDrawer = styled(AntdDrawer)`
 		border-radius: 30px;
 	}
 	div.ant-drawer-body {
-		padding: ${rem('30px')};
+		padding: 0 ${rem('30px')};
 	}
 `;
 
