@@ -39,7 +39,7 @@ export default function MainPage() {
 			<MainViewContainer>
 				<SliderContainer>
 					<Slider {...settings}>
-						<ImageBox height={'300px'}>
+						<ImageBox heightInit={true}>
 							<img src='/images/main-slider-image.png' alt='main-slider-img' />
 						</ImageBox>
 						<ImageBox>
