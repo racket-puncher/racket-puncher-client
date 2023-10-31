@@ -3,7 +3,6 @@ import styled from 'styled-components';
 import Slider from 'react-slick';
 import { rem } from 'polished';
 import type { TabsProps } from 'antd';
-import { Tabs as AntdTabs } from 'antd';
 
 import { GrayLine, ImageBox } from '../styles/ts/components/box';
 import MatchingList from '../components/contents/main/matchingList';
@@ -15,7 +14,7 @@ const settings = {
 	dots: false,
 	infinite: true,
 	speed: 500,
-	// autoplay: true,
+	autoplay: true,
 	slidesToShow: 1,
 	slidesToScroll: 1,
 };
@@ -42,7 +41,7 @@ export default function MainPage() {
 						<ImageBox heightInit={true}>
 							<img src='/images/main-slider-image.png' alt='main-slider-img' />
 						</ImageBox>
-						<ImageBox>
+						<ImageBox heightInit={true}>
 							<img src='/images/main-slider-image.png' alt='main-slider-img' />
 						</ImageBox>
 					</Slider>

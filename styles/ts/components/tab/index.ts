@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { rem } from 'polished';
 import { Tabs as AntdTabs } from 'antd';
+import { FontSizeMd, PlayerListBGColor, PrimaryColor, ReportColor, WhiteColor } from '../../common';
 
 export const CustomTab = styled(AntdTabs)`
 	width: 100% !important;
@@ -9,7 +10,7 @@ export const CustomTab = styled(AntdTabs)`
 	color: inherit !important;
 	div.ant-tabs-nav {
 		margin: 0 !important;
-		background-color: #f5f5f5 !important;
+		background-color: ${PlayerListBGColor} !important;
 		padding: ${rem('10px')} ${rem('20px')} !important;
 		border-radius: 50px !important;
 		&::before {
@@ -32,19 +33,19 @@ export const CustomTab = styled(AntdTabs)`
 					font-size: inherit !important;
 					margin: 0 !important;
 					text-align: center !important;
-					font-size: 18px; !important;
+					font-size: ${rem(FontSizeMd)} !important;
 					font-family: Pretendard-Regular;
-					color: #999;
+					color: ${ReportColor};
 					&.ant-tabs-tab-active {
 						width: 260px;
 						text-align: center;
-						background: #ffff;
+						background: ${WhiteColor};
 						padding: 11px 0;
 						border-radius: 50px;
-						border: 1px solid #84a840;
-						color: #84a840!important;
+						border: 1px solid ${PrimaryColor};
+						color:  ${PrimaryColor} !important;
 						.ant-tabs-tab-btn {
-							color: #84a840;
+							color:  ${PrimaryColor};
 						}
 					}
 				}
