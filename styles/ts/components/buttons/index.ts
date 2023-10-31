@@ -2,12 +2,15 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 
 import * as common from '../../common';
+import { InputLabelColor, LightBlackColor, WhiteColor } from '../../common';
 
 interface IButtonProps {
 	readonly colorstyle?: string;
 	readonly width?: string;
 	readonly height?: string;
 	readonly disabled?: boolean;
+	readonly fontsize?: string;
+	readonly fontfamily?: boolean;
 }
 
 export const RoundButton = styled.button<IButtonProps>`
@@ -19,6 +22,8 @@ export const RoundButton = styled.button<IButtonProps>`
 		switch (props.colorstyle) {
 			case 'is-yellow':
 				return common.KakaoFontColor;
+			case 'is-white':
+				return common.LightBlackColor;
 			default:
 				return common.WhiteColor;
 		}
@@ -37,6 +42,8 @@ export const RoundButton = styled.button<IButtonProps>`
 				return common.DisabledColor;
 			case 'is-yellow':
 				return common.KakaoBgColor;
+			case 'is-white':
+				return common.WhiteColor;
 			default:
 				return common.BlackColor;
 		}

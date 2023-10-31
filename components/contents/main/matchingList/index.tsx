@@ -33,7 +33,7 @@ export default function MatchingList() {
 					isOpen={isClickFilter}
 					placement={'bottom'}
 					width={'50%'}
-					height={'70%'}
+					height={'90%'}
 					toggleDrawer={handleFilterDrawer}>
 					<FilteringModal></FilteringModal>
 				</HalfDrawerBox>
