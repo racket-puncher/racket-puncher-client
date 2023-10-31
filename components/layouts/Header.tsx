@@ -68,7 +68,7 @@ const HeaderContainer = styled.div`
 	align-items: center;
 	justify-content: space-between;
 
-	height: ${rem('120px')};
+	height: ${rem('80px')};
 	padding: 0px ${rem('30px')};
 	max-width: ${rem('640px')};
 	border-bottom: solid 1px ${HeaderBtnColor};
