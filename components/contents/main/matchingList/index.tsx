@@ -1,11 +1,18 @@
 import { RoundButton } from '../../../../styles/ts/components/buttons';
 import { GrayLine, ImageBox } from '../../../../styles/ts/components/box';
-import React from 'react';
+import React, { useState } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
 import { FontSizeSm } from '../../../../styles/ts/common';
+import HalfDrawerBox from '../../../common/drawer/halfDrawer';
+import FilteringModal from '../filteringModal';
 
 export default function MatchingList() {
+	const [isClickFilter, setIsClickFilter] = useState(false);
+
+	const handleFilterDrawer = () => {
+		setIsClickFilter((prev) => !prev);
+	};
 	return (
 		<>
 			<MatchingContainer>
@@ -16,10 +23,20 @@ export default function MatchingList() {
 						</ImageBox>
 						<p>매칭등록</p>
 					</RoundButton>
-					<ImageBox>
+					<ImageBox onClick={handleFilterDrawer}>
 						<img src='/images/filtering-menu.png' alt='filtering-menu' />
 					</ImageBox>
 				</ControlBox>
+
+				{/* 핉터링 모달 */}
+				<HalfDrawerBox
+					isOpen={isClickFilter}
+					placement={'bottom'}
+					width={'50%'}
+					height={'70%'}
+					toggleDrawer={handleFilterDrawer}>
+					<FilteringModal></FilteringModal>
+				</HalfDrawerBox>
 			</MatchingContainer>
 		</>
 	);
