@@ -1,5 +1,5 @@
 import { RoundButton } from '../../../../styles/ts/components/buttons';
-import { GrayLine, ImageBox } from '../../../../styles/ts/components/box';
+import { ImageBox } from '../../../../styles/ts/components/box';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
