@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React from 'react';
+import React, { useState } from 'react';
 import { Radio, Select } from 'antd';
 import type { SelectProps } from 'antd';
 import { rem } from 'polished';
@@ -14,6 +14,7 @@ import {
 	BlackColor,
 } from '../../../../styles/ts/common';
 import { RoundButton } from '../../../../styles/ts/components/buttons';
+import CustomDatePicker from '../../../common/datePicker';
 
 const options: SelectProps['options'] = [];
 
@@ -25,6 +26,7 @@ for (let i = 10; i < 36; i++) {
 }
 
 export default function FilteringModal() {
+	const [dateState, setDateState] = useState(new Date());
 	const handleChange = (value: string | string[]) => {
 		console.log(`Selected: ${value}`);
 	};
@@ -46,6 +48,7 @@ export default function FilteringModal() {
 							<LabelBox>
 								<SelectTitle>날짜</SelectTitle>
 							</LabelBox>
+							<CustomDatePicker dateState={dateState} setDateState={setDateState} />
 						</OptionWrap>
 
 						{/* region */}
@@ -62,13 +65,6 @@ export default function FilteringModal() {
 								style={{ width: '100%' }}
 								options={options}
 							/>
-						</OptionWrap>
-
-						{/* time-picker */}
-						<OptionWrap>
-							<LabelBox>
-								<SelectTitle>시간</SelectTitle>
-							</LabelBox>
 						</OptionWrap>
 
 						{/* matching type */}

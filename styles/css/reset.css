@@ -64,3 +64,10 @@ div.ant-drawer {
     margin: 0 auto !important;
     overflow: hidden !important;
 }
+
+div.datepicker-modal {
+    max-width: 40rem !important;
+    left: 50% !important;
+    transform: translateX(-50%)!important;
+    z-index: 9999!important;
+}
