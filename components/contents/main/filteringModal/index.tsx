@@ -15,6 +15,8 @@ import {
 } from '../../../../styles/ts/common';
 import { RoundButton } from '../../../../styles/ts/components/buttons';
 import CustomDatePicker from '../../../common/datePicker';
+import ModalBox from '../../../common/modal';
+import { RegionBasic, RegionGyeonggi, RegionSeoul } from '../../../../constants/region';
 
 const options: SelectProps['options'] = [];
 
@@ -27,10 +29,18 @@ for (let i = 10; i < 36; i++) {
 
 export default function FilteringModal() {
 	const [dateState, setDateState] = useState(new Date());
+	const [regionModalVisible, setRegionModalVisible] = useState(false);
 	const handleChange = (value: string | string[]) => {
 		console.log(`Selected: ${value}`);
 	};
 
+	const toggleModal = () => {
+		setRegionModalVisible((prev) => !prev);
+	};
+
+	const clickApplyBtn = () => {
+		console.log('적용하기');
+	};
 	return (
 		<>
 			<FilteringModalContainer>
@@ -55,7 +65,9 @@ export default function FilteringModal() {
 						<OptionWrap>
 							<RegionBtnBox>
 								<SelectTitle>지역</SelectTitle>
-								<SelectRegionBtn>지역 선택</SelectRegionBtn>
+								<SelectRegionBtn onClick={() => setRegionModalVisible(true)}>
+									지역 선택
+								</SelectRegionBtn>
 							</RegionBtnBox>
 
 							<Select
@@ -118,6 +130,45 @@ export default function FilteringModal() {
 					<RoundButton>적용하기</RoundButton>
 				</div>
 			</FilteringModalContainer>
+
+			{/* modal */}
+			<ModalBox
+				isOpen={regionModalVisible}
+				toggleModal={toggleModal}
+				onOk={clickApplyBtn}
+				onCancel={() => setRegionModalVisible(false)}>
+				{/* 지역 (시/도) */}
+				<OptionWrap>
+					<LabelBox>
+						<SelectTitle>지역 (시/도)</SelectTitle>
+					</LabelBox>
+
+					<Select
+						mode='multiple'
+						placeholder='시/도를 선택해주세요.'
+						onChange={handleChange}
+						style={{ width: '100%' }}
+						options={RegionBasic}
+					/>
+				</OptionWrap>
+
+				{/* 지역 (구/동) */}
+				<OptionWrap>
+					<LabelBox>
+						<SelectTitle>지역 (구/동)</SelectTitle>
+					</LabelBox>
+
+					<Select
+						mode='multiple'
+						placeholder='구/동을 선택해주세요.'
+						onChange={handleChange}
+						style={{ width: '100%' }}
+						options={options}
+					/>
+				</OptionWrap>
+
+				<RoundButton colorstyle={'is-green'}>적용하기</RoundButton>
+			</ModalBox>
 		</>
 	);
 }
@@ -128,6 +179,7 @@ const FilteringModalContainer = styled.div`
 	flex-direction: column;
 	justify-content: space-between;
 	padding-bottom: 20px;
+
 	div.ant-radio-group {
 		width: 100% !important;
 		display: flex !important;
@@ -165,11 +217,13 @@ const DatePickerBox = styled.div``;
 
 const OptionWrap = styled.div`
 	margin-bottom: 20px;
+
 	div.ant-select-selector {
 		padding: 10px 14px;
 		border-radius: 10px;
 		border: 1px solid #dcdcdc !important;
 		background-color: #f9f9f9 !important;
+
 		span.ant-select-selection-item {
 			border-radius: 10px;
 			background: #84a840;
@@ -178,12 +232,14 @@ const OptionWrap = styled.div`
 			display: flex;
 			justify-content: center;
 			align-items: center;
+
 			span.ant-select-selection-item-content {
 				color: #fff;
 				font-size: 13px;
 				font-family: Pretendard-Regular;
 				margin-right: 5px;
 			}
+
 			span.ant-select-selection-item-remove {
 				font-size: 13px;
 				color: #fff;
@@ -218,4 +274,5 @@ const SelectRegionBtn = styled.button`
 	border-radius: 10px;
 	color: ${LightBlackColor};
 	margin-left: ${rem('10px')};
+	cursor: pointer;
 `;
