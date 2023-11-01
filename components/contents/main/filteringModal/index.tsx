@@ -32,97 +32,106 @@ export default function FilteringModal() {
 	return (
 		<>
 			<FilteringModalContainer>
-				{/* radio */}
-				<Radio.Group defaultValue='register' size='large'>
-					<Radio.Button value='register'>등록순</Radio.Button>
-					<Radio.Button value='distance'>거리순</Radio.Button>
-					<Radio.Button value='deadLine'>모집임박순</Radio.Button>
-				</Radio.Group>
+				<div className={'content-box'}>
+					{/* radio */}
+					<Radio.Group defaultValue='register' size='large'>
+						<Radio.Button value='register'>등록순</Radio.Button>
+						<Radio.Button value='distance'>거리순</Radio.Button>
+						<Radio.Button value='deadLine'>모집임박순</Radio.Button>
+					</Radio.Group>
 
-				<FilteringOptionContainer>
-					{/* date-picker */}
-					<OptionWrap>
-						<LabelBox>
-							<SelectTitle>날짜</SelectTitle>
-						</LabelBox>
-					</OptionWrap>
+					<FilteringOptionContainer>
+						{/* date-picker */}
+						<OptionWrap>
+							<LabelBox>
+								<SelectTitle>날짜</SelectTitle>
+							</LabelBox>
+						</OptionWrap>
 
-					{/* region */}
-					<OptionWrap>
-						<RegionBtnBox>
-							<SelectTitle>지역</SelectTitle>
-							<SelectRegionBtn>지역 선택</SelectRegionBtn>
-						</RegionBtnBox>
+						{/* region */}
+						<OptionWrap>
+							<RegionBtnBox>
+								<SelectTitle>지역</SelectTitle>
+								<SelectRegionBtn>지역 선택</SelectRegionBtn>
+							</RegionBtnBox>
 
-						<Select
-							mode='multiple'
-							placeholder='Please select'
-							onChange={handleChange}
-							style={{ width: '100%' }}
-							options={options}
-						/>
-					</OptionWrap>
+							<Select
+								mode='multiple'
+								placeholder='지역을 선택해주세요.'
+								onChange={handleChange}
+								style={{ width: '100%' }}
+								options={options}
+							/>
+						</OptionWrap>
 
-					{/* time-picker */}
-					<OptionWrap>
-						<LabelBox>
-							<SelectTitle>시간</SelectTitle>
-						</LabelBox>
-					</OptionWrap>
+						{/* time-picker */}
+						<OptionWrap>
+							<LabelBox>
+								<SelectTitle>시간</SelectTitle>
+							</LabelBox>
+						</OptionWrap>
 
-					{/* matching type */}
-					<OptionWrap>
-						<LabelBox>
-							<SelectTitle>경기 유형</SelectTitle>
-						</LabelBox>
+						{/* matching type */}
+						<OptionWrap>
+							<LabelBox>
+								<SelectTitle>경기 유형</SelectTitle>
+							</LabelBox>
 
-						<Select
-							mode='multiple'
-							placeholder='Please select'
-							onChange={handleChange}
-							style={{ width: '100%' }}
-							options={options}
-						/>
-					</OptionWrap>
+							<Select
+								mode='multiple'
+								placeholder='경기 유형을 선택해주세요.'
+								onChange={handleChange}
+								style={{ width: '100%' }}
+								options={options}
+							/>
+						</OptionWrap>
 
-					{/* age */}
-					<OptionWrap>
-						<LabelBox>
-							<SelectTitle>모집 연령대</SelectTitle>
-						</LabelBox>
+						{/* age */}
+						<OptionWrap>
+							<LabelBox>
+								<SelectTitle>모집 연령대</SelectTitle>
+							</LabelBox>
 
-						<Select
-							mode='multiple'
-							placeholder='Please select'
-							onChange={handleChange}
-							style={{ width: '100%' }}
-							options={options}
-						/>
-					</OptionWrap>
+							<Select
+								mode='multiple'
+								placeholder='연령대를 선택해주세요.'
+								onChange={handleChange}
+								style={{ width: '100%' }}
+								options={options}
+							/>
+						</OptionWrap>
 
-					{/* NTRP */}
-					<OptionWrap>
-						<LabelBox>
-							<SelectTitle>모집 수준</SelectTitle>
-						</LabelBox>
+						{/* NTRP */}
+						<OptionWrap>
+							<LabelBox>
+								<SelectTitle>모집 수준</SelectTitle>
+							</LabelBox>
 
-						<Select
-							mode='multiple'
-							placeholder='Please select'
-							onChange={handleChange}
-							style={{ width: '100%' }}
-							options={options}
-						/>
-					</OptionWrap>
-				</FilteringOptionContainer>
+							<Select
+								mode='multiple'
+								placeholder='모집 수준을 선택해주세요.'
+								onChange={handleChange}
+								style={{ width: '100%' }}
+								options={options}
+							/>
+						</OptionWrap>
+					</FilteringOptionContainer>
+				</div>
 
-				<RoundButton>적용하기</RoundButton>
+				<div className={'btn-box'}>
+					<RoundButton>적용하기</RoundButton>
+				</div>
 			</FilteringModalContainer>
 		</>
 	);
 }
 
 const FilteringModalContainer = styled.div`
+	height: 100%;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+	padding-bottom: 20px;
 	div.ant-radio-group {
 		width: 100% !important;
 		display: flex !important;
@@ -159,7 +168,32 @@ const FilteringOptionContainer = styled.div`
 const DatePickerBox = styled.div``;
 
 const OptionWrap = styled.div`
-	margin-bottom: 10px;
+	margin-bottom: 20px;
+	div.ant-select-selector {
+		padding: 10px 14px;
+		border-radius: 10px;
+		border: 1px solid #dcdcdc !important;
+		background-color: #f9f9f9 !important;
+		span.ant-select-selection-item {
+			border-radius: 10px;
+			background: #84a840;
+			width: 68px;
+			height: 30px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
+			span.ant-select-selection-item-content {
+				color: #fff;
+				font-size: 13px;
+				font-family: Pretendard-Regular;
+				margin-right: 5px;
+			}
+			span.ant-select-selection-item-remove {
+				font-size: 13px;
+				color: #fff;
+			}
+		}
+	}
 `;
 
 const SelectTitle = styled.p`
