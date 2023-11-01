@@ -4,7 +4,7 @@ import { rem } from 'polished';
 import { Modal as AntdModal } from 'antd';
 
 interface IModalProps {
-	readonly title: string;
+	readonly title?: string;
 	readonly children: ReactNode;
 	readonly isOpen: boolean;
 	readonly footerButtons?: ReactElement[];
