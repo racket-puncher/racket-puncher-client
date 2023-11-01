@@ -1,10 +1,11 @@
 import styled from 'styled-components';
+import React from 'react';
+import { useForm } from 'react-hook-form';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+
 import { InputBox } from '../../../styles/ts/components/input';
 import { InputErrorText } from '../../../styles/ts/components/text';
-import React from 'react';
-import * as yup from 'yup';
-import { useForm } from 'react-hook-form';
-import { yupResolver } from '@hookform/resolvers/yup';
 import { RoundButton } from '../../../styles/ts/components/buttons';
 
 const schema = yup.object().shape({
