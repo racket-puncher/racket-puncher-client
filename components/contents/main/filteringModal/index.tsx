@@ -293,6 +293,10 @@ const DatePickerBox = styled.div``;
 const OptionWrap = styled.div`
 	margin-bottom: 20px;
 
+	div.datePicker__CustomDatePickerBox-sc-1gktdcy-0 {
+		height: 50px;
+		padding: 0 %{rem('14px')};
+	}
 	div.ant-select-selector {
 		padding: 10px 14px;
 		border-radius: 10px;
