@@ -8,6 +8,7 @@ import { GrayLine, ImageBox } from '../styles/ts/components/box';
 import MatchingList from '../components/contents/main/matchingList';
 import MyAroundMatching from '../components/contents/main/myAroundMatching';
 import { CustomTab } from '../styles/ts/components/tab';
+import MatchingCard from '../components/contents/main/card';
 
 const settings = {
 	arrows: false,
@@ -50,6 +51,7 @@ export default function MainPage() {
 				<MainContainer>
 					<CustomTab defaultActiveKey='1' items={items} />
 					<GrayLine />
+					<MatchingCard></MatchingCard>
 				</MainContainer>
 			</MainViewContainer>
 		</>
