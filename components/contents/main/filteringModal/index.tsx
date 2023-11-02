@@ -3,6 +3,7 @@ import React, { useState } from 'react';
 import { Radio, Select } from 'antd';
 import type { SelectProps } from 'antd';
 import { rem } from 'polished';
+import { useForm, Controller } from 'react-hook-form';
 
 import {
 	FontSizeMc,
@@ -30,6 +31,26 @@ for (let i = 10; i < 36; i++) {
 export default function FilteringModal() {
 	const [dateState, setDateState] = useState(new Date());
 	const [regionModalVisible, setRegionModalVisible] = useState(false);
+
+	const concatArr = RegionSeoul.concat(RegionGyeonggi);
+
+	const {
+		control: filterControl,
+		register: filterRegister,
+		handleSubmit: filterHandleSubmit,
+		setValue: filterSetValue,
+		watch: filterWatch,
+	} = useForm();
+
+	const {
+		control: regionControl,
+		register: regionRegister,
+		handleSubmit: regionHandleSubmit,
+		setValue: regionSetValue,
+		watch: regionWatch,
+		reset: regionReset,
+	} = useForm();
+
 	const handleChange = (value: string | string[]) => {
 		console.log(`Selected: ${value}`);
 	};
@@ -38,9 +59,33 @@ export default function FilteringModal() {
 		setRegionModalVisible((prev) => !prev);
 	};
 
+	const setChildOption = () => {
+		if (
+			regionWatch('parent').find((element) => element === 'SEOUL') &&
+			regionWatch('parent').length === 1
+		) {
+			return RegionSeoul;
+		}
+		if (
+			regionWatch('parent').find((element) => element === 'GYEONGGI') &&
+			regionWatch('parent').length === 1
+		) {
+			return RegionGyeonggi;
+		}
+		if (regionWatch('parent').length === 2) {
+			return concatArr;
+		}
+	};
+
+	const clickRegionApplyBtn = () => {
+		setRegionModalVisible(false);
+		filterSetValue('grandParent', regionWatch('child'));
+	};
+
 	const clickApplyBtn = () => {
 		console.log('적용하기');
 	};
+
 	return (
 		<>
 			<FilteringModalContainer>
@@ -70,12 +115,18 @@ export default function FilteringModal() {
 								</SelectRegionBtn>
 							</RegionBtnBox>
 
-							<Select
-								mode='multiple'
-								placeholder='지역을 선택해주세요.'
-								onChange={handleChange}
-								style={{ width: '100%' }}
-								options={options}
+							<Controller
+								name={'grandParent'}
+								control={filterControl}
+								defaultValue={[]}
+								render={({ field }) => (
+									<Select
+										{...field}
+										mode='multiple'
+										options={concatArr}
+										style={{ width: '100%' }}
+									/>
+								)}
 							/>
 						</OptionWrap>
 
@@ -143,12 +194,23 @@ export default function FilteringModal() {
 						<SelectTitle>지역 (시/도)</SelectTitle>
 					</LabelBox>
 
-					<Select
-						mode='multiple'
-						placeholder='시/도를 선택해주세요.'
-						onChange={handleChange}
-						style={{ width: '100%' }}
-						options={RegionBasic}
+					<Controller
+						name={'parent'}
+						control={regionControl}
+						defaultValue={[]}
+						render={({ field }) => (
+							<Select
+								{...field}
+								mode='multiple'
+								placeholder='시/도를 선택해주세요.'
+								style={{ width: '100%' }}
+								options={RegionBasic}
+								onChange={(value) => {
+									regionSetValue('parent', value);
+									console.log('regionWatch', regionWatch('parent'));
+								}}
+							/>
+						)}
 					/>
 				</OptionWrap>
 
@@ -158,16 +220,29 @@ export default function FilteringModal() {
 						<SelectTitle>지역 (구/동)</SelectTitle>
 					</LabelBox>
 
-					<Select
-						mode='multiple'
-						placeholder='구/동을 선택해주세요.'
-						onChange={handleChange}
-						style={{ width: '100%' }}
-						options={options}
+					<Controller
+						name={'child'}
+						control={regionControl}
+						defaultValue={[]}
+						render={({ field }) => (
+							<Select
+								{...field}
+								mode='multiple'
+								placeholder='구/동을 선택해주세요.'
+								style={{ width: '100%' }}
+								options={setChildOption()}
+								disabled={regionWatch('parent').length <= 0}
+								onChange={(value) => {
+									regionSetValue('child', value);
+								}}
+							/>
+						)}
 					/>
 				</OptionWrap>
 
-				<RoundButton colorstyle={'is-green'}>적용하기</RoundButton>
+				<RoundButton colorstyle={'is-green'} onClick={clickRegionApplyBtn}>
+					적용하기
+				</RoundButton>
 			</ModalBox>
 		</>
 	);
@@ -227,7 +302,6 @@ const OptionWrap = styled.div`
 		span.ant-select-selection-item {
 			border-radius: 10px;
 			background: #84a840;
-			width: 68px;
 			height: 30px;
 			display: flex;
 			justify-content: center;
