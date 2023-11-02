@@ -50,6 +50,7 @@ export default function ModalBox(props: IModalProps) {
 				onOk={handleOk}
 				onCancel={handleCancel}
 				centered={true}
+				maskClosable={false}
 				footer={props.footerButtons || []}>
 				{props.children}
 			</CustomModal>

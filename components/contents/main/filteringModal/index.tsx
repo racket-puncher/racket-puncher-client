@@ -18,6 +18,7 @@ import { RoundButton } from '../../../../styles/ts/components/buttons';
 import CustomDatePicker from '../../../common/datePicker';
 import ModalBox from '../../../common/modal';
 import { RegionBasic, RegionGyeonggi, RegionSeoul } from '../../../../constants/region';
+import { array } from 'yup';
 
 const options: SelectProps['options'] = [];
 
@@ -31,6 +32,8 @@ for (let i = 10; i < 36; i++) {
 export default function FilteringModal() {
 	const [dateState, setDateState] = useState(new Date());
 	const [regionModalVisible, setRegionModalVisible] = useState(false);
+	const [realRegionParentValue, setRealRegionParentValue] = useState([]);
+	const [realRegionChildValue, setRealRegionChildValue] = useState([]);
 
 	const concatArr = RegionSeoul.concat(RegionGyeonggi);
 
@@ -79,7 +82,38 @@ export default function FilteringModal() {
 
 	const clickRegionApplyBtn = () => {
 		setRegionModalVisible(false);
+		setRealRegionParentValue(regionWatch('parent'));
+		setRealRegionChildValue(regionWatch('child'));
 		filterSetValue('grandParent', regionWatch('child'));
+	};
+
+	// 모달에서 적용하기 버튼을 클릭하지 않고 x 버튼을 클릭했을때
+	const closeRegionModal = () => {
+		setRegionModalVisible(false);
+		regionSetValue('parent', realRegionParentValue);
+		regionSetValue('child', realRegionChildValue);
+	};
+
+	// 부모요소 컨트롤 메서드
+	const handleRegionParentElemet = (value: any) => {
+		regionSetValue('parent', value);
+
+		// 서울, 경기 둘다 없을때
+		if (regionWatch('parent').length === 0) {
+			regionSetValue('child', []);
+		}
+		// 서울만 있을 때
+		if (regionWatch('parent').length === 1 && regionWatch('parent').includes('SEOUL')) {
+			const processArr = RegionGyeonggi.map((element1) => element1.value);
+			const newArr = regionWatch('child').filter((element1) => !processArr.includes(element1));
+			regionSetValue('child', newArr);
+		}
+		// 경기만 있을 때
+		if (regionWatch('parent').length === 1 && regionWatch('parent').includes('GYEONGI')) {
+			const processArr = RegionSeoul.map((element1) => element1.value);
+			const newArr = regionWatch('child').filter((element1) => !processArr.includes(element1));
+			regionSetValue('child', newArr);
+		}
 	};
 
 	const clickApplyBtn = () => {
@@ -187,7 +221,7 @@ export default function FilteringModal() {
 				isOpen={regionModalVisible}
 				toggleModal={toggleModal}
 				onOk={clickApplyBtn}
-				onCancel={() => setRegionModalVisible(false)}>
+				onCancel={closeRegionModal}>
 				{/* 지역 (시/도) */}
 				<OptionWrap>
 					<LabelBox>
@@ -206,8 +240,7 @@ export default function FilteringModal() {
 								style={{ width: '100%' }}
 								options={RegionBasic}
 								onChange={(value) => {
-									regionSetValue('parent', value);
-									console.log('regionWatch', regionWatch('parent'));
+									handleRegionParentElemet(value);
 								}}
 							/>
 						)}
