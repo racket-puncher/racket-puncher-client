@@ -9,6 +9,7 @@ import MatchingList from '../components/contents/main/matchingList';
 import MyAroundMatching from '../components/contents/main/myAroundMatching';
 import { CustomTab } from '../styles/ts/components/tab';
 import MatchingCard from '../components/contents/main/card';
+import useRouterHook from '../utils/useRouterHook';
 
 const settings = {
 	arrows: false,
@@ -34,6 +35,11 @@ const items: TabsProps['items'] = [
 ];
 
 export default function MainPage() {
+	const { movePage } = useRouterHook();
+
+	const moveDetailMatching = () => {
+		movePage('/detailMatch');
+	};
 	return (
 		<>
 			<MainViewContainer>
@@ -51,7 +57,7 @@ export default function MainPage() {
 				<MainContainer>
 					<CustomTab defaultActiveKey='1' items={items} />
 					<GrayLine />
-					<MatchingCard></MatchingCard>
+					<MatchingCard onClick={moveDetailMatching}></MatchingCard>
 				</MainContainer>
 			</MainViewContainer>
 		</>

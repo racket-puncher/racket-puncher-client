@@ -12,10 +12,10 @@ import {
 	ReportColor,
 } from '../../../../styles/ts/common';
 
-export default function MatchingCard() {
+export default function MatchingCard({ onClick }) {
 	return (
 		<>
-			<CardContainer>
+			<CardContainer onClick={onClick}>
 				<ContentBox>
 					<LeftBox>
 						<ImageBox width={'128.205px'} height={'125px'}>
