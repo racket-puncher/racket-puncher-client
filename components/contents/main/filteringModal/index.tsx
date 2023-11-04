@@ -43,6 +43,7 @@ export default function FilteringModal() {
 		handleSubmit: filterHandleSubmit,
 		setValue: filterSetValue,
 		watch: filterWatch,
+		reset: filterReset,
 	} = useForm();
 
 	const {
@@ -156,6 +157,7 @@ export default function FilteringModal() {
 								render={({ field }) => (
 									<Select
 										{...field}
+										disabled={true}
 										mode='multiple'
 										options={concatArr}
 										style={{ width: '100%' }}
