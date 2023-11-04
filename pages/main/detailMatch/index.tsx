@@ -3,7 +3,7 @@ import React, { useEffect } from 'react';
 import { rem } from 'polished';
 import { Progress } from 'antd';
 
-import { ImageBox } from '../../styles/ts/components/box';
+import { ImageBox } from '../../../styles/ts/components/box';
 import {
 	BlackColor,
 	FontSizeLg,
@@ -13,8 +13,8 @@ import {
 	InputLabelColor,
 	PlayerListBGColor,
 	PrimaryColor,
-} from '../../styles/ts/common';
-import { RoundButton } from '../../styles/ts/components/buttons';
+} from '../../../styles/ts/common';
+import { RoundButton } from '../../../styles/ts/components/buttons';
 
 interface DetailMatchContentProps {
 	height?: string;
@@ -49,18 +49,18 @@ export default function DetailMatching() {
 					</ProfileBox>
 				</ProfileContainer>
 
-				<ControlBox>
-					<ButtonBox>
-						<RoundButton colorstyle={'is-black'} width={'128px'} height={'60px'}>
-							목록
-						</RoundButton>
-					</ButtonBox>
-					<ButtonBox>
-						<RoundButton colorstyle={'is-black'} width={'128px'} height={'60px'}>
-							삭제
-						</RoundButton>
-					</ButtonBox>
-				</ControlBox>
+				{/* <ControlBox> */}
+				{/*	<ButtonBox> */}
+				{/*		<RoundButton colorstyle={'is-black'} width={'128px'} height={'60px'}> */}
+				{/*			목록 */}
+				{/*		</RoundButton> */}
+				{/*	</ButtonBox> */}
+				{/*	<ButtonBox> */}
+				{/*		<RoundButton colorstyle={'is-black'} width={'128px'} height={'60px'}> */}
+				{/*			삭제 */}
+				{/*		</RoundButton> */}
+				{/*	</ButtonBox> */}
+				{/* </ControlBox> */}
 
 				<ProgressBarContainer>
 					<p>
