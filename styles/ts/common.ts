@@ -1,4 +1,3 @@
-export const MainColor = 'red';
 export const PrimaryColor = '#84A840';
 export const lightPrimaryColor = '#D1DF96';
 export const SubColor = '#E9E4D1';
