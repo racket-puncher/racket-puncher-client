@@ -119,9 +119,9 @@ export default function DetailMatching() {
 					</DetailMatchItemBox>
 				</ContentContainer>
 
-				<ButtonBox>
+				<FloatBox>
 					<RoundButton>모집 현황</RoundButton>
-				</ButtonBox>
+				</FloatBox>
 			</DetailMatchingContainer>
 		</>
 	);
@@ -129,6 +129,7 @@ export default function DetailMatching() {
 
 const DetailMatchingContainer = styled.div`
 	margin-top: 38px;
+	padding-bottom: 100px;
 `;
 const ProfileContainer = styled.div``;
 const ProfileBox = styled.div`
@@ -212,4 +213,13 @@ const FlexBox = styled.div`
 const ButtonBox = styled.div`
 	margin-top: 20px;
 	margin-bottom: 20px;
+`;
+
+const FloatBox = styled.div`
+	width: ${rem('580px')};
+	position: fixed;
+	bottom: 20px;
+	left: 50%;
+	transform: translateX(-50%);
+	z-index: 9999;
 `;
