@@ -1,10 +1,12 @@
+export const BlackColor = '#343434';
+export const LightBlackColor = '#666666';
+export const WhiteColor = '#FFFFFF';
+export const LightGrayColor = '#DCDCDC';
+
 export const PrimaryColor = '#84A840';
 export const lightPrimaryColor = '#D1DF96';
 export const SubColor = '#E9E4D1';
 export const lightSubColor = '#F0EEE2';
-export const BlackColor = '#343434';
-export const LightBlackColor = '#666666';
-export const WhiteColor = '#FFFFFF';
 export const DisabledColor = '#C9C9C9';
 export const KakaoBgColor = '#F2DE4D';
 export const KakaoFontColor = '#402809';
