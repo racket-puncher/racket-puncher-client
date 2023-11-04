@@ -1,6 +1,5 @@
 import styled from 'styled-components';
 import { useEffect } from 'react';
-import { GrayLine } from '../../../../styles/ts/components/box';
 
 export default function MyAroundMatching() {
 	useEffect(() => {
