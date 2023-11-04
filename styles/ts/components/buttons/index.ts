@@ -11,6 +11,7 @@ interface IButtonProps {
 	readonly disabled?: boolean;
 	readonly fontsize?: string;
 	readonly fontfamily?: boolean;
+	readonly bordercolor?: string;
 }
 
 export const RoundButton = styled.button<IButtonProps>`
@@ -77,7 +78,14 @@ export const SquareButton = styled.button<IButtonProps>`
 				return common.WhiteColor;
 		}
 	}};
-	border: 1px solid transparent;
+	border: 1px solid ${(props) => {
+		switch (props.bordercolor) {
+			case 'is-lightGray':
+				return common.LightGrayColor;
+			default:
+				return 'transparent';
+		}
+	}};
 	border-radius: 5px;
 	cursor: pointer;
 	-webkit-tap-highlight-color: transparent !important;
