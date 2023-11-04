@@ -7,27 +7,40 @@ import {
 	BlackColor,
 	WhiteColor,
 	FontFamilySemiBold,
-	InputBorderColor,
+	FontSizeLg,
+	LightGrayColor,
 } from '../../../styles/ts/common';
 
-export default function PlayerCard() {
+interface IPlayerCardProps {
+	userNickName?: string;
+	userId?: string;
+	profilePicURL?: string;
+}
+
+export default function PlayerCard(props: IPlayerCardProps) {
+	// To do
+	// iphoneSE 최적화
+	// 정보, 신고 기능 구현
+
+	const { userNickName, profilePicURL } = props;
 	return (
 		<PlayerCardContainer>
 			<PlayerPicture>
 				<ImageBox width='80px' height='80px'>
-					<img
-						src='https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1694838481851_1000.jpeg'
-						alt='프로필 이미지'
-					/>
+					<img src={profilePicURL || '-'} alt='프로필 이미지' />
 				</ImageBox>
 			</PlayerPicture>
-			<PlayerName>이름</PlayerName>
-			<SquareButton width='75px' height='34px' colorstyle='is-black'>
-				정 보
-			</SquareButton>
-			<SquareButton width='75px' height='34px' colorstyle='is-white'>
-				신 고
-			</SquareButton>
+			<PlayerName>{userNickName || '라켓왕자'}</PlayerName>
+			<ButtonArea>
+				<SquareButton width='80px' height='40px' colorstyle='is-black'>
+					정보
+					{/* 기능구현시 userId 필요 */}
+				</SquareButton>
+				<SquareButton width='80px' height='40px' colorstyle='is-white' bordercolor='is-lightGray'>
+					신고
+					{/* 기능구현시 userId 필요 */}
+				</SquareButton>
+			</ButtonArea>
 		</PlayerCardContainer>
 	);
 }
@@ -36,14 +49,13 @@ const PlayerCardContainer = styled.div`
 	display: flex;
 	flex-direction: row;
 	align-items: center;
+	justify-content: space-between;
 
 	height: ${rem('100px')};
-	margin: ${rem('20px')} 0px;
 	padding: ${rem('10px')};
-	border: solid 1px ${InputBorderColor};
-	border-radius: ${rem('10px')};
-
 	background-color: ${WhiteColor};
+	border: solid 1px ${LightGrayColor};
+	border-radius: ${rem('10px')};
 `;
 
 const PlayerPicture = styled.div`
@@ -53,6 +65,16 @@ const PlayerPicture = styled.div`
 `;
 
 const PlayerName = styled.span`
+	flex: 1;
+	margin: 0px ${rem('20px')};
 	font-family: ${FontFamilySemiBold};
+	font-size: ${FontSizeLg};
 	color: ${BlackColor};
+`;
+
+const ButtonArea = styled.div`
+	display: flex;
+	flex-direction: row;
+	align-items: center;
+	gap: ${rem('10px')};
 `;
