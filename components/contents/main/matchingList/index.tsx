@@ -1,8 +1,9 @@
-import { RoundButton } from '../../../../styles/ts/components/buttons';
-import { ImageBox } from '../../../../styles/ts/components/box';
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
+
+import { RoundButton } from '../../../../styles/ts/components/buttons';
+import { ImageBox } from '../../../../styles/ts/components/box';
 import { FontSizeSm } from '../../../../styles/ts/common';
 import HalfDrawerBox from '../../../common/drawer/halfDrawer';
 import FilteringModal from '../filteringModal';
@@ -12,6 +13,7 @@ export default function MatchingList() {
 
 	const handleFilterDrawer = () => {
 		setIsClickFilter((prev) => !prev);
+		// filterReset();
 	};
 	return (
 		<>
@@ -35,7 +37,7 @@ export default function MatchingList() {
 					width={'50%'}
 					height={'90%'}
 					toggleDrawer={handleFilterDrawer}>
-					<FilteringModal></FilteringModal>
+					<FilteringModal />
 				</HalfDrawerBox>
 			</MatchingContainer>
 		</>
