@@ -6,7 +6,6 @@ import { rem } from 'polished';
 import { FontSizeSm } from '../../../../styles/ts/common';
 import HalfDrawerBox from '../../../common/drawer/halfDrawer';
 import FilteringModal from '../filteringModal';
-import MatchingCard from '../card';
 
 export default function MatchingList() {
 	const [isClickFilter, setIsClickFilter] = useState(false);
