@@ -1,7 +1,8 @@
 import { Select as AntdSelect } from 'antd';
 import styled from 'styled-components';
-import { InputBorderColor, InputBoxColor, PrimaryColor } from '../../common';
 import { rem } from 'polished';
+
+import { InputBorderColor, InputBoxColor, PrimaryColor } from '../../common';
 
 export const CustomSelect = styled(AntdSelect)`
 	height: ${rem('50px')};

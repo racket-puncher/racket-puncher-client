@@ -1,6 +1,7 @@
 import styled from 'styled-components';
 import { rem } from 'polished';
 import { Tabs as AntdTabs } from 'antd';
+
 import { FontSizeMd, PlayerListBGColor, PrimaryColor, ReportColor, WhiteColor } from '../../common';
 
 export const CustomTab = styled(AntdTabs)`
