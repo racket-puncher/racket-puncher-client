@@ -1,5 +1,5 @@
 import styled from 'styled-components';
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { Radio, Select } from 'antd';
 import type { SelectProps } from 'antd';
 import { rem } from 'polished';
@@ -18,7 +18,6 @@ import { RoundButton } from '../../../../styles/ts/components/buttons';
 import CustomDatePicker from '../../../common/datePicker';
 import ModalBox from '../../../common/modal';
 import { RegionBasic, RegionGyeonggi, RegionSeoul } from '../../../../constants/region';
-import { array } from 'yup';
 
 const options: SelectProps['options'] = [];
 
@@ -29,7 +28,11 @@ for (let i = 10; i < 36; i++) {
 	});
 }
 
-export default function FilteringModal() {
+interface IFilteringProps {
+	readonly clickFilter: boolean;
+}
+
+export default function FilteringModal(props: IFilteringProps) {
 	const [dateState, setDateState] = useState(new Date());
 	const [regionModalVisible, setRegionModalVisible] = useState(false);
 	const [realRegionParentValue, setRealRegionParentValue] = useState([]);
@@ -117,9 +120,19 @@ export default function FilteringModal() {
 		}
 	};
 
+	const clickCloseBtn = () => {
+		console.log('닫기');
+	};
+
 	const clickApplyBtn = () => {
 		console.log('적용하기');
 	};
+
+	useEffect(() => {
+		if (!props.clickFilter) {
+			clickCloseBtn();
+		}
+	}, [props.clickFilter]);
 
 	return (
 		<>

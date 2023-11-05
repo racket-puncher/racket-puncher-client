@@ -8,7 +8,9 @@ interface IBadgeProps {
 	readonly fontsize?: string;
 }
 
-export const CustomBadge = styled.span<IBadgeProps>`
+export const CustomBadge = styled.span.withConfig({
+	shouldForwardProp: (props) => props !== 'fontsize',
+})<IBadgeProps>`
 	display: block;
 	width: ${rem('73px')};
 	height: ${rem('30px')};

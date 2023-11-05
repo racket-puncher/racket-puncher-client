@@ -16,10 +16,8 @@ interface IHalfDrawerProps {
 	readonly toggleDrawer: () => void;
 }
 export default function HalfDrawerBox(props: IHalfDrawerProps) {
-	const { reset: filterReset } = useForm();
 	const handleClose = () => {
 		props.toggleDrawer();
-		filterReset();
 	};
 
 	const CustomHeader = () => {
