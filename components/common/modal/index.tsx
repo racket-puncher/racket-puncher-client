@@ -11,7 +11,7 @@ interface IModalProps {
 	readonly isOpen: boolean;
 	readonly footerButtons?: ReactElement[];
 	readonly toggleModal: () => void;
-	readonly onOk: () => void;
+	readonly onOk?: () => void;
 	readonly onCancel: () => void;
 }
 

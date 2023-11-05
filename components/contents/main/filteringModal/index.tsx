@@ -30,10 +30,21 @@ for (let i = 10; i < 36; i++) {
 
 interface IFilteringProps {
 	readonly clickFilter: boolean;
+	readonly toggleModal: () => void;
 }
 
 export default function FilteringModal(props: IFilteringProps) {
+	// 필터링 모달 (1차)
 	const [dateState, setDateState] = useState(new Date());
+
+	const [realSortValue, setSortValue] = useState('');
+	const [realDateValue, setRealDateValue] = useState('');
+	const [realRegionGrandParentValue, setRealRegionGrandParentValue] = useState([]);
+	const [realMathTypeValue, setRealMathTypeValue] = useState([]);
+	const [realMatchAgeValue, setRealMatchAgeValue] = useState([]);
+	const [realNTRPValue, setRealNTRPValue] = useState([]);
+
+	// 지역 선택 모달 (2차)
 	const [regionModalVisible, setRegionModalVisible] = useState(false);
 	const [realRegionParentValue, setRealRegionParentValue] = useState([]);
 	const [realRegionChildValue, setRealRegionChildValue] = useState([]);
@@ -44,6 +55,7 @@ export default function FilteringModal(props: IFilteringProps) {
 		control: filterControl,
 		register: filterRegister,
 		handleSubmit: filterHandleSubmit,
+		getValues: filterGetValue,
 		setValue: filterSetValue,
 		watch: filterWatch,
 		reset: filterReset,
@@ -53,6 +65,7 @@ export default function FilteringModal(props: IFilteringProps) {
 		control: regionControl,
 		register: regionRegister,
 		handleSubmit: regionHandleSubmit,
+		getValues: regionGetValue,
 		setValue: regionSetValue,
 		watch: regionWatch,
 		reset: regionReset,
@@ -62,43 +75,12 @@ export default function FilteringModal(props: IFilteringProps) {
 		console.log(`Selected: ${value}`);
 	};
 
+	// 지역모달 ---------------------------------------------------
 	const toggleModal = () => {
 		setRegionModalVisible((prev) => !prev);
 	};
 
-	const setChildOption = () => {
-		if (
-			regionWatch('parent').find((element) => element === 'SEOUL') &&
-			regionWatch('parent').length === 1
-		) {
-			return RegionSeoul;
-		}
-		if (
-			regionWatch('parent').find((element) => element === 'GYEONGGI') &&
-			regionWatch('parent').length === 1
-		) {
-			return RegionGyeonggi;
-		}
-		if (regionWatch('parent').length === 2) {
-			return concatArr;
-		}
-	};
-
-	const clickRegionApplyBtn = () => {
-		setRegionModalVisible(false);
-		setRealRegionParentValue(regionWatch('parent'));
-		setRealRegionChildValue(regionWatch('child'));
-		filterSetValue('grandParent', regionWatch('child'));
-	};
-
-	// 모달에서 적용하기 버튼을 클릭하지 않고 x 버튼을 클릭했을때
-	const closeRegionModal = () => {
-		setRegionModalVisible(false);
-		regionSetValue('parent', realRegionParentValue);
-		regionSetValue('child', realRegionChildValue);
-	};
-
-	// 부모요소 컨트롤 메서드
+	// 지역모달 시/도 컨트롤 메서드
 	const handleRegionParentElemet = (value: any) => {
 		regionSetValue('parent', value);
 
@@ -120,12 +102,62 @@ export default function FilteringModal(props: IFilteringProps) {
 		}
 	};
 
-	const clickCloseBtn = () => {
-		console.log('닫기');
+	// 지역모달 구/동 옵션
+	const setChildOption = () => {
+		if (
+			regionWatch('parent').find((element) => element === 'SEOUL') &&
+			regionWatch('parent').length === 1
+		) {
+			return RegionSeoul;
+		}
+		if (
+			regionWatch('parent').find((element) => element === 'GYEONGGI') &&
+			regionWatch('parent').length === 1
+		) {
+			return RegionGyeonggi;
+		}
+		if (regionWatch('parent').length === 2) {
+			return concatArr;
+		}
 	};
 
+	// 지역모달 적용하기 클릭
+	const clickRegionApplyBtn = () => {
+		setRegionModalVisible(false);
+		setRealRegionParentValue(regionWatch('parent'));
+		setRealRegionChildValue(regionWatch('child'));
+		filterSetValue('grandParent', regionWatch('child'));
+	};
+
+	// 지역모달 x버튼 클릭
+	const closeRegionModal = () => {
+		setRegionModalVisible(false);
+		regionSetValue('parent', realRegionParentValue);
+		regionSetValue('child', realRegionChildValue);
+	};
+
+	// 필터링 모달 ------------------------------------------------
+	// 필터링 모달 x버튼 클릭
+	const clickCloseBtn = () => {
+		console.log('닫기');
+		filterSetValue('sort', realSortValue);
+		filterSetValue('date', realDateValue);
+		filterSetValue('grandParent', realRegionGrandParentValue);
+		filterSetValue('matchType', realMathTypeValue);
+		filterSetValue('matchAge', realMatchAgeValue);
+		filterSetValue('matchNTRP', realNTRPValue);
+	};
+
+	// 필터링 모달 적용하기 클릭
 	const clickApplyBtn = () => {
 		console.log('적용하기');
+		setSortValue(filterWatch('sort'));
+		setRealDateValue(filterWatch('date'));
+		setRealRegionGrandParentValue(filterWatch('grandParent'));
+		setRealMathTypeValue(filterWatch('matchType'));
+		setRealMatchAgeValue(filterWatch('matchAge'));
+		setRealNTRPValue(filterWatch('matchNTRP'));
+		props.toggleModal();
 	};
 
 	useEffect(() => {
@@ -139,7 +171,7 @@ export default function FilteringModal(props: IFilteringProps) {
 			<FilteringModalContainer>
 				<div className={'content-box'}>
 					{/* radio */}
-					<Radio.Group defaultValue='register' size='large'>
+					<Radio.Group defaultValue='register' size='large' {...filterRegister('sort')}>
 						<Radio.Button value='register'>등록순</Radio.Button>
 						<Radio.Button value='distance'>거리순</Radio.Button>
 						<Radio.Button value='deadLine'>모집임박순</Radio.Button>
@@ -151,7 +183,11 @@ export default function FilteringModal(props: IFilteringProps) {
 							<LabelBox>
 								<SelectTitle>날짜</SelectTitle>
 							</LabelBox>
-							<CustomDatePicker dateState={dateState} setDateState={setDateState} />
+							<CustomDatePicker
+								dateState={dateState}
+								setDateState={setDateState}
+								{...filterRegister('date')}
+							/>
 						</OptionWrap>
 
 						{/* region */}
@@ -185,12 +221,19 @@ export default function FilteringModal(props: IFilteringProps) {
 								<SelectTitle>경기 유형</SelectTitle>
 							</LabelBox>
 
-							<Select
-								mode='multiple'
-								placeholder='경기 유형을 선택해주세요.'
-								onChange={handleChange}
-								style={{ width: '100%' }}
-								options={options}
+							<Controller
+								name={'matchType'}
+								control={filterControl}
+								defaultValue={[]}
+								render={({ field }) => (
+									<Select
+										{...field}
+										mode='multiple'
+										placeholder='경기 유형을 선택해주세요.'
+										options={options}
+										style={{ width: '100%' }}
+									/>
+								)}
 							/>
 						</OptionWrap>
 
@@ -200,12 +243,19 @@ export default function FilteringModal(props: IFilteringProps) {
 								<SelectTitle>모집 연령대</SelectTitle>
 							</LabelBox>
 
-							<Select
-								mode='multiple'
-								placeholder='연령대를 선택해주세요.'
-								onChange={handleChange}
-								style={{ width: '100%' }}
-								options={options}
+							<Controller
+								name={'matchAge'}
+								control={filterControl}
+								defaultValue={[]}
+								render={({ field }) => (
+									<Select
+										{...field}
+										mode='multiple'
+										placeholder='연령대를 선택해주세요.'
+										options={options}
+										style={{ width: '100%' }}
+									/>
+								)}
 							/>
 						</OptionWrap>
 
@@ -215,28 +265,31 @@ export default function FilteringModal(props: IFilteringProps) {
 								<SelectTitle>모집 수준</SelectTitle>
 							</LabelBox>
 
-							<Select
-								mode='multiple'
-								placeholder='모집 수준을 선택해주세요.'
-								onChange={handleChange}
-								style={{ width: '100%' }}
-								options={options}
+							<Controller
+								name={'matchNTRP'}
+								control={filterControl}
+								defaultValue={[]}
+								render={({ field }) => (
+									<Select
+										{...field}
+										mode='multiple'
+										placeholder='모집 수준을 선택해주세요.'
+										options={options}
+										style={{ width: '100%' }}
+									/>
+								)}
 							/>
 						</OptionWrap>
 					</FilteringOptionContainer>
 				</div>
 
 				<div className={'btn-box'}>
-					<RoundButton>적용하기</RoundButton>
+					<RoundButton onClick={clickApplyBtn}>적용하기</RoundButton>
 				</div>
 			</FilteringModalContainer>
 
-			{/* modal */}
-			<ModalBox
-				isOpen={regionModalVisible}
-				toggleModal={toggleModal}
-				onOk={clickApplyBtn}
-				onCancel={closeRegionModal}>
+			{/* region modal  ------------------------------- */}
+			<ModalBox isOpen={regionModalVisible} toggleModal={toggleModal} onCancel={closeRegionModal}>
 				{/* 지역 (시/도) */}
 				<OptionWrap>
 					<LabelBox>
@@ -339,39 +392,42 @@ const FilteringOptionContainer = styled.div`
 const DatePickerBox = styled.div``;
 
 const OptionWrap = styled.div`
-	margin-bottom: 20px;
+  margin-bottom: 20px;
 
-	div.datePicker__CustomDatePickerBox-sc-1gktdcy-0 {
-		height: 50px;
-		padding: 0 %{rem('14px')};
-	}
-	div.ant-select-selector {
-		padding: 10px 14px;
-		border-radius: 10px;
-		border: 1px solid #dcdcdc !important;
-		background-color: #f9f9f9 !important;
+  div.datePicker__CustomDatePickerBox-sc-1gktdcy-0 {
+    height: 50px;
+    padding: 0% {
+      rem('14px')
+    };
+  }
 
-		span.ant-select-selection-item {
-			border-radius: 10px;
-			background: #84a840;
-			height: 30px;
-			display: flex;
-			justify-content: center;
-			align-items: center;
+  div.ant-select-selector {
+    padding: 10px 14px;
+    border-radius: 10px;
+    border: 1px solid #dcdcdc !important;
+    background-color: #f9f9f9 !important;
 
-			span.ant-select-selection-item-content {
-				color: #fff;
-				font-size: 13px;
-				font-family: Pretendard-Regular;
-				margin-right: 5px;
-			}
+    span.ant-select-selection-item {
+      border-radius: 10px;
+      background: #84a840;
+      height: 30px;
+      display: flex;
+      justify-content: center;
+      align-items: center;
 
-			span.ant-select-selection-item-remove {
-				font-size: 13px;
-				color: #fff;
-			}
-		}
-	}
+      span.ant-select-selection-item-content {
+        color: #fff;
+        font-size: 13px;
+        font-family: Pretendard-Regular;
+        margin-right: 5px;
+      }
+
+      span.ant-select-selection-item-remove {
+        font-size: 13px;
+        color: #fff;
+      }
+    }
+  }
 `;
 
 const SelectTitle = styled.p`
