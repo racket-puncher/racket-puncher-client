@@ -2,7 +2,6 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 
 import * as common from '../../common';
-import { InputLabelColor, LightBlackColor, WhiteColor } from '../../common';
 
 interface IButtonProps {
 	readonly colorstyle?: string;

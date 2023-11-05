@@ -71,6 +71,15 @@ export default function FilteringModal(props: IFilteringProps) {
 		reset: regionReset,
 	} = useForm();
 
+	const initialFilteringValue = {
+		sort: realSortValue,
+		date: realDateValue,
+		grandParent: realRegionGrandParentValue,
+		matchType: realMathTypeValue,
+		matchAge: realMatchAgeValue,
+		matchNTRP: realNTRPValue,
+	};
+
 	const handleChange = (value: string | string[]) => {
 		console.log(`Selected: ${value}`);
 	};
@@ -139,18 +148,13 @@ export default function FilteringModal(props: IFilteringProps) {
 	// 필터링 모달 ------------------------------------------------
 	// 필터링 모달 x버튼 클릭
 	const clickCloseBtn = () => {
-		console.log('닫기');
-		filterSetValue('sort', realSortValue);
-		filterSetValue('date', realDateValue);
-		filterSetValue('grandParent', realRegionGrandParentValue);
-		filterSetValue('matchType', realMathTypeValue);
-		filterSetValue('matchAge', realMatchAgeValue);
-		filterSetValue('matchNTRP', realNTRPValue);
+		Object.keys(initialFilteringValue).forEach((propName) => {
+			filterSetValue(propName, initialFilteringValue[propName]);
+		});
 	};
 
 	// 필터링 모달 적용하기 클릭
 	const clickApplyBtn = () => {
-		console.log('적용하기');
 		setSortValue(filterWatch('sort'));
 		setRealDateValue(filterWatch('date'));
 		setRealRegionGrandParentValue(filterWatch('grandParent'));
