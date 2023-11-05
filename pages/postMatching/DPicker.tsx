@@ -62,7 +62,6 @@ export default function DPicker(props: IPickerProps) {
 		};
 		setDateString(dateState.toLocaleString('ko-KR', options));
 	};
-	useEffect(() => {}, [dateState]);
 
 	const [isOpen, setIsOpen] = useState(false);
 
