@@ -13,7 +13,6 @@ export default function MatchingList() {
 
 	const handleFilterDrawer = () => {
 		setIsClickFilter((prev) => !prev);
-		// filterReset();
 	};
 	return (
 		<>
@@ -37,7 +36,7 @@ export default function MatchingList() {
 					width={'50%'}
 					height={'90%'}
 					toggleDrawer={handleFilterDrawer}>
-					<FilteringModal />
+					<FilteringModal clickFilter={isClickFilter} toggleModal={handleFilterDrawer} />
 				</HalfDrawerBox>
 			</MatchingContainer>
 		</>
