@@ -4,7 +4,7 @@ import { Skeleton } from 'antd';
 export default function SkeletonUI() {
 	return (
 		<>
-			<Skeleton />
+			<Skeleton avatar paragraph={{ rows: 3 }} />
 		</>
 	);
 }

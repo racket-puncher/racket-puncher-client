@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import Slider from 'react-slick';
 import { rem } from 'polished';
@@ -10,6 +10,7 @@ import MyAroundMatching from '../../components/contents/main/myAroundMatching';
 import { CustomTab } from '../../styles/ts/components/tab';
 import MatchingCard from '../../components/contents/main/card';
 import useRouterHook from '../../utils/useRouterHook';
+import SkeletonUI from '../../components/common/loading/skeleton';
 
 const settings = {
 	arrows: false,
@@ -36,10 +37,32 @@ const items: TabsProps['items'] = [
 
 export default function MainPage() {
 	const { movePage } = useRouterHook();
+	const [isLoading, setIsLoading] = useState(true);
+	const test = [
+		{
+			id: '1',
+		},
+		{
+			id: '2',
+		},
+		{
+			id: '3',
+		},
+		{
+			id: '4',
+		},
+	];
 
 	const moveDetailMatching = () => {
 		movePage('/main/detailMatch');
 	};
+
+	useEffect(() => {
+		setTimeout(() => {
+			setIsLoading(false);
+		}, 200);
+	}, []);
+
 	return (
 		<>
 			<MainViewContainer>
@@ -57,7 +80,17 @@ export default function MainPage() {
 				<MainContainer>
 					<CustomTab defaultActiveKey='1' items={items} />
 					<GrayLine />
-					<MatchingCard onClick={moveDetailMatching}></MatchingCard>
+					{test.map((item) => {
+						return (
+							<>
+								{isLoading ? (
+									<SkeletonUI />
+								) : (
+									<MatchingCard onClick={moveDetailMatching}></MatchingCard>
+								)}
+							</>
+						);
+					})}
 				</MainContainer>
 			</MainViewContainer>
 		</>
