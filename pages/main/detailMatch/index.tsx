@@ -131,7 +131,9 @@ const DetailMatchingContainer = styled.div`
 	margin-top: 38px;
 	padding-bottom: 100px;
 `;
-const ProfileContainer = styled.div``;
+const ProfileContainer = styled.div`
+	margin-bottom: 30px;
+`;
 const ProfileBox = styled.div`
 	height: 347px;
 	padding: 40px ${rem('40px')};
@@ -203,17 +205,14 @@ const DetailMatchContent = styled.div<DetailMatchContentProps>`
 const FlexBox = styled.div`
 	display: flex;
 	justify-content: space-between;
-	div.detailMatch__DetailMatchItemBox-sc-1re6i36-8 {
+	div.detailMatch__DetailMatchItemBox-sc-iu375m-8 {
 		flex-basis: 280px;
 		&:first-child {
 			margin-right: ${rem('20px')};
 		}
 	}
 `;
-const ButtonBox = styled.div`
-	margin-top: 20px;
-	margin-bottom: 20px;
-`;
+const ButtonBox = styled.div``;
 
 const FloatBox = styled.div`
 	max-width: ${rem('640px')};
@@ -223,5 +222,5 @@ const FloatBox = styled.div`
 	left: 50%;
 	transform: translateX(-50%);
 	bottom: 20px;
-	z-index: 9999;
+	z-index: 1000;
 `;
