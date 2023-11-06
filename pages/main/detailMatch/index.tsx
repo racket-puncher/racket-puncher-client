@@ -216,10 +216,12 @@ const ButtonBox = styled.div`
 `;
 
 const FloatBox = styled.div`
-	width: ${rem('580px')};
+	max-width: ${rem('640px')};
+	width: 100%;
+	padding: 0 30px;
 	position: fixed;
-	bottom: 20px;
 	left: 50%;
 	transform: translateX(-50%);
+	bottom: 20px;
 	z-index: 9999;
 `;

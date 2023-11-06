@@ -1,37 +1,39 @@
 import styled from 'styled-components';
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
+import MatchingCard from '../card';
+import { v4 as uuidv4 } from 'uuid';
 
 const positions = [
 	{
-		title: '카카오',
 		content: '<div>카카오</div>',
+		title: '카카오',
 		lat: 33.450705,
 		lng: 126.570677,
 	},
 	{
-		title: '생태연못',
 		content: '<div>생태연못</div>',
+		title: '생태연못',
 		lat: 33.450936,
 		lng: 126.569477,
 	},
 	{
-		title: '텃밭',
 		content: '<div>텃밭</div>',
+		title: '텃밭',
 		lat: 33.450879,
 		lng: 126.56994,
 	},
 	{
-		title: '근린공원',
 		content: '<div>근린공원</div>',
+		title: '근린공원',
 		lat: 33.451393,
 		lng: 126.570738,
 	},
 ];
 
 export default function MyAroundMatching() {
-	// const map = new kakao.maps.Map(container, options);
+	const [map, setMap] = useState(null); // map 상태 추가
+	const [selectedMarker, setSelectedMarker] = useState(null); // 선택한 마커 상태 추가
 
-	// const onClickMoveMap = (item: any) => {};
 	useEffect(() => {
 		const container = document.getElementById('kakao-map');
 		const options = {
@@ -39,39 +41,72 @@ export default function MyAroundMatching() {
 			level: 3,
 		};
 
-		const map = new kakao.maps.Map(container, options);
+		const kakaoMap = new kakao.maps.Map(container, options);
+		setMap(kakaoMap); // map 상태 설정
 
-		for (let i = 0; i < positions.length; i++) {
+		const infowindows = positions.map((position) => {
 			const marker = new kakao.maps.Marker({
-				map, // 마커를 표시할 지도
-				position: new kakao.maps.LatLng(positions[i].lat, positions[i].lng),
-				title: positions[i].title,
+				map: kakaoMap,
+				position: new kakao.maps.LatLng(position.lat, position.lng),
+			});
+
+			// 마커에 인포윈도우(정보창) 추가
+			const infowindow = new kakao.maps.InfoWindow({
+				content: position.content,
+				removable: true,
+			});
+
+			kakao.maps.event.addListener(marker, 'click', function () {
+				if (selectedMarker === marker) {
+					infowindow.open(kakaoMap, marker);
+				} else {
+					// 선택한 마커가 아닌 경우, 다른 인포윈도우를 닫고 새로운 마커의 인포윈도우를 열기
+					infowindows.forEach((iw) => iw.close());
+					setSelectedMarker(marker);
+					infowindow.open(kakaoMap, marker);
+				}
+
+				// 클릭한 요소를 가운데로 이동
+				kakaoMap.setCenter(marker.getPosition());
+			});
+
+			return infowindow;
+		});
+	}, []);
+
+	const handleButtonClick = (position) => {
+		if (map) {
+			// 버튼을 클릭하면 지도의 중심으로 이동
+			// 클릭한 마커의 인포윈도우 열기
+			const marker = new kakao.maps.Marker({
+				position: new kakao.maps.LatLng(position.lat, position.lng),
 			});
 			const infowindow = new kakao.maps.InfoWindow({
-				content: positions[i].content, // 인포윈도우에 표시할 내용
+				content: position.content,
+				removable: true,
 			});
-			kakao.maps.event.addListener(marker, 'click', makeOverListener(map, marker, infowindow));
-			// kakao.maps.event.addListener(marker, 'click', makeOutListener(infowindow));
-		}
-
-		// 인포윈도우 표시
-		function makeOverListener(map, marker, infowindow) {
-			return function () {
+			if (selectedMarker === marker) {
 				infowindow.open(map, marker);
-			};
+			} else {
+				// 선택한 마커가 아닌 경우, 다른 인포윈도우를 닫고 새로운 마커의 인포윈도우를 열기
+				selectedMarker && selectedMarker.setMap(null); // 선택한 마커 제거
+				setSelectedMarker(marker);
+				infowindow.open(map, marker);
+			}
+			map.setCenter(marker.getPosition());
 		}
-	}, []);
+	};
 	return (
 		<>
 			<MyAroundMatchingContainer>
 				<MapBox>
 					<div id={'kakao-map'} style={{ width: '100%', height: '400px' }}></div>
 				</MapBox>
-				{positions.map((item) => {
+				{positions.map((element1, index) => {
 					return (
-						<>
-							<button>{item.title}</button>
-						</>
+						<div key={uuidv4()}>
+							<MatchingCard onClick={() => handleButtonClick(element1)}></MatchingCard>
+						</div>
 					);
 				})}
 			</MyAroundMatchingContainer>
