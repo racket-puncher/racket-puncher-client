@@ -4,6 +4,7 @@ import { v4 as uuidv4 } from 'uuid';
 import { useForm } from 'react-hook-form';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
+import KakaoLogin from 'react-kakao-login';
 
 import { RoundButton } from '../../styles/ts/components/buttons';
 import { ImageBox } from '../../styles/ts/components/box';
@@ -63,6 +64,13 @@ export default function Login() {
 		console.log(data);
 	};
 
+	// 소셜로그인 --------------------------------------
+	const postSocialLogin = (res) => {
+		console.log(res);
+		const accessToken = res.response.accessToken;
+		movePage('/main');
+	};
+
 	return (
 		<>
 			<LoginViewContainer>
@@ -92,14 +100,29 @@ export default function Login() {
 						</RoundButton>
 					</ButtonBox>
 					<ButtonBox>
-						<RoundButton colorstyle={'is-yellow'}>
-							<div className='align-box'>
-								<ImageBox width={'15px'} height={'14px'}>
-									<img src='/images/kakao-icon.png' alt='kakao-icon' />
-								</ImageBox>
-								<p>카카오 로그인</p>
-							</div>
-						</RoundButton>
+						<KakaoLogin
+							token={'20bd45f114aff9ec8fee730fe2453f5c'}
+							onSuccess={postSocialLogin}
+							onFail={console.error}
+							onLogout={console.info}
+							render={({ onClick }) => {
+								return (
+									<RoundButton
+										colorstyle={'is-yellow'}
+										onClick={(e) => {
+											e.preventDefault();
+											onClick();
+										}}>
+										<div className='align-box'>
+											<ImageBox width={'15px'} height={'14px'}>
+												<img src='/images/kakao-icon.png' alt='kakao-icon' />
+											</ImageBox>
+											<p>카카오 로그인</p>
+										</div>
+									</RoundButton>
+								);
+							}}
+						/>
 					</ButtonBox>
 				</ButtonContainer>
 
