@@ -32,6 +32,7 @@ const positions = [
 
 export default function MyAroundMatching() {
 	const [map, setMap] = useState(null); // map 상태 추가
+	const [infowindows, setInfowindows] = useState([]); // 인포윈도우 목록 상태 추가
 	const [selectedMarker, setSelectedMarker] = useState(null); // 선택한 마커 상태 추가
 
 	useEffect(() => {
@@ -44,7 +45,7 @@ export default function MyAroundMatching() {
 		const kakaoMap = new kakao.maps.Map(container, options);
 		setMap(kakaoMap); // map 상태 설정
 
-		const infowindows = positions.map((position) => {
+		const infowindowsArray = positions.map((position) => {
 			const marker = new kakao.maps.Marker({
 				map: kakaoMap,
 				position: new kakao.maps.LatLng(position.lat, position.lng),
@@ -61,7 +62,7 @@ export default function MyAroundMatching() {
 					infowindow.open(kakaoMap, marker);
 				} else {
 					// 선택한 마커가 아닌 경우, 다른 인포윈도우를 닫고 새로운 마커의 인포윈도우를 열기
-					infowindows.forEach((iw) => iw.close());
+					infowindowsArray.forEach((iw) => iw.close());
 					setSelectedMarker(marker);
 					infowindow.open(kakaoMap, marker);
 				}
@@ -72,30 +73,30 @@ export default function MyAroundMatching() {
 
 			return infowindow;
 		});
+
+		// 인포윈도우 목록 상태 업데이트
+		setInfowindows(infowindowsArray);
 	}, []);
 
-	const handleButtonClick = (position) => {
+	const handleButtonClick = (position, index) => {
 		if (map) {
-			// 버튼을 클릭하면 지도의 중심으로 이동
-			// 클릭한 마커의 인포윈도우 열기
 			const marker = new kakao.maps.Marker({
 				position: new kakao.maps.LatLng(position.lat, position.lng),
 			});
-			const infowindow = new kakao.maps.InfoWindow({
-				content: position.content,
-				removable: true,
-			});
+			const infowindow = infowindows[index];
+
 			if (selectedMarker === marker) {
 				infowindow.open(map, marker);
 			} else {
-				// 선택한 마커가 아닌 경우, 다른 인포윈도우를 닫고 새로운 마커의 인포윈도우를 열기
-				selectedMarker && selectedMarker.setMap(null); // 선택한 마커 제거
+				infowindows.forEach((iw) => iw.close());
 				setSelectedMarker(marker);
 				infowindow.open(map, marker);
 			}
+
 			map.setCenter(marker.getPosition());
 		}
 	};
+
 	return (
 		<>
 			<MyAroundMatchingContainer>
@@ -105,7 +106,7 @@ export default function MyAroundMatching() {
 				{positions.map((element1, index) => {
 					return (
 						<div key={uuidv4()}>
-							<MatchingCard onClick={() => handleButtonClick(element1)}></MatchingCard>
+							<MatchingCard onClick={() => handleButtonClick(element1, index)}></MatchingCard>
 						</div>
 					);
 				})}
