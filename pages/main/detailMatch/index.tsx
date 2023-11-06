@@ -1,5 +1,5 @@
 import styled, { css } from 'styled-components';
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import { rem } from 'polished';
 import { Progress } from 'antd';
 
@@ -15,12 +15,23 @@ import {
 	PrimaryColor,
 } from '../../../styles/ts/common';
 import { RoundButton } from '../../../styles/ts/components/buttons';
+import ModalBox from '../../../components/common/modal';
 
 interface DetailMatchContentProps {
 	height?: string;
 }
 
 export default function DetailMatching() {
+	const [recruitStatusModalVisible, setRecruitStatusModalVisible] = useState(false);
+
+	const toggleModal = () => {
+		setRecruitStatusModalVisible((prev) => !prev);
+	};
+
+	const closeRecruitStatusModal = () => {
+		setRecruitStatusModalVisible(false);
+	};
+
 	useEffect(() => {
 		const container = document.getElementById('kakao-map');
 		const options = {
@@ -120,8 +131,18 @@ export default function DetailMatching() {
 				</ContentContainer>
 
 				<FloatBox>
-					<RoundButton>모집 현황</RoundButton>
+					<RoundButton onClick={() => setRecruitStatusModalVisible(true)}>모집 현황</RoundButton>
 				</FloatBox>
+
+				{/* 모집현황 modal --------------------------------- */}
+				<ModalBox
+					isOpen={recruitStatusModalVisible}
+					toggleModal={toggleModal}
+					onCancel={closeRecruitStatusModal}>
+					<ButtonBox>
+						<RoundButton colorstyle={'is-black'}>모집완료</RoundButton>
+					</ButtonBox>
+				</ModalBox>
 			</DetailMatchingContainer>
 		</>
 	);
