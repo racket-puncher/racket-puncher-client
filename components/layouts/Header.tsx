@@ -43,7 +43,7 @@ export default function Header() {
 						<img src='/svg/back-ico.svg' alt='뒤로가기 아이콘' />
 					</ImageBox>
 				</ImgButton>
-				<LogoButton onClick={() => movePage('/')} aria-label='메인으로 이동'>
+				<LogoButton onClick={() => movePage('/main')} aria-label='메인으로 이동'>
 					<ImageBox width={'215.33px'} height={'20px'}>
 						<img src='/images/logo.png' alt='로고이미지' />
 					</ImageBox>

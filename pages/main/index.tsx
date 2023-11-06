@@ -38,7 +38,7 @@ export default function MainPage() {
 	const { movePage } = useRouterHook();
 
 	const moveDetailMatching = () => {
-		movePage('/detailMatch');
+		movePage('/main/detailMatch');
 	};
 	return (
 		<>
