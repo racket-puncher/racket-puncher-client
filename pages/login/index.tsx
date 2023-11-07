@@ -74,7 +74,7 @@ export default function Login() {
 	return (
 		<>
 			<LoginViewContainer>
-				<PageMainTitle>로그인</PageMainTitle>
+				<PageMainTitle>로그인 배포테스트</PageMainTitle>
 				<InputContainer>
 					<InputBox>
 						<label htmlFor='loginEmail'>이메일</label>
