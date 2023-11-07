@@ -25,20 +25,11 @@ jobs:
       - name: Build the application
         run: npm run build --if-present
 
-      # 빌드한 결과물을 압축 또는 패키지로 만들기
-      - name: Archive build files
-        run: tar -czvf app.tar.gz -C build/ .
-
-      # SSH를 사용하여 원격 서버로 파일 업로드 및 배포
-      - name: Deploy to racket-puncher.shop
-        uses: appleboy/ssh-action@master
-        with:
-          host: racket-puncher.shop
-          username: ${{ secrets.SSH_RACKETPUNCHER_NAME }}
-          key: ${{ secrets.SSH_RACKETPUNCHER_PRIVATE_KEY }}
-          script: |
-            # 원격 서버로 압축된 파일 전송
-            scp -i ${{ secrets.SSH_RACKETPUNCHER_PRIVATE_KEY }} app.tar.gz user@racket-puncher.shop:/path/to/destination/
-            
-            # 원격 서버로 SSH 연결하여 배포 스크립트 실행
-            ssh -i ${{ secrets.SSH_RACKETPUNCHER_PRIVATE_KEY }} user@racket-puncher.shop "cd /path/to/destination/ && tar -xzvf app.tar.gz"
+      - name: Deploy to GitHub Pages
+        run: |
+          git checkout gh-pages
+          rm -rf *
+          mv build/* ./
+          git add .
+          git commit -m "Deploy to GitHub Pages"
+          git push origin gh-pages
