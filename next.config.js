@@ -10,5 +10,5 @@ module.exports = {
 			},
 		];
 	},
-	distDir: 'build',
+	assetPrefix: 'https://racket-puncher.github.io/racket-puncher-client/',
 };
