@@ -27,6 +27,7 @@ jobs:
 
       - name: Deploy to GitHub Pages
         run: |
+          git branch gh-pages
           git checkout gh-pages
           rm -rf *
           mv build/* ./
