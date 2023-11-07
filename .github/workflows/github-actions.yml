@@ -1,20 +1,44 @@
 name: Racket Puncher GitHub Actions
 on:
   push:
-    branches: [ main ]
+    branches: [main]
 jobs:
   Explore-GitHub-Actions:
     runs-on: ubuntu-latest
 
     strategy:
       matrix:
-        node-version: [ 16.x ]
+        node-version: [16.x]
 
     steps:
-      - uses: actions/checkout@v2
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
           node-version: ${{ matrix.node-version }}
-      - run: npm ci
-      - run: npm run build --if-present
+
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Build the application
+        run: npm run build --if-present
+
+      # 빌드한 결과물을 압축 또는 패키지로 만들기
+      - name: Archive build files
+        run: tar -czvf app.tar.gz -C build/ .
+
+      # SSH를 사용하여 원격 서버로 파일 업로드 및 배포
+      - name: Deploy to raketpuncher.shop
+        uses: appleboy/ssh-action@master
+        with:
+          host: racketpuncher.shop
+          username: ${{ secrets.SSH_RACKETPUNCHER_NAME }}
+          key: ${{ secrets.SSH_RACKETPUNCHER_PRIVATE_KEY }}
+          script: |
+            # 원격 서버로 압축된 파일 전송
+            scp -i ${{ secrets.SSH_RACKETPUNCHER_PRIVATE_KEY }} app.tar.gz user@raketpuncher.shop:/path/to/destination/
+            
+            # 원격 서버로 SSH 연결하여 배포 스크립트 실행
+            ssh -i ${{ secrets.SSH_RACKETPUNCHER_PRIVATE_KEY }} user@raketpuncher.shop "cd /path/to/destination/ && tar -xzvf app.tar.gz"
