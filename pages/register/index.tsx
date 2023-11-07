@@ -94,7 +94,6 @@ export default function register() {
 		const files = event.target.files;
 		if (files && files.length > 0) {
 			const selectedFile = files[0];
-			console.log(selectedFile);
 		}
 	};
 
