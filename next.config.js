@@ -10,9 +10,6 @@ module.exports = {
 			},
 		];
 	},
-	webpack: (config) => {
-		config.output.publicPath = '/racket-puncher-client/';
-		return config;
-	},
+	basePath: '/racket-puncher.github.io/racket-puncher-client',
 	assetPrefix: 'https://racket-puncher.github.io/racket-puncher-client/',
 };
