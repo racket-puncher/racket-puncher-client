@@ -30,7 +30,7 @@ jobs:
           git branch gh-pages
           git checkout gh-pages
           rm -rf *
-          mv build/* ./
+          mv .next/* ./
           git add .
           git commit -m "Deploy to GitHub Pages"
           git push origin gh-pages
