@@ -24,6 +24,6 @@ jobs:
 
       - name: Deploy to GitHub Pages
         run: |
-          git config --global user.name 'RACKETPUNCHER_FRONTEND'
-          git config --global user.email 'syji@example.com'
+          git config --global user.name 'racket-puncher-front'
+          git config --global user.email 'raket-puncher@example.com'
           npm run deploy
