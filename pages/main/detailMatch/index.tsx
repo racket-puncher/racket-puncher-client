@@ -1,4 +1,4 @@
-import styled, { css } from 'styled-components';
+import styled from 'styled-components';
 import React, { useEffect, useState } from 'react';
 import { rem } from 'polished';
 import { Progress } from 'antd';
@@ -33,13 +33,18 @@ export default function DetailMatching() {
 	};
 
 	useEffect(() => {
-		const container = document.getElementById('kakao-map');
-		const options = {
+		const staticMapContainer = document.getElementById('staticMap');
+		const markerPosition = new kakao.maps.LatLng(33.450701, 126.570667);
+		const marker = {
+			position: markerPosition,
+		};
+		const staticMapOption = {
 			center: new kakao.maps.LatLng(33.450705, 126.570677),
-			level: 3,
+			level: 2,
+			marker,
 		};
 
-		const map = new kakao.maps.Map(container, options);
+		const staticMap = new kakao.maps.StaticMap(staticMapContainer, staticMapOption);
 	}, []);
 
 	return (
@@ -115,7 +120,7 @@ export default function DetailMatching() {
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchAddree'>길 찾기</label>
 						<MapBox>
-							<div id={'kakao-map'} style={{ width: '100%', height: '400px' }}></div>
+							<div id={'staticMap'} style={{ width: '100%', height: '400px' }}></div>
 						</MapBox>
 					</DetailMatchItemBox>
 
