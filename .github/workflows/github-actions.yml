@@ -26,11 +26,4 @@ jobs:
         run: npm run build --if-present
 
       - name: Deploy to GitHub Pages
-        run: |
-          git branch gh-pages
-          git checkout gh-pages
-          rm -rf *
-          mv .next/* ./
-          git add .
-          git commit -m "Deploy to GitHub Pages"
-          git push origin gh-pages
+        run: npm run deploy
