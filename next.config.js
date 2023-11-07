@@ -10,5 +10,6 @@ module.exports = {
 			},
 		];
 	},
-	assetPrefix: 'https://racket-puncher.github.io/racket-puncher-client',
+	basePath: '/racket-puncher-client',
+	assetPrefix: 'https://racket-puncher.github.io/racket-puncher-client/',
 };
