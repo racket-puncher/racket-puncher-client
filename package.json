@@ -9,7 +9,7 @@
     "lint": "next lint",
     "build": "next build && next export",
     "predeploy": "npm run build",
-    "deploy": "touch out/.nojekyll && gh-pages -d out --dotfiles"
+    "deploy": "gh-pages -d out -t true --repo https://${GH_TOKEN}@github.com/racket-puncher/racket-puncher-client.git"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",
