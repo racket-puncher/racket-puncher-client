@@ -30,15 +30,15 @@ jobs:
         run: tar -czvf app.tar.gz -C build/ .
 
       # SSH를 사용하여 원격 서버로 파일 업로드 및 배포
-      - name: Deploy to raketpuncher.shop
+      - name: Deploy to racket-puncher.shop
         uses: appleboy/ssh-action@master
         with:
-          host: racketpuncher.shop
+          host: racket-puncher.shop
           username: ${{ secrets.SSH_RACKETPUNCHER_NAME }}
           key: ${{ secrets.SSH_RACKETPUNCHER_PRIVATE_KEY }}
           script: |
             # 원격 서버로 압축된 파일 전송
-            scp -i ${{ secrets.SSH_RACKETPUNCHER_PRIVATE_KEY }} app.tar.gz user@raketpuncher.shop:/path/to/destination/
+            scp -i ${{ secrets.SSH_RACKETPUNCHER_PRIVATE_KEY }} app.tar.gz user@racket-puncher.shop:/path/to/destination/
             
             # 원격 서버로 SSH 연결하여 배포 스크립트 실행
-            ssh -i ${{ secrets.SSH_RACKETPUNCHER_PRIVATE_KEY }} user@raketpuncher.shop "cd /path/to/destination/ && tar -xzvf app.tar.gz"
+            ssh -i ${{ secrets.SSH_RACKETPUNCHER_PRIVATE_KEY }} user@racket-puncher.shop "cd /path/to/destination/ && tar -xzvf app.tar.gz"
