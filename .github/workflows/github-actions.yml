@@ -27,7 +27,7 @@ jobs:
 
       # 빌드한 결과물을 압축 또는 패키지로 만들기
       - name: Archive build files
-        run: tar -czvf app.tar.gz -C ../../build/ .
+        run: tar -czvf app.tar.gz -C build/ .
 
       # SSH를 사용하여 원격 서버로 파일 업로드 및 배포
       - name: Deploy to raketpuncher.shop
