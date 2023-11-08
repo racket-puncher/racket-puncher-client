@@ -25,13 +25,13 @@ export default function MyMatchingList(props: IMyMatchingListProps) {
 			playerList: [
 				{
 					userNickName: '뿡뿡이',
-					userId: 'fgsdgsdgsdg',
+					userEmail: 'bboongbboong2@gmail.com',
 					profilePicURL:
 						'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1694838481851_1000.jpeg',
 				},
 				{
 					userNickName: '텐텐2',
-					userId: 'wwr33sgdsgssd',
+					userEmail: 'tenistenis@naver.com',
 					profilePicURL:
 						'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1691813820762_750.jpeg',
 				},
@@ -47,13 +47,13 @@ export default function MyMatchingList(props: IMyMatchingListProps) {
 			playerList: [
 				{
 					userNickName: '김밥처돌이',
-					userId: 'f3r2esdfsd3',
+					userEmail: 'lovekimbap@gmail.com',
 					profilePicURL:
 						'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1693052032553_750.jpeg',
 				},
 				{
 					userNickName: 'SeaZero95',
-					userId: 'rg34tedgg',
+					userEmail: 'haeyoung95@daum.net',
 					profilePicURL:
 						'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1695367802898_750.jpeg',
 				},
@@ -69,13 +69,13 @@ export default function MyMatchingList(props: IMyMatchingListProps) {
 			playerList: [
 				{
 					userNickName: '테니스의공주',
-					userId: 'gt422ff33s',
+					userEmail: 'princess77@naver.com',
 					profilePicURL:
 						'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1668760095596_750.jpeg',
 				},
 				{
 					userNickName: '내가짱',
-					userId: 'ef9ue90w83y',
+					userEmail: 'lordofsword@daum.net',
 					profilePicURL:
 						'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1669467945861_750.jpeg',
 				},
@@ -93,13 +93,13 @@ export default function MyMatchingList(props: IMyMatchingListProps) {
 			playerList: [
 				{
 					userNickName: '테니스의공주',
-					userId: 'gt422ff33s',
+					userEmail: 'princess77@naver.com',
 					profilePicURL:
 						'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1668760095596_750.jpeg',
 				},
 				{
 					userNickName: '내가짱',
-					userId: 'ef9ue90w83y',
+					userEmail: 'lordofsword@daum.net',
 					profilePicURL:
 						'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1669467945861_750.jpeg',
 				},
@@ -115,13 +115,13 @@ export default function MyMatchingList(props: IMyMatchingListProps) {
 			playerList: [
 				{
 					userNickName: '뿡뿡이',
-					userId: 'fgsdgsdgsdg',
+					userEmail: 'bboongbboong2@gmail.com',
 					profilePicURL:
 						'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1694838481851_1000.jpeg',
 				},
 				{
 					userNickName: '텐텐2',
-					userId: 'wwr33sgdsgssd',
+					userEmail: 'tenistenis@naver.com',
 					profilePicURL:
 						'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1691813820762_750.jpeg',
 				},
@@ -137,13 +137,13 @@ export default function MyMatchingList(props: IMyMatchingListProps) {
 			playerList: [
 				{
 					userNickName: '김밥처돌이',
-					userId: 'f3r2esdfsd3',
+					userEmail: 'lovekimbap@gmail.com',
 					profilePicURL:
 						'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1693052032553_750.jpeg',
 				},
 				{
 					userNickName: 'SeaZero95',
-					userId: 'rg34tedgg',
+					userEmail: 'haeyoung95@daum.net',
 					profilePicURL:
 						'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1695367802898_750.jpeg',
 				},

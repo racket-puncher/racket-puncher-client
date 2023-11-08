@@ -22,7 +22,7 @@ interface IMyListItemProps {
 		readonly postTitle?: string;
 		readonly userAddress?: string;
 		readonly matchType?: string;
-		readonly playerList?: { userNickName: string; userId: string; profilePicURL: string }[];
+		readonly playerList?: { userNickName: string; userEmail: string; profilePicURL: string }[];
 	};
 }
 
@@ -51,13 +51,13 @@ export default function MyListItem(props: IMyListItemProps) {
 			children: (
 				<PlayerCardContainer>
 					{playerList.map((_, i) => {
-						const { userNickName, profilePicURL, userId } = props.postInfo.playerList[i];
+						const { userNickName, profilePicURL, userEmail } = props.postInfo.playerList[i];
 						return (
 							<PlayerCard
 								key={i}
 								userNickName={userNickName}
 								profilePicURL={profilePicURL}
-								userId={userId}
+								userEmail={userEmail}
 							/>
 						);
 					})}
