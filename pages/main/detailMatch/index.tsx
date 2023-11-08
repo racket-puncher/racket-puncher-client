@@ -1,5 +1,5 @@
-import styled, { css } from 'styled-components';
-import React, { useEffect } from 'react';
+import styled from 'styled-components';
+import React, { useEffect, useState } from 'react';
 import { rem } from 'polished';
 import { Progress } from 'antd';
 
@@ -15,20 +15,36 @@ import {
 	PrimaryColor,
 } from '../../../styles/ts/common';
 import { RoundButton } from '../../../styles/ts/components/buttons';
+import ModalBox from '../../../components/common/modal';
 
 interface DetailMatchContentProps {
 	height?: string;
 }
 
 export default function DetailMatching() {
+	const [recruitStatusModalVisible, setRecruitStatusModalVisible] = useState(false);
+
+	const toggleModal = () => {
+		setRecruitStatusModalVisible((prev) => !prev);
+	};
+
+	const closeRecruitStatusModal = () => {
+		setRecruitStatusModalVisible(false);
+	};
+
 	useEffect(() => {
-		const container = document.getElementById('kakao-map');
-		const options = {
+		const staticMapContainer = document.getElementById('staticMap');
+		const markerPosition = new kakao.maps.LatLng(33.450701, 126.570667);
+		const marker = {
+			position: markerPosition,
+		};
+		const staticMapOption = {
 			center: new kakao.maps.LatLng(33.450705, 126.570677),
-			level: 3,
+			level: 2,
+			marker,
 		};
 
-		const map = new kakao.maps.Map(container, options);
+		const staticMap = new kakao.maps.StaticMap(staticMapContainer, staticMapOption);
 	}, []);
 
 	return (
@@ -104,7 +120,7 @@ export default function DetailMatching() {
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchAddree'>길 찾기</label>
 						<MapBox>
-							<div id={'kakao-map'} style={{ width: '100%', height: '400px' }}></div>
+							<div id={'staticMap'} style={{ width: '100%', height: '400px' }}></div>
 						</MapBox>
 					</DetailMatchItemBox>
 
@@ -120,8 +136,18 @@ export default function DetailMatching() {
 				</ContentContainer>
 
 				<FloatBox>
-					<RoundButton>모집 현황</RoundButton>
+					<RoundButton onClick={() => setRecruitStatusModalVisible(true)}>모집 현황</RoundButton>
 				</FloatBox>
+
+				{/* 모집현황 modal --------------------------------- */}
+				<ModalBox
+					isOpen={recruitStatusModalVisible}
+					toggleModal={toggleModal}
+					onCancel={closeRecruitStatusModal}>
+					<ButtonBox>
+						<RoundButton colorstyle={'is-black'}>모집완료</RoundButton>
+					</ButtonBox>
+				</ModalBox>
 			</DetailMatchingContainer>
 		</>
 	);
@@ -131,7 +157,9 @@ const DetailMatchingContainer = styled.div`
 	margin-top: 38px;
 	padding-bottom: 100px;
 `;
-const ProfileContainer = styled.div``;
+const ProfileContainer = styled.div`
+	margin-bottom: 30px;
+`;
 const ProfileBox = styled.div`
 	height: 347px;
 	padding: 40px ${rem('40px')};
@@ -203,23 +231,22 @@ const DetailMatchContent = styled.div<DetailMatchContentProps>`
 const FlexBox = styled.div`
 	display: flex;
 	justify-content: space-between;
-	div.detailMatch__DetailMatchItemBox-sc-1re6i36-8 {
+	div.detailMatch__DetailMatchItemBox-sc-iu375m-8 {
 		flex-basis: 280px;
 		&:first-child {
 			margin-right: ${rem('20px')};
 		}
 	}
 `;
-const ButtonBox = styled.div`
-	margin-top: 20px;
-	margin-bottom: 20px;
-`;
+const ButtonBox = styled.div``;
 
 const FloatBox = styled.div`
-	width: ${rem('580px')};
+	max-width: ${rem('640px')};
+	width: 100%;
+	padding: 0 30px;
 	position: fixed;
-	bottom: 20px;
 	left: 50%;
 	transform: translateX(-50%);
-	z-index: 9999;
+	bottom: 20px;
+	z-index: 1000;
 `;

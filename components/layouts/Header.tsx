@@ -1,12 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
-import useRouterHook from '../../utils/useRouterHook';
 import { useRouter } from 'next/router';
 
 import { ImageBox } from '../../styles/ts/components/box';
 import { ImgButton } from '../../styles/ts/components/buttons';
 import { WhiteColor, HeaderBtnColor } from '../../styles/ts/common';
+import useRouterHook from '../../utils/useRouterHook';
 import MenuDrawer from './MenuDrawer';
 
 export default function Header() {
@@ -43,7 +43,7 @@ export default function Header() {
 						<img src='/svg/back-ico.svg' alt='뒤로가기 아이콘' />
 					</ImageBox>
 				</ImgButton>
-				<LogoButton onClick={() => movePage('/')} aria-label='메인으로 이동'>
+				<LogoButton onClick={() => movePage('/main')} aria-label='메인으로 이동'>
 					<ImageBox width={'215.33px'} height={'20px'}>
 						<img src='/images/logo.png' alt='로고이미지' />
 					</ImageBox>
