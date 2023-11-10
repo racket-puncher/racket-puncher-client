@@ -11,4 +11,5 @@ module.exports = {
 		];
 	},
 	assetPrefix: 'https://racket-puncher.shop/',
+	trailingSlash: true,
 };
