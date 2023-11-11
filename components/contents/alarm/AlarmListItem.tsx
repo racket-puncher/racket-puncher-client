@@ -8,8 +8,9 @@ import {
 	InputBoxColor,
 	InputBorderColor,
 	BlackColor,
-} from '../../styles/ts/common';
-import { ImageBox } from '../../styles/ts/components/box';
+} from 'styles/ts/common';
+
+import { ImageBox } from 'styles/ts/components/box';
 
 interface IAlarmListItemProps {
 	alarmTestData: {
@@ -22,7 +23,7 @@ interface IAlarmListItemProps {
 }
 
 export default function AlarmListItem(props: IAlarmListItemProps) {
-	const { alarmTitle, alarmContent, pageTitle, pageURL } = props.alarmTestData;
+	const { alarmTitle, alarmContent, pageURL, pageTitle } = props.alarmTestData;
 	return (
 		<AlarmListItemContainer>
 			<AlarmDataArea>

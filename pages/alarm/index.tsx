@@ -2,7 +2,7 @@
 import styled from 'styled-components';
 import { rem } from 'polished';
 import { PageMainTitle } from '../../styles/ts/components/titles';
-import AlarmListItem from './AlarmListItem';
+import AlarmListItem from 'components/contents/alarm/AlarmListItem';
 
 export default function AlarmPage() {
 	// // 서버에서 현재 로그인한 유저의 알림 데이터 가져오기
@@ -35,7 +35,7 @@ export default function AlarmPage() {
 			</PageTitleArea>
 			<AlarmList>
 				{gottenAlarms.map((_, i) => {
-					return <AlarmListItem key={0 + i} alarmTestData={gottenAlarms[i]} />;
+					return <AlarmListItem key={gottenAlarms[i].alarmId} alarmTestData={gottenAlarms[i]} />;
 				})}
 			</AlarmList>
 		</>
