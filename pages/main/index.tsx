@@ -11,6 +11,7 @@ import { CustomTab } from 'styles/ts/components/tab';
 import MatchingCard from 'components/contents/main/card';
 import useRouterHook from 'utils/useRouterHook';
 import SkeletonUI from 'components/common/loading/skeleton';
+import { prefix } from '../../constants/prefix';
 
 const settings = {
 	arrows: false,
@@ -69,10 +70,10 @@ export default function MainPage() {
 				<SliderContainer>
 					<Slider {...settings}>
 						<ImageBox heightInit={true}>
-							<img src='/images/main-slider-image.png' alt='main-slider-img' />
+							<img src={`${prefix}/images/rending/rending1.jpg`} alt='main-slider-img' />
 						</ImageBox>
 						<ImageBox heightInit={true}>
-							<img src='/images/main-slider-image.png' alt='main-slider-img' />
+							<img src={`${prefix}/images/rending/rending1.jpg`} alt='main-slider-img' />
 						</ImageBox>
 					</Slider>
 				</SliderContainer>
