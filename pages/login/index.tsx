@@ -14,6 +14,7 @@ import { PageMainTitle } from '../../styles/ts/components/titles';
 import ModalBox from '../../components/common/modal';
 import { InputBox } from '../../styles/ts/components/input';
 import { InputErrorText } from '../../styles/ts/components/text';
+import { prefix } from '../../constants/prefix';
 
 interface FormData {
 	readonly email: string;
@@ -74,7 +75,7 @@ export default function Login() {
 	return (
 		<>
 			<LoginViewContainer>
-				<PageMainTitle>로그인 배포테스트4</PageMainTitle>
+				<PageMainTitle>로그인 배포테스트5</PageMainTitle>
 				<InputContainer>
 					<InputBox>
 						<label htmlFor='loginEmail'>이메일</label>
@@ -115,7 +116,7 @@ export default function Login() {
 										}}>
 										<div className='align-box'>
 											<ImageBox width={'15px'} height={'14px'}>
-												<img src='/images/kakao-icon.png' alt='kakao-icon' />
+												<img src={`${prefix}/images/kakao-icon.png`} alt='kakao-icon' />
 											</ImageBox>
 											<p>카카오 로그인</p>
 										</div>

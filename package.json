@@ -2,14 +2,13 @@
   "name": "racketpuncher-client",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://racket-puncher.github.io/racket-puncher-client/",
   "scripts": {
     "dev": "next dev",
     "start": "next start",
     "lint": "next lint",
     "build": "next build && next export",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d out -t true --repo https://${GH_TOKEN}@github.com/racket-puncher/racket-puncher-client.git"
+    "deploy": "touch out/.nojekyll && gh-pages -d out -t true --repo https://${GH_TOKEN}@github.com/racket-puncher/racket-puncher-client.git"
   },
   "dependencies": {
     "@hookform/resolvers": "^3.3.2",

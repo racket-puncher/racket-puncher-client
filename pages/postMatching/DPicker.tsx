@@ -5,6 +5,7 @@ import DatePicker from 'react-mobile-datepicker';
 
 import { ImageBox } from '../../styles/ts/components/box';
 import { FontFamilyRegular, FontSizeSpSm } from '../../styles/ts/common';
+import { prefix } from '../../constants/prefix';
 // import { dateFomatter } from '../../utils/fomatter';
 
 interface IPickerProps {
@@ -79,7 +80,7 @@ export default function DPicker(props: IPickerProps) {
 				</p> */}
 				<p>{dateString}</p>
 				<ImageBox width={'24px'} height={'24px'}>
-					<img src='/images/calendar.png' alt='calendar' />
+					<img src={`${prefix}/images/calendar.png`} alt='calendar' />
 				</ImageBox>
 			</CustomDatePickerBox>
 

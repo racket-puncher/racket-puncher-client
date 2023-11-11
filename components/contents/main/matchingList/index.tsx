@@ -7,6 +7,7 @@ import { ImageBox } from '../../../../styles/ts/components/box';
 import { FontSizeSm } from '../../../../styles/ts/common';
 import HalfDrawerBox from '../../../common/drawer/halfDrawer';
 import FilteringModal from '../filteringModal';
+import { prefix } from '../../../../constants/prefix';
 
 export default function MatchingList() {
 	const [isClickFilter, setIsClickFilter] = useState(false);
@@ -20,12 +21,12 @@ export default function MatchingList() {
 				<ControlBox>
 					<RoundButton colorstyle={'is-black'} width={'150px'} height={'40px'}>
 						<ImageBox width={'20px'} height={'20px'}>
-							<img src='/images/pencil.png' alt='pencil' />
+							<img src={`${prefix}/images/pencil.png`} alt='pencil' />
 						</ImageBox>
 						<p>매칭등록</p>
 					</RoundButton>
 					<ImageBox onClick={handleFilterDrawer}>
-						<img src='/images/filtering-menu.png' alt='filtering-menu' />
+						<img src={`${prefix}/images/filtering-menu.png`} alt='filtering-menu' />
 					</ImageBox>
 				</ControlBox>
 

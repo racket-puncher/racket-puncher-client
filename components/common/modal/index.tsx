@@ -4,6 +4,7 @@ import { rem } from 'polished';
 import { Modal as AntdModal } from 'antd';
 import { ImageBox } from '../../../styles/ts/components/box';
 import { BlackColor, FontSizeSpLg } from '../../../styles/ts/common';
+import { prefix } from '../../../constants/prefix';
 
 interface IModalProps {
 	readonly title?: string;
@@ -33,7 +34,7 @@ export default function ModalBox(props: IModalProps) {
 					<div className='align-box'>
 						{props.title && <p>{props.title}</p>}
 						<ImageBox width={'34px'} height={'34px'} onClick={handleCancel}>
-							<img src='/images/close-icon.png' alt='close' />
+							<img src={`${prefix}/images/close-icon.png`} alt='close' />
 						</ImageBox>
 					</div>
 				</CustomHeaderBox>
