@@ -4,13 +4,14 @@ import Slider from 'react-slick';
 import { rem } from 'polished';
 import type { TabsProps } from 'antd';
 
-import { GrayLine, ImageBox } from '../../styles/ts/components/box';
-import MatchingList from '../../components/contents/main/matchingList';
-import MyAroundMatching from '../../components/contents/main/myAroundMatching';
-import { CustomTab } from '../../styles/ts/components/tab';
-import MatchingCard from '../../components/contents/main/card';
-import useRouterHook from '../../utils/useRouterHook';
-import SkeletonUI from '../../components/common/loading/skeleton';
+// import { GrayLine, ImageBox } from '@/styles/ts/components/box';
+import { GrayLine, ImageBox } from '';
+import MatchingList from '@/components/contents/main/matchingList';
+import MyAroundMatching from '@/components/contents/main/myAroundMatching';
+import { CustomTab } from '@/styles/ts/components/tab';
+import MatchingCard from '@/components/contents/main/card';
+import useRouterHook from '@/utils/useRouterHook';
+import SkeletonUI from '@/components/common/loading/skeleton';
 
 const settings = {
 	arrows: false,
