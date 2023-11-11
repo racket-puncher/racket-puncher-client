@@ -17,4 +17,6 @@ module.exports = {
 			? 'https://racket-puncher.github.io/racket-puncher-client/'
 			: '',
 	trailingSlash: true,
+	ssr: false,
+	reactStrictMode: true,
 };
