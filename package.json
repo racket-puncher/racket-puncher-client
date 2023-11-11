@@ -2,7 +2,7 @@
   "name": "racketpuncher-client",
   "version": "0.1.0",
   "private": true,
-  "homepage": "https://racket-puncher.github.io/racket-puncher-client/",
+  "homepage": "https://racket-puncher.shop/racket-puncher-client",
   "scripts": {
     "dev": "next dev",
     "start": "next start",
