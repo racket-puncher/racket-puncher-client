@@ -11,6 +11,7 @@ import {
 	PrimaryColor,
 	ReportColor,
 } from '../../../../styles/ts/common';
+import { prefix } from '../../../../constants/prefix';
 
 export default function MatchingCard({ onClick }) {
 	return (
@@ -19,7 +20,7 @@ export default function MatchingCard({ onClick }) {
 				<ContentBox>
 					<LeftBox>
 						<ImageBox width={'128.205px'} height={'125px'}>
-							<img src='/images/main-img1.png' alt='main-image1' />
+							<img src={`${prefix}/images/main-img1.png`} alt='main-image1' />
 						</ImageBox>
 					</LeftBox>
 

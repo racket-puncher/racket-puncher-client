@@ -6,6 +6,7 @@ import { Drawer as AntdDrawer } from 'antd';
 
 import { ImageBox } from '../../../styles/ts/components/box';
 import { BlackColor, FontSizeSpLg } from '../../../styles/ts/common';
+import { prefix } from '../../../constants/prefix';
 
 interface IDrawerProps {
 	readonly title?: string;
@@ -29,7 +30,7 @@ export default function DrawerBox(props: IDrawerProps) {
 					<div className='align-box'>
 						{props.title && <p>{props.title}</p>}
 						<ImageBox width={'34px'} height={'34px'} onClick={handleClose}>
-							<img src='/images/close-icon.png' alt='close' />
+							<img src={`${prefix}/images/close-icon.png`} alt='close' />
 						</ImageBox>
 					</div>
 				</CustomHeaderBox>

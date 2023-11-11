@@ -16,6 +16,7 @@ import {
 } from '../../../styles/ts/common';
 import { RoundButton } from '../../../styles/ts/components/buttons';
 import ModalBox from '../../../components/common/modal';
+import { prefix } from '../../../constants/prefix';
 
 interface DetailMatchContentProps {
 	height?: string;
@@ -54,7 +55,7 @@ export default function DetailMatching() {
 					<ProfileBox>
 						<ImageWrap>
 							<ImageBox width={'140px'} height={'140px'}>
-								<img src='/images/profile-img.png' alt='profile-image' />
+								<img src={`${prefix}/images/profile-img.png`} alt='profile-image' />
 							</ImageBox>
 							<p>고숭이</p>
 						</ImageWrap>

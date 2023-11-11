@@ -24,6 +24,7 @@ import {
 	PrimaryColor,
 } from '../../styles/ts/common';
 import { CustomBadge } from '../../styles/ts/components/badge';
+import { prefix } from '../../constants/prefix';
 
 const schema = yup.object().shape({
 	userName: yup.string().required('이름은 필수입니다.'),
@@ -168,7 +169,7 @@ export default function register() {
 
 				<ImageSection onClick={clickImgFile}>
 					<ImageBox width={'200px'} height={'200px'}>
-						<img src='/images/add-image.png' alt='add-image' />
+						<img src={`${prefix}/images/add-image.png`} alt='add-image' />
 					</ImageBox>
 					<input
 						type='file'

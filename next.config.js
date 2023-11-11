@@ -10,8 +10,6 @@ module.exports = {
 			},
 		];
 	},
-	// basePath: process.env.NODE_ENV === 'production' ? '/racket-puncher.shop' : '',
-	// basePath: process.env.NODE_ENV === 'production' ? '/racket-puncher-client' : '',
-	assetPrefix: process.env.NODE_ENV === 'production' ? '/racket-puncher-client/' : '',
+	assetPrefix: process.env.NODE_ENV === 'production' ? '/racket-puncher.shop/' : '',
 	trailingSlash: true,
 };
