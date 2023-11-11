@@ -11,9 +11,6 @@ module.exports = {
 		];
 	},
 	// basePath: process.env.NODE_ENV === 'production' ? '/racket-puncher.shop' : '',
-	assetPrefix:
-		process.env.NODE_ENV === 'production'
-			? 'https://racket-puncher.github.io/racket-puncher-client/'
-			: '',
+	assetPrefix: process.env.NODE_ENV === 'production' ? '/racket-puncher-client/' : '',
 	trailingSlash: true,
 };
