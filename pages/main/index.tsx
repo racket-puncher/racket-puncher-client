@@ -70,10 +70,10 @@ export default function MainPage() {
 				<SliderContainer>
 					<Slider {...settings}>
 						<ImageBox heightInit={true}>
-							<img src={`${prefix}/images/rending/rending1.jpg`} alt='main-slider-img' />
+							<img src={`${prefix}/images/main-slider-image.png`} alt='main-slider-img' />
 						</ImageBox>
 						<ImageBox heightInit={true}>
-							<img src={`${prefix}/images/rending/rending1.jpg`} alt='main-slider-img' />
+							<img src={`${prefix}/images/main-slider-image.png`} alt='main-slider-img' />
 						</ImageBox>
 					</Slider>
 				</SliderContainer>
