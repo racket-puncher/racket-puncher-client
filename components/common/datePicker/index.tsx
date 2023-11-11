@@ -5,6 +5,7 @@ import { ImageBox } from '../../../styles/ts/components/box';
 import { FontSizeSpSm } from '../../../styles/ts/common';
 import { rem } from 'polished';
 import { dateFomatter } from '../../../utils/fomatter';
+import { prefix } from '../../../constants/prefix';
 
 interface IDatePickerProps {
 	readonly dateState: Date;
@@ -33,7 +34,7 @@ export default function CustomDatePicker(props: IDatePickerProps) {
 			<CustomDatePickerBox onClick={() => setIsOpen(true)}>
 				<p>{showDateStr}</p>
 				<ImageBox width={'24px'} height={'24px'}>
-					<img src='/images/calendar.png' alt='calendar' />
+					<img src={`${prefix}/images/calendar.png`} alt='calendar' />
 				</ImageBox>
 			</CustomDatePickerBox>
 			<DatePicker

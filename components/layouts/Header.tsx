@@ -8,6 +8,7 @@ import { ImgButton } from '../../styles/ts/components/buttons';
 import { WhiteColor, HeaderBtnColor } from '../../styles/ts/common';
 import useRouterHook from '../../utils/useRouterHook';
 import MenuDrawer from './MenuDrawer';
+import { prefix } from '../../constants/prefix';
 
 export default function Header() {
 	const router = useRouter();
@@ -45,7 +46,7 @@ export default function Header() {
 				</ImgButton>
 				<LogoButton onClick={() => movePage('/main')} aria-label='메인으로 이동'>
 					<ImageBox width={'215.33px'} height={'20px'}>
-						<img src='/images/logo.png' alt='로고이미지' />
+						<img src={`${prefix}/images/logo.png`} alt='로고이미지' />
 					</ImageBox>
 				</LogoButton>
 				<ImgButton onClick={showDrawer} aria-label='메뉴'>
