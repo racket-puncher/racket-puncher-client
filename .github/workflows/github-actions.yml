@@ -27,6 +27,6 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
         run: |
-          git config —global user.name 'racket-puncher-front'
-          git config —global user.email 'raket-puncher@example.com'
+          git config --global user.name 'racket-puncher-front'
+          git config --global user.email 'racket-puncher@example.com'
           npm run deploy
