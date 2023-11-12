@@ -20,18 +20,14 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
-      - name: Add CNAME file
-        run: echo "racket-puncher.shop" > CNAME
-
-      - name: Commit CNAME file
-        run: |
-          git config --global user.name 'racket-puncher-front'
-          git config --global user.email 'racket-puncher@example.com'
-          git add CNAME
-          git commit -m "Add CNAME file"
-          git push origin main
-
       - name: Deploy to GitHub Pages
         env:
           GH_TOKEN: ${{ secrets.GH_TOKEN }}
-        run: npm run deploy
+        run: |
+          git config --global user.name 'racket-puncher-front'
+          git config --global user.email 'racket-puncher@example.com'
+          echo "racket-puncher.shop" > CNAME
+          git add CNAME
+          git commit -m "Add CNAME file"
+          git push origin main
+          npm run deploy
