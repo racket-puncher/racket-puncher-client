@@ -8,11 +8,6 @@ module.exports = {
 				destination: '/main',
 				permanent: true,
 			},
-			{
-				source: '',
-				destination: '/main',
-				permanent: true,
-			},
 		];
 	},
 	// assetPrefix: process.env.NODE_ENV === 'production' ? '/racket-puncher.shop/' : '',
