@@ -1,13 +1,16 @@
 import React, { useEffect } from 'react';
+import { RecoilRoot } from 'recoil';
+import { useRouter } from 'next/router';
+
+import LayoutContainer from '../components/layouts';
 import '../styles/css/reset.css';
 import '../styles/scss/font-family.scss';
 import 'slick-carousel/slick/slick.css';
 import 'slick-carousel/slick/slick-theme.css';
-import { RecoilRoot } from 'recoil';
-
-import LayoutContainer from '../components/layouts';
 
 function MyApp({ Component, pageProps }: any) {
+	const router = useRouter();
+
 	useEffect(() => {
 		const originalError = console.error;
 		console.error = (message) => {
@@ -18,6 +21,12 @@ function MyApp({ Component, pageProps }: any) {
 			originalError(message);
 		};
 	}, []);
+
+	useEffect(() => {
+		if (router.pathname === '/' || router.pathname === '/_error') {
+			router.replace('/main');
+		}
+	}, [router]);
 
 	return (
 		<RecoilRoot>
