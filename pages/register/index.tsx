@@ -11,7 +11,7 @@ import { CustomSelect } from '../../styles/ts/components/select';
 import { PageMainTitle } from '../../styles/ts/components/titles';
 import { GrayLine, ImageBox } from '../../styles/ts/components/box';
 import DrawerBox from '../../components/common/drawer';
-import { onlyNumber } from '../../utils/fomatter';
+import { onlyNumber } from '../../utils/formatter';
 import { InputErrorText } from '../../styles/ts/components/text';
 import {
 	BlackColor,

@@ -8,7 +8,7 @@ import { InputBox } from '../../styles/ts/components/input';
 import { InputErrorText } from '../../styles/ts/components/text';
 import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
 import { PageMainTitle } from '../../styles/ts/components/titles';
-import { onlyNumber } from '../../utils/fomatter';
+import { onlyNumber } from '../../utils/formatter';
 import useRouterHook from '../../utils/useRouterHook';
 
 const schema = yup.object().shape({
