@@ -4,7 +4,7 @@ import { rem } from 'polished';
 import ModalBox from '../../modal';
 import { SquareButton } from '../../../../styles/ts/components/buttons';
 import { InputBox } from '../../../../styles/ts/components/input';
-import TextArea from '../../textarea';
+import { TextArea } from '../../../../styles/ts/components/textarea';
 
 interface IReportUserModalProps {
 	readonly userNickName: string;
@@ -18,9 +18,10 @@ interface IReportUserModalProps {
 
 export default function ReportUserModal(props: IReportUserModalProps) {
 	const { userNickName, userEmail, profilePicURL, isOpen, toggleModal, onCancel, onOk } = props;
-	// userId로 회원정보 불러오기
-	// useEffect(()=> userId)
-	const [contentState, setContentState] = useState('');
+	// userEmail로 회원정보 불러오기
+	// useEffect(()=> GET userEmail)
+	const [mainText, setMainText] = useState('');
+	// onSubmit 구현
 	// const submitReport = (e: MouseEvent) => {
 	// 	e.preventDefault();
 	// 	console.log(e.target.);
@@ -33,9 +34,9 @@ export default function ReportUserModal(props: IReportUserModalProps) {
 					<InputBox>
 						<label> 사용자 신고하기</label>
 						<ReportTextArea
-							placeholder='신고 사유 내용 입력'
-							value={contentState}
-							onChange={(e) => setContentState(e.currentTarget.value)}
+							placeholder='신고 사유를 입력하세요.'
+							value={mainText}
+							onChange={(e) => setMainText(e.currentTarget.value)}
 						/>
 					</InputBox>
 					<SubmitReportBtn>신고하기</SubmitReportBtn>
