@@ -23,8 +23,7 @@ function MyApp({ Component, pageProps }: any) {
 	}, []);
 
 	useEffect(() => {
-		console.log(router.pathname);
-		if (router.pathname === '/') {
+		if (router.pathname === '/' || router.pathname === '/_error') {
 			router.replace('/main');
 		}
 	}, [router]);
