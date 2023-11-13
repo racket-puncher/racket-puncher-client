@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import { ImageBox } from '../../../styles/ts/components/box';
 import { FontSizeSpSm } from '../../../styles/ts/common';
 import { rem } from 'polished';
-import { dateFomatter } from '../../../utils/fomatter';
+import { dateFormatter } from '../../../utils/formatter';
 import { prefix } from '../../../constants/prefix';
 
 interface IDatePickerProps {
@@ -26,7 +26,7 @@ export default function CustomDatePicker(props: IDatePickerProps) {
 
 	const handleSelect = (selectedDate: Date) => {
 		props.setDateState(selectedDate);
-		setShowDateStr(dateFomatter(selectedDate));
+		setShowDateStr(dateFormatter(selectedDate));
 		setIsOpen(false);
 	};
 	return (
