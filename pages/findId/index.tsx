@@ -7,7 +7,7 @@ import { useForm } from 'react-hook-form';
 import { PageMainTitle } from '../../styles/ts/components/titles';
 import { InputBox } from '../../styles/ts/components/input';
 import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
-import { onlyNumber } from '../../utils/fomatter';
+import { onlyNumber } from '../../utils/formatter';
 import { InputErrorText } from '../../styles/ts/components/text';
 import useRouterHook from '../../utils/useRouterHook';
 
