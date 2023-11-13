@@ -23,6 +23,7 @@ function MyApp({ Component, pageProps }: any) {
 	}, []);
 
 	useEffect(() => {
+		console.log(router.pathname);
 		if (router.pathname === '/') {
 			router.replace('/main');
 		}
