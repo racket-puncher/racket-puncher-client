@@ -12,6 +12,7 @@ import MatchingCard from 'components/contents/main/card';
 import useRouterHook from 'utils/useRouterHook';
 import SkeletonUI from 'components/common/loading/skeleton';
 import { prefix } from '../../constants/prefix';
+import Service from '../../service/matching/service';
 
 const settings = {
 	arrows: false,
@@ -54,14 +55,29 @@ export default function MainPage() {
 		},
 	];
 
+	const getMatchingList = async () => {
+		const params = {
+			page: 1,
+			size: 10,
+		};
+
+		try {
+			const res = await Service.getMatchingList(params);
+			console.log('성공', res);
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
 	const moveDetailMatching = () => {
 		movePage('/main/detailMatch');
 	};
 
 	useEffect(() => {
-		setTimeout(() => {
-			setIsLoading(false);
-		}, 200);
+		getMatchingList();
+		// setTimeout(() => {
+		// 	setIsLoading(false);
+		// }, 200);
 	}, []);
 
 	return (
