@@ -10,6 +10,7 @@ interface IModalProps {
 	readonly title?: string;
 	readonly children: ReactNode;
 	readonly isOpen: boolean;
+	readonly height?: boolean;
 	readonly footerButtons?: ReactElement[];
 	readonly toggleModal: () => void;
 	readonly onOk?: () => void;
@@ -45,6 +46,7 @@ export default function ModalBox(props: IModalProps) {
 	return (
 		<>
 			<CustomModal
+				height={props.height}
 				closeIcon={false}
 				title={CustomHeader()}
 				open={props.isOpen}
@@ -61,13 +63,19 @@ export default function ModalBox(props: IModalProps) {
 
 const CustomModal = styled(AntdModal)`
 	width: ${rem('580px')} !important;
-
+	height: ${(props) => (props.height ? '83vh' : 'auto')};
+	overflow-y: ${(props) => props.height && 'scroll'};
 	div.ant-modal-content {
 		border-radius: 20px !important;
 		box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.15) !important;
 		padding: 20px !important;
+		height: 100%;
+		overflow-y: scroll;
 		div.ant-modal-header {
 			padding: 20px 0;
+		}
+		div.ant-modal-body {
+			height: 100%;
 		}
 	}
 `;

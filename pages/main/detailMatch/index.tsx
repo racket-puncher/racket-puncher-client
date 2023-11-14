@@ -143,11 +143,104 @@ export default function DetailMatching() {
 				{/* 모집현황 modal --------------------------------- */}
 				<ModalBox
 					isOpen={recruitStatusModalVisible}
+					height={true}
 					toggleModal={toggleModal}
 					onCancel={closeRecruitStatusModal}>
-					<ButtonBox>
-						<RoundButton colorstyle={'is-black'}>모집완료</RoundButton>
-					</ButtonBox>
+					<ModalAlignContainer>
+						<div className='modalBoxes'>
+							<ModalWrapBox>
+								<div className='is-modal-wrap-header'>
+									<p>신청인원</p>
+									<p>10명</p>
+								</div>
+								<div className='is-modal-wrap-body'>
+									<ModalWrapItem>
+										<div className='box-top'>
+											<ImageBox width='80px' height='80px'>
+												<img src='/images/main-img1.png' alt='image' />
+											</ImageBox>
+											<p>뿡뿡이</p>
+										</div>
+										<div className='box-footer'>
+											<div className='is-btn black'>정보</div>
+											<div className='is-btn gray'>신고</div>
+										</div>
+									</ModalWrapItem>
+									<ModalWrapItem>
+										<div className='box-top'>
+											<ImageBox width='80px' height='80px'>
+												<img src='/images/main-img1.png' alt='image' />
+											</ImageBox>
+											<p>뿡뿡이</p>
+										</div>
+										<div className='box-footer'>
+											<div className='is-btn black'>정보</div>
+											<div className='is-btn gray'>신고</div>
+										</div>
+									</ModalWrapItem>
+									<ModalWrapItem>
+										<div className='box-top'>
+											<ImageBox width='80px' height='80px'>
+												<img src='/images/main-img1.png' alt='image' />
+											</ImageBox>
+											<p>뿡뿡이</p>
+										</div>
+										<div className='box-footer'>
+											<div className='is-btn black'>정보</div>
+											<div className='is-btn gray'>신고</div>
+										</div>
+									</ModalWrapItem>
+								</div>
+							</ModalWrapBox>
+							<ModalWrapBox>
+								<div className='is-modal-wrap-header'>
+									<p>참여인원</p>
+									<p>2명</p>
+								</div>
+								<div className='is-modal-wrap-body'>
+									<ModalWrapItem>
+										<div className='box-top'>
+											<ImageBox width='80px' height='80px'>
+												<img src='/images/main-img1.png' alt='image' />
+											</ImageBox>
+											<p>뿡뿡이</p>
+										</div>
+										<div className='box-footer'>
+											<div className='is-btn black'>정보</div>
+											<div className='is-btn gray'>신고</div>
+										</div>
+									</ModalWrapItem>
+									<ModalWrapItem>
+										<div className='box-top'>
+											<ImageBox width='80px' height='80px'>
+												<img src='/images/main-img1.png' alt='image' />
+											</ImageBox>
+											<p>뿡뿡이</p>
+										</div>
+										<div className='box-footer'>
+											<div className='is-btn black'>정보</div>
+											<div className='is-btn gray'>신고</div>
+										</div>
+									</ModalWrapItem>
+									<ModalWrapItem>
+										<div className='box-top'>
+											<ImageBox width='80px' height='80px'>
+												<img src='/images/main-img1.png' alt='image' />
+											</ImageBox>
+											<p>뿡뿡이</p>
+										</div>
+										<div className='box-footer'>
+											<div className='is-btn black'>정보</div>
+											<div className='is-btn gray'>신고</div>
+										</div>
+									</ModalWrapItem>
+								</div>
+							</ModalWrapBox>
+						</div>
+						<ButtonBox>
+							<RoundButton colorstyle={'is-black'}>모집완료</RoundButton>
+						</ButtonBox>
+					</ModalAlignContainer>
 				</ModalBox>
 			</DetailMatchingContainer>
 		</>
@@ -250,4 +343,87 @@ const FloatBox = styled.div`
 	transform: translateX(-50%);
 	bottom: 20px;
 	z-index: 1000;
+`;
+
+// 모집현황 모달
+
+const ModalWrapBox = styled.div`
+	position: relative;
+	width: 100%;
+	height: ${rem('250px')};
+	border-radius: 20px;
+	background: #f9f9f9;
+	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
+	overflow-y: scroll;
+	margin-bottom: 20px;
+	&::-webkit-scrollbar {
+		display: none;
+	}
+	-ms-overflow-style: none;
+	scrollbar-width: none;
+	div.is-modal-wrap-header {
+		position: sticky;
+		top: 0px;
+		max-width: ${rem('540px')};
+		width: 100%;
+		display: flex;
+		align-items: center;
+		justify-content: space-between;
+		background: #84a840;
+		border-radius: 20px 20px 0 0;
+		padding: ${rem('16px')} ${rem('20px')};
+		p {
+			color: #fff;
+			font-size: ${rem('17px')};
+		}
+	}
+	div.is-modal-wrap-body {
+		padding: 20px ${rem('20px')} 0;
+	}
+`;
+
+const ModalWrapItem = styled.div`
+	width: 100%;
+	border-radius: 10px;
+	border: 1px solid #dcdcdc;
+	background: #fff;
+	padding: ${rem('10px')};
+	margin-bottom: 20px;
+	cursor: pointer;
+	div.box-top {
+		display: flex;
+		align-items: center;
+		p {
+			margin-left: ${rem('20px')};
+			font-family: Pretendard-Medium;
+			font-size: ${rem('20px')};
+		}
+	}
+	div.box-footer {
+		display: flex;
+		align-items: center;
+		margin-top: 10px;
+		div.is-btn {
+			width: 100%;
+			text-align: center;
+			border-radius: 5px;
+			padding: 10px 0;
+			&.black {
+				background-color: black;
+				color: #fff;
+				margin-right: ${rem('10px')};
+			}
+			&.gray {
+				border: 1px solid #dcdcdc;
+				color: #999;
+			}
+		}
+	}
+`;
+
+const ModalAlignContainer = styled.div`
+	height: 100%;
+	display: flex;
+	justify-content: space-between;
+	flex-direction: column;
 `;

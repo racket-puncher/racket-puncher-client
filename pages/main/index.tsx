@@ -74,10 +74,10 @@ export default function MainPage() {
 	};
 
 	useEffect(() => {
-		getMatchingList();
-		// setTimeout(() => {
-		// 	setIsLoading(false);
-		// }, 200);
+		// getMatchingList();
+		setTimeout(() => {
+			setIsLoading(false);
+		}, 200);
 	}, []);
 
 	return (
