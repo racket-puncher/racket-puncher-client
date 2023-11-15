@@ -219,7 +219,7 @@ export default function FilteringModal(props: IFilteringProps) {
 							/>
 						</OptionWrap>
 
-						{/* matching type */}
+						{/* matches type */}
 						<OptionWrap>
 							<LabelBox>
 								<SelectTitle>경기 유형</SelectTitle>
