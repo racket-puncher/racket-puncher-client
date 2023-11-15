@@ -1,4 +1,5 @@
-import React, { useRef, useState } from 'react';
+import React, { FormEvent, useEffect, useRef, useState } from 'react';
+import axios from 'axios';
 import styled from 'styled-components';
 import { rem } from 'polished';
 import {
@@ -19,7 +20,7 @@ import TPicker from 'components/contents/postMatching/timePicker/TPicker';
 import ButtonStyleRadio from 'components/common/buttonRadio';
 import SearchCourtDrawer from 'components/contents/postMatching/searchCourtDrawer';
 
-export default function postMatching() {
+export default function PostMatching() {
 	// To-do
 	// onSubmit 구현
 	// 프론트에서 모집 마감일 받을 때 등록일 이후~경기시작 시간 이전으로 모집 마감일 선택하도록 설정
@@ -31,31 +32,20 @@ export default function postMatching() {
 	]);
 	const [numOfRecruited, setNumOfRecruited] = useState(0);
 	const selectMatchType = (e: string) => {
-		setMatchType(`${e}`);
-		switch (e) {
-			case '단식':
-				setOptionsForNOR([{ value: 1, label: '1 명' }]);
-				break;
-			case '혼성 단식':
-				setOptionsForNOR([{ value: 1, label: '1 명' }]);
-				break;
-			case '복식':
-				setOptionsForNOR([
+		setMatchType(e);
+		e.includes('단식')
+			? setOptionsForNOR([{ value: 1, label: '1 명' }])
+			: setOptionsForNOR([
 					{ value: 1, label: '1 명' },
 					{ value: 2, label: '2 명' },
 					{ value: 3, label: '3 명' },
-				]);
-				break;
-			case '혼성 복식':
-				setOptionsForNOR([
-					{ value: 1, label: '1 명' },
-					{ value: 2, label: '2 명' },
-					{ value: 3, label: '3 명' },
-				]);
-				break;
-			default:
-				break;
-		}
+			  ]);
+	};
+
+	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		const formData = new FormData(e.currentTarget);
+		// 엑시오스 요청~~~
 	};
 
 	const [selectedAge, setSelectedAge] = useState('');
@@ -261,10 +251,13 @@ export default function postMatching() {
 							className='text-align-right'
 							pattern='^[0-9]+$'
 							onChange={(e) => {
-								// numOfAllPlayer === 1 이면 입력 안되게 하고 알림 띄우기
 								setCourtFee(Number(e.target.value));
 								const fee = Math.round(Number(e.target.value) / numOfAllPlayers);
 								setFeeForEach(fee);
+							}}
+							// numOfAllPlayer === 1 이면 얼러트 띄우기
+							onClick={() => {
+								if (numOfAllPlayers === 1) alert('경기 유형을 먼저 선택해주세요!');
 							}}
 						/>
 					</InputBox>
