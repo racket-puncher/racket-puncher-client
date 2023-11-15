@@ -8,18 +8,27 @@ import { FontSizeSm } from '../../../../styles/ts/common';
 import HalfDrawerBox from '../../../common/drawer/halfDrawer';
 import FilteringModal from '../filteringModal';
 import { prefix } from '../../../../constants/prefix';
+import useRouterHook from 'utils/useRouterHook';
 
 export default function MatchingList() {
+	const { movePage } = useRouterHook();
 	const [isClickFilter, setIsClickFilter] = useState(false);
 
 	const handleFilterDrawer = () => {
 		setIsClickFilter((prev) => !prev);
 	};
+	const handleClickPostMatching = () => {
+		movePage('/post-matching');
+	};
 	return (
 		<>
 			<MatchingContainer>
 				<ControlBox>
-					<RoundButton colorstyle={'is-black'} width={'150px'} height={'40px'}>
+					<RoundButton
+						colorstyle={'is-black'}
+						width={'150px'}
+						height={'40px'}
+						onClick={handleClickPostMatching}>
 						<ImageBox width={'20px'} height={'20px'}>
 							<img src={`${prefix}/images/pencil.png`} alt='pencil' />
 						</ImageBox>
