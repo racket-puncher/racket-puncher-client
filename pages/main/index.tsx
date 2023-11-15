@@ -12,7 +12,7 @@ import MatchingCard from 'components/contents/main/card';
 import useRouterHook from 'utils/useRouterHook';
 import SkeletonUI from 'components/common/loading/skeleton';
 import { prefix } from '../../constants/prefix';
-import Service from '../../service/matching/service';
+import Service from '../../service/matches/service';
 
 const settings = {
 	arrows: false,
