@@ -194,11 +194,11 @@ export default function EditMatching() {
 				<HalfContainer>
 					<InputBox>
 						<label htmlFor='startTime'>시작 시간</label>
-						<TPicker id='startTime' setState={setMatchStartTime} />
+						<TPicker id='startTime' setState={setMatchStartTime} type={[true, true]} />
 					</InputBox>
 					<InputBox>
 						<label htmlFor='endTime'>종료 시간</label>
-						<TPicker id='endTime' setState={setMatchEndTime} />
+						<TPicker id='endTime' setState={setMatchEndTime} type={[true, true]} />
 					</InputBox>
 				</HalfContainer>
 

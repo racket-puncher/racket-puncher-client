@@ -7,7 +7,11 @@ class MyDocument extends Document {
 				<Head>
 					<script
 						type='text/javascript'
-						src='//dapi.kakao.com/v2/maps/sdk.js?appkey=20bd45f114aff9ec8fee730fe2453f5c'></script>
+						src={
+							'//dapi.kakao.com/v2/maps/sdk.js?appkey=' +
+							`${process.env.KAKAO_MAPS_APP_KEY}` +
+							'&autoload=false'
+						}></script>
 				</Head>
 				<body>
 					<Main />
