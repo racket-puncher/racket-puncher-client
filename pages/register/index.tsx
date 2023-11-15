@@ -4,6 +4,7 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { rem } from 'polished';
+import { v4 as uuidv4 } from 'uuid';
 
 import { InputBox } from '../../styles/ts/components/input';
 import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
@@ -66,7 +67,7 @@ export default function register() {
 
 	const [addressDrawer, setAddressDrawer] = useState(false);
 
-	const [addressList, setAddressList] = useState([]);
+	const [addressList, setAddressList] = useState(null);
 
 	const {
 		register: signUpRegister,
@@ -137,14 +138,18 @@ export default function register() {
 		setAddressDrawer((prev) => !prev);
 	};
 
-	const onClickSearchAddress = (data: any) => {
+	const onClickAddressItem = (item: any) => {
+		handleAddressDrawer();
+		signupSetValue('address', item.roadAddr);
+	};
+
+	const onClickSearchAddress = async (data: any) => {
 		const payload = {
 			keyword: data.address,
 		};
 		try {
-			const res = MatchesService.searchAddress(payload);
-			console.log(res);
-			// setAddressList(res.)
+			const res = await MatchesService.searchAddress(payload);
+			setAddressList(res);
 			console.log(res);
 		} catch (e) {
 			console.log(e);
@@ -364,33 +369,27 @@ export default function register() {
 					<GrayLine />
 
 					<AddressContainer>
-						<AddressBoxWrap>
-							<AddLeftWrap>
-								<AddressBox>
-									<CustomBadge color={PrimaryColor}>도로명</CustomBadge>
-									<p>경기도 성남시 분당구 판교공원4길 27(판교동)</p>
-								</AddressBox>
-								<AddressBox>
-									<CustomBadge>지번</CustomBadge>
-									<p>경기도 성남시 분당구 판교공원4길 27(판교동)</p>
-								</AddressBox>
-							</AddLeftWrap>
-							<AddRightWrap>13477</AddRightWrap>
-						</AddressBoxWrap>
-
-						<AddressBoxWrap>
-							<AddLeftWrap>
-								<AddressBox>
-									<CustomBadge color={PrimaryColor}>도로명</CustomBadge>
-									<p>경기도 성남시 분당구 판교공원4길 27(판교동)</p>
-								</AddressBox>
-								<AddressBox>
-									<CustomBadge>지번</CustomBadge>
-									<p>경기도 성남시 분당구 판교공원4길 27(판교동)</p>
-								</AddressBox>
-							</AddLeftWrap>
-							<AddRightWrap>13477</AddRightWrap>
-						</AddressBoxWrap>
+						{addressList?.map((item) => {
+							return (
+								<AddressBoxWrap
+									key={uuidv4()}
+									onClick={() => {
+										onClickAddressItem(item);
+									}}>
+									<AddLeftWrap>
+										<AddressBox>
+											<CustomBadge color={PrimaryColor}>도로명</CustomBadge>
+											<p>{item.roadAddr}</p>
+										</AddressBox>
+										<AddressBox>
+											<CustomBadge>지번</CustomBadge>
+											<p>{}</p>
+										</AddressBox>
+									</AddLeftWrap>
+									<AddRightWrap>13477</AddRightWrap>
+								</AddressBoxWrap>
+							);
+						})}
 					</AddressContainer>
 				</>
 			</DrawerBox>
