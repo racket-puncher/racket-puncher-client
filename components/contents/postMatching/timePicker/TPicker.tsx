@@ -9,30 +9,39 @@ import { timeFormatter } from '../../../../utils/formatter';
 interface IPickerProps {
 	readonly id: string;
 	readonly setState: Dispatch<SetStateAction<string>>;
+	readonly type: Array<boolean>;
 }
 
-const options = {
-	headerFormat: 'hh시 mm분',
-	dateFormat: ['hh', 'mm'],
-	locale: 'ko',
-	confirmText: '확인',
-	cancelText: '취소',
-};
-
-const timeConfig = {
-	hour: {
-		format: 'hh',
-		caption: '시',
-		step: 1,
-	},
-	minute: {
-		format: 'mm',
-		caption: '분',
-		step: 15,
-	},
-};
-
 export default function TPicker(props: IPickerProps) {
+	const options = {
+		headerFormat: props.type[1] ? 'hh시 mm분' : 'hh시',
+		dateFormat: ['hh', 'mm'],
+		locale: 'ko',
+		confirmText: '확인',
+		cancelText: '취소',
+	};
+
+	const timeConfig = props.type[1]
+		? {
+				hour: {
+					format: 'hh',
+					caption: '시',
+					step: 1,
+				},
+				minute: {
+					format: 'mm',
+					caption: '분',
+					step: 15,
+				},
+		  }
+		: {
+				hour: {
+					format: 'hh',
+					caption: '시',
+					step: 1,
+				},
+		  };
+
 	const [timeState, setTimeState] = useState(new Date(0, 0, 0, 0, 0, 0, 0));
 	const [isOpen, setIsOpen] = useState(false);
 
@@ -46,7 +55,7 @@ export default function TPicker(props: IPickerProps) {
 		<>
 			<CustomDatePickerBox onClick={() => setIsOpen(true)}>
 				<p>
-					{timeState.getHours()}시 {timeState.getMinutes()}분
+					{timeState.getHours()}시 {props.type[1] && timeState.getMinutes() + '분'}
 				</p>
 				<ImageBox width={'24px'} height={'24px'}>
 					<img src='/svg/clock-icon.svg' alt='시계' color={LightGrayColor} />
