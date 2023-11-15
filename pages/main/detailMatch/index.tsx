@@ -1,8 +1,7 @@
 import styled from 'styled-components';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import { rem } from 'polished';
 import { Progress } from 'antd';
-
 import { ImageBox } from '../../../styles/ts/components/box';
 import {
 	BlackColor,
@@ -14,9 +13,19 @@ import {
 	PlayerListBGColor,
 	PrimaryColor,
 } from '../../../styles/ts/common';
+import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+
 import { RoundButton } from '../../../styles/ts/components/buttons';
 import ModalBox from '../../../components/common/modal';
 import { prefix } from '../../../constants/prefix';
+
+const testItems = [
+	{ id: '0', title: '타이틀 1', index: 1 },
+	{ id: '1', title: '타이틀 2', index: 2 },
+	{ id: '2', title: '타이틀 3', index: 3 },
+	{ id: '3', title: '타이틀 4', index: 4 },
+	{ id: '4', title: '타이틀 5', index: 5 },
+];
 
 interface DetailMatchContentProps {
 	height?: string;
@@ -24,6 +33,10 @@ interface DetailMatchContentProps {
 
 export default function DetailMatching() {
 	const [recruitStatusModalVisible, setRecruitStatusModalVisible] = useState(false);
+	const [recruitList, setRecruitList] = useState({
+		beforeList: [],
+		afterList: [],
+	});
 
 	const toggleModal = () => {
 		setRecruitStatusModalVisible((prev) => !prev);
@@ -32,6 +45,26 @@ export default function DetailMatching() {
 	const closeRecruitStatusModal = () => {
 		setRecruitStatusModalVisible(false);
 	};
+
+	const onDragEnd = ({ source, destination }) => {
+		if (!destination) return;
+
+		const scourceKey = source.droppableId;
+		const destinationKey = destination.droppableId;
+
+		const processArr = JSON.parse(JSON.stringify(recruitList));
+		const [targetItem] = processArr[scourceKey].splice(source.index, 1);
+		processArr[destinationKey].splice(destination.index, 0, targetItem);
+		setRecruitList(processArr);
+	};
+
+	useEffect(() => {
+		const exampleData = {
+			beforeList: testItems,
+			afterList: [],
+		};
+		setRecruitList(exampleData);
+	}, []);
 
 	useEffect(() => {
 		const staticMapContainer = document.getElementById('staticMap');
@@ -65,19 +98,6 @@ export default function DetailMatching() {
 						</ButtonBox>
 					</ProfileBox>
 				</ProfileContainer>
-
-				{/* <ControlBox> */}
-				{/*	<ButtonBox> */}
-				{/*		<RoundButton colorstyle={'is-black'} width={'128px'} height={'60px'}> */}
-				{/*			목록 */}
-				{/*		</RoundButton> */}
-				{/*	</ButtonBox> */}
-				{/*	<ButtonBox> */}
-				{/*		<RoundButton colorstyle={'is-black'} width={'128px'} height={'60px'}> */}
-				{/*			삭제 */}
-				{/*		</RoundButton> */}
-				{/*	</ButtonBox> */}
-				{/* </ControlBox> */}
 
 				<ProgressBarContainer>
 					<p>
@@ -148,94 +168,48 @@ export default function DetailMatching() {
 					onCancel={closeRecruitStatusModal}>
 					<ModalAlignContainer>
 						<div className='modalBoxes'>
-							<ModalWrapBox>
-								<div className='is-modal-wrap-header'>
-									<p>신청인원</p>
-									<p>10명</p>
-								</div>
-								<div className='is-modal-wrap-body'>
-									<ModalWrapItem>
-										<div className='box-top'>
-											<ImageBox width='80px' height='80px'>
-												<img src='/images/main-img1.png' alt='image' />
-											</ImageBox>
-											<p>뿡뿡이</p>
+							<DragDropContext onDragEnd={onDragEnd}>
+								{Object.keys(recruitList).map((key) => (
+									<ModalWrapBox key={key}>
+										<div className='is-modal-wrap-header'>
+											<p>신청인원</p>
+											<p>10명</p>
 										</div>
-										<div className='box-footer'>
-											<div className='is-btn black'>정보</div>
-											<div className='is-btn gray'>신고</div>
-										</div>
-									</ModalWrapItem>
-									<ModalWrapItem>
-										<div className='box-top'>
-											<ImageBox width='80px' height='80px'>
-												<img src='/images/main-img1.png' alt='image' />
-											</ImageBox>
-											<p>뿡뿡이</p>
-										</div>
-										<div className='box-footer'>
-											<div className='is-btn black'>정보</div>
-											<div className='is-btn gray'>신고</div>
-										</div>
-									</ModalWrapItem>
-									<ModalWrapItem>
-										<div className='box-top'>
-											<ImageBox width='80px' height='80px'>
-												<img src='/images/main-img1.png' alt='image' />
-											</ImageBox>
-											<p>뿡뿡이</p>
-										</div>
-										<div className='box-footer'>
-											<div className='is-btn black'>정보</div>
-											<div className='is-btn gray'>신고</div>
-										</div>
-									</ModalWrapItem>
-								</div>
-							</ModalWrapBox>
-							<ModalWrapBox>
-								<div className='is-modal-wrap-header'>
-									<p>참여인원</p>
-									<p>2명</p>
-								</div>
-								<div className='is-modal-wrap-body'>
-									<ModalWrapItem>
-										<div className='box-top'>
-											<ImageBox width='80px' height='80px'>
-												<img src='/images/main-img1.png' alt='image' />
-											</ImageBox>
-											<p>뿡뿡이</p>
-										</div>
-										<div className='box-footer'>
-											<div className='is-btn black'>정보</div>
-											<div className='is-btn gray'>신고</div>
-										</div>
-									</ModalWrapItem>
-									<ModalWrapItem>
-										<div className='box-top'>
-											<ImageBox width='80px' height='80px'>
-												<img src='/images/main-img1.png' alt='image' />
-											</ImageBox>
-											<p>뿡뿡이</p>
-										</div>
-										<div className='box-footer'>
-											<div className='is-btn black'>정보</div>
-											<div className='is-btn gray'>신고</div>
-										</div>
-									</ModalWrapItem>
-									<ModalWrapItem>
-										<div className='box-top'>
-											<ImageBox width='80px' height='80px'>
-												<img src='/images/main-img1.png' alt='image' />
-											</ImageBox>
-											<p>뿡뿡이</p>
-										</div>
-										<div className='box-footer'>
-											<div className='is-btn black'>정보</div>
-											<div className='is-btn gray'>신고</div>
-										</div>
-									</ModalWrapItem>
-								</div>
-							</ModalWrapBox>
+										<Droppable key={key} droppableId={key}>
+											{(provided) => (
+												<div
+													className='is-modal-wrap-body'
+													{...provided.droppableProps}
+													ref={provided.innerRef}>
+													{recruitList[key].map((item, index) => (
+														<Draggable key={item.id} draggableId={item.id} index={index}>
+															{(provided) => (
+																<div
+																	ref={provided.innerRef}
+																	{...provided.draggableProps}
+																	{...provided.dragHandleProps}>
+																	<ModalWrapItem>
+																		<div className='box-top'>
+																			<ImageBox width='80px' height='80px'>
+																				<img src='/images/main-img1.png' alt='image' />
+																			</ImageBox>
+																			<p>뿡뿡이 {item.index}</p>
+																		</div>
+																		<div className='box-footer'>
+																			<div className='is-btn black'>정보</div>
+																			<div className='is-btn gray'>신고</div>
+																		</div>
+																	</ModalWrapItem>
+																</div>
+															)}
+														</Draggable>
+													))}
+												</div>
+											)}
+										</Droppable>
+									</ModalWrapBox>
+								))}
+							</DragDropContext>
 						</div>
 						<ButtonBox>
 							<RoundButton colorstyle={'is-black'}>모집완료</RoundButton>
@@ -350,7 +324,7 @@ const FloatBox = styled.div`
 const ModalWrapBox = styled.div`
 	position: relative;
 	width: 100%;
-	height: ${rem('250px')};
+	height: ${rem('410px')};
 	border-radius: 20px;
 	background: #f9f9f9;
 	box-shadow: 0px 0px 10px 0px rgba(0, 0, 0, 0.25);
