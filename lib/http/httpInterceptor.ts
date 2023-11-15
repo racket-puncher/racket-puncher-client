@@ -18,7 +18,7 @@ http.interceptors.request.use(
 
 http.interceptors.response.use(
 	(res) => {
-		return res;
+		return res.data;
 	}
 	// (ignore) => {}
 );
