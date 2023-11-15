@@ -25,6 +25,7 @@ import {
 } from '../../styles/ts/common';
 import { CustomBadge } from '../../styles/ts/components/badge';
 import { prefix } from '../../constants/prefix';
+import MatchesService from '../../service/matches/service';
 
 const schema = yup.object().shape({
 	userName: yup.string().required('이름은 필수입니다.'),
@@ -65,6 +66,8 @@ export default function register() {
 
 	const [addressDrawer, setAddressDrawer] = useState(false);
 
+	const [addressList, setAddressList] = useState([]);
+
 	const {
 		register: signUpRegister,
 		handleSubmit: signupHandleSubmit,
@@ -81,9 +84,7 @@ export default function register() {
 		setValue: addressSetValue,
 		watch: addressWatch,
 		formState: { errors: addressErrors },
-	} = useForm({
-		resolver: yupResolver(schema),
-	});
+	} = useForm();
 
 	const clickImgFile = () => {
 		if (fileInputRef.current) {
@@ -136,8 +137,18 @@ export default function register() {
 		setAddressDrawer((prev) => !prev);
 	};
 
-	const searchAddress = () => {
-		console.log('주소 검색');
+	const onClickSearchAddress = (data: any) => {
+		const payload = {
+			keyword: data.address,
+		};
+		try {
+			const res = MatchesService.searchAddress(payload);
+			console.log(res);
+			// setAddressList(res.)
+			console.log(res);
+		} catch (e) {
+			console.log(e);
+		}
 	};
 
 	const checkValidation = () => {
@@ -337,7 +348,7 @@ export default function register() {
 								{...addressRegister('address')}
 							/>
 						</InputBox>
-						<SquareButton height={'50px'} onClick={addressHandleSubmit(searchAddress)}>
+						<SquareButton height={'50px'} onClick={addressHandleSubmit(onClickSearchAddress)}>
 							주소 검색
 						</SquareButton>
 					</InputButtonBox>
