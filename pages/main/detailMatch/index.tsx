@@ -143,7 +143,7 @@ export default function DetailMatching() {
 				{/* 모집현황 modal --------------------------------- */}
 				<ModalBox
 					isOpen={recruitStatusModalVisible}
-					height={true}
+					heightType={true}
 					toggleModal={toggleModal}
 					onCancel={closeRecruitStatusModal}>
 					<ModalAlignContainer>
