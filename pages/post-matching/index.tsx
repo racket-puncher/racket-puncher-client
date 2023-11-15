@@ -1,17 +1,15 @@
 import React, { FormEvent, useEffect, useRef, useState } from 'react';
+// import { apiRoot } from 'utils/apiRoot';
 import axios from 'axios';
 import styled from 'styled-components';
+import * as yup from 'yup';
+import { yupResolver } from '@hookform/resolvers/yup';
+import { useForm } from 'react-hook-form';
 import { rem } from 'polished';
-import {
-	FontFamilyRegular,
-	InputBorderColor,
-	InputBoxColor,
-	PrimaryColor,
-	ReportColor,
-} from 'styles/ts/common';
+import { FontFamilyRegular, InputBorderColor, InputBoxColor, ReportColor } from 'styles/ts/common';
 import { PageMainTitle } from 'styles/ts/components/titles';
 import { InputBox } from 'styles/ts/components/input';
-import { RoundButton, SquareButton } from 'styles/ts/components/buttons';
+import { RoundButton } from 'styles/ts/components/buttons';
 import { CustomSelect } from 'styles/ts/components/select';
 import { ImageBox } from 'styles/ts/components/box';
 import { TextArea } from 'styles/ts/components/textarea';
@@ -20,12 +18,48 @@ import TPicker from 'components/contents/postMatching/timePicker/TPicker';
 import ButtonStyleRadio from 'components/common/buttonRadio';
 import SearchCourtDrawer from 'components/contents/postMatching/searchCourtDrawer';
 
+const schema = yup.object().shape({
+	postTitle: yup.string().required('제목을 입력해주세요.'),
+	matchType: yup.string().required('경기 유형을 선택해주세요.'),
+	numOfRecruited: yup.number().required('모집 인원수를 선택해주세요.'),
+	selectedAge: yup.string().required('모집 연령대를 선택해주세요.'),
+	selectedNTRP: yup.string().required('모집할 NTRP를 선택해주세요.'),
+	matchDate: yup.string().required('경기 날짜를 선택해주세요.'),
+	matchStartTime: yup.string().required('경기 시작 시간을 선택해주세요.'),
+	matchEndTime: yup.string().required('경기 종료 시간을 선택해주세요.'),
+	deadlineDate: yup.string().required('모집 마감일을 선택해주세요.'),
+	deadlineTime: yup.string().required('모집 마감 시간을 선택해주세요.'),
+	courtAddress: yup.string().required('경기장 주소를 입력해주세요.'),
+	isCourtBooked: yup.boolean().required('경기장 예약 여부를 선택해주세요.'),
+	courtFee: yup.number().required('경기장 대여료를 입력해주세요. (무료일 경우 0을 입력해주세요.)'),
+	courtPhoto: yup.string(),
+	mainText: yup.string().required('본문 내용을 입력해주세요.'),
+});
+
 export default function PostMatching() {
 	// To-do
-	// onSubmit 구현
 	// 프론트에서 모집 마감일 받을 때 등록일 이후~경기시작 시간 이전으로 모집 마감일 선택하도록 설정
 
-	const [postTitle, setPostTitle] = useState('');
+	// 서버테스트용
+	// useEffect(() => {
+	// 	axios
+	// 		.get('http://3.38.50.101:8080/api/matches/1')
+	// 		.then((res) => {
+	// 			console.log(res.data);
+	// 		})
+	// 		.catch((e) => console.log(e));
+	// }, []);
+
+	const {
+		register: postMatchingResister,
+		handleSubmit: postMatchingHandleSubmit,
+		setValue: postMatchingSetValue,
+		watch: postMatchingWatch,
+		formState: { errors: postMatchingErrors },
+	} = useForm({
+		resolver: yupResolver(schema),
+	});
+
 	const [matchType, setMatchType] = useState('');
 	const [optionsForNOR, setOptionsForNOR] = useState([
 		{ value: 1, label: '경기 유형을 먼저 선택해주세요.' },
@@ -42,28 +76,22 @@ export default function PostMatching() {
 			  ]);
 	};
 
-	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		const formData = new FormData(e.currentTarget);
-		// 엑시오스 요청~~~
-	};
-
+	const [postTitle, setPostTitle] = useState('');
 	const [selectedAge, setSelectedAge] = useState('');
 	const [selectedNTRP, setSelectedNTRP] = useState('');
-
 	const [matchDate, setMatchDate] = useState(null);
 	const [matchStartTime, setMatchStartTime] = useState('');
 	const [matchEndTime, setMatchEndTime] = useState('');
-	const [deadlineDateNTime, setDeadlineDateNTime] = useState('');
-
+	const [deadlineDate, setDeadlineDate] = useState(null);
+	const [deadlineTime, setDeadlineTime] = useState('');
 	const [courtAddress, setCourtAddress] = useState('');
 	const [isCourtBooked, setIsCourtBooked] = useState(null);
 	const [courtFee, setCourtFee] = useState(0);
 	const [numOfAllPlayers, setNumOfAllPlayers] = useState(1);
 	const [feeForEach, setFeeForEach] = useState(0);
-
 	const [selectedImage, setSelectedImage] = useState(null);
 	const [mainText, setMainText] = useState('');
+
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
 	const clickImgFile = () => {
 		if (fileInputRef.current) {
@@ -74,35 +102,72 @@ export default function PostMatching() {
 		const files = event.target.files;
 		if (files && files.length > 0) {
 			const selectedFile = files[0];
-			console.log(selectedFile);
-			setSelectedImage(selectedFile);
+
+			const fileReader = new FileReader();
+			fileReader.readAsDataURL(selectedFile);
+			fileReader.onloadend = () => {
+				setSelectedImage(fileReader.result);
+			};
+			console.log(fileReader);
 		}
 	};
 
 	const [isSearchDrawerOpen, setIsSearchDrawerOpen] = useState(false);
 	const toggleSearchDrawer = () => setIsSearchDrawerOpen((prev: boolean) => !prev);
 
-	const submitFunction = () => {
-		console.log('제목: ' + `${postTitle}`);
-		console.log('경기 유형: ' + `${matchType}`);
-		console.log('모집 인원: ' + `${numOfRecruited}`);
+	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+		e.preventDefault();
+		const postedData = {
+			title: `${postTitle}`,
+			matchType: `${matchType}`,
+			recruitNum: `${numOfRecruited}`,
+			ageGroup: `${selectedAge}`,
+			ntrp: `${selectedNTRP}`,
+			matchingDate: `${matchDate}`,
+			matchingStartTime: `${matchStartTime}`,
+			matchingEndTime: `${matchEndTime}`,
+			recruitDueDate: `${deadlineDate.getFullYear()}-${deadlineDate.getMonth()}-${deadlineDate.getDate()}`,
+			recruitDueTime: `${deadlineTime}`,
+			location: `${courtAddress}`,
+			lat: '위도',
+			len: '경도',
+			isReserved: `${isCourtBooked}`,
+			cost: `${courtFee}`,
+			locationImg: `${selectedImage}`,
+			content: `${mainText}`,
+		};
 
-		console.log('모집 연령대: ' + `${selectedAge}`);
-		console.log('모집 NTRP: ' + `${selectedNTRP}`);
-
-		console.log('경기 날짜: ' + `${matchDate}`);
-		console.log('경기 시작 시간: ' + `${matchStartTime}`);
-		console.log('경기 종료 시간: ' + `${matchEndTime}`);
-		console.log('모집 마감 기한: ' + `${deadlineDateNTime}`);
-
-		console.log('구장 주소: ' + `${courtAddress}`);
-		console.log('구장 예약 여부 ' + `${isCourtBooked}`);
-		console.log('구장 예약비: ' + `${courtFee}`);
-		console.log('인원수: ' + `${numOfAllPlayers}`);
-
-		console.log('구장 이미지: ' + `${selectedImage.name}`);
-		console.log('본문: ' + `${mainText}`);
+		console.log(postedData);
+		axios
+			.post('http://3.38.50.101:8080/api/matches', JSON.stringify(postedData))
+			.then(() => console.log('포스트됨'))
+			.catch((e) => console.log(e));
 	};
+
+	const checkValidation = () => {
+		if (
+			!postMatchingWatch('postTitle') ||
+			!postMatchingWatch('matchType') ||
+			!postMatchingWatch('numOfRecruited') ||
+			!postMatchingWatch('selectedAge') ||
+			!postMatchingWatch('selectedNTRP') ||
+			!postMatchingWatch('matchDate') ||
+			!postMatchingWatch('matchStartTime') ||
+			!postMatchingWatch('matchEndTime') ||
+			!postMatchingWatch('deadlineDate') ||
+			!postMatchingWatch('deadlineTime') ||
+			!postMatchingWatch('courtAddress') ||
+			!postMatchingWatch('isCourtBooked') ||
+			!postMatchingWatch('courtFee') ||
+			!postMatchingWatch('courtPhoto') ||
+			!postMatchingWatch('mainText')
+		) {
+			return true;
+		} else {
+			return false;
+		}
+	};
+
 	return (
 		<>
 			<SearchCourtDrawer
@@ -113,26 +178,28 @@ export default function PostMatching() {
 			<PageTitleArea>
 				<PageMainTitle>매칭 글 등록</PageMainTitle>
 			</PageTitleArea>
-			<PostMatchingForm
-				onSubmit={(e) => {
-					e.preventDefault();
-					submitFunction();
-				}}>
+			<PostMatchingForm onSubmit={handleSubmit}>
 				<InputBox>
-					<label htmlFor='title'>제목</label>
-					<input id='title' type='text' onChange={(e) => setPostTitle(e.target.value)} />
+					<label htmlFor='postTitle'>제목</label>
+					<input
+						id='postTitle'
+						type='text'
+						{...postMatchingResister('postTitle')}
+						onChange={(e) => postMatchingSetValue('postTitle', e.target.value)}
+					/>
 				</InputBox>
 				<HalfContainer>
 					<InputBox>
-						<label htmlFor='typeOfMatch'>경기 유형</label>
+						<label htmlFor='matchType'>경기 유형</label>
 						<CustomSelect
-							id='typeOfMatch'
+							id='matchType'
 							options={[
 								{ value: '단식', label: '단식' },
 								{ value: '혼성 단식', label: '혼성 단식' },
 								{ value: '복식', label: '복식' },
 								{ value: '혼성 복식', label: '혼성 복식' },
 							]}
+							{...postMatchingResister('matchType')}
 							onSelect={(e: string) => {
 								selectMatchType(e);
 								setNumOfAllPlayers(e.includes('단') ? 2 : 4);
@@ -140,9 +207,9 @@ export default function PostMatching() {
 						/>
 					</InputBox>
 					<InputBox>
-						<label htmlFor='numOfAllPlayers'>모집 인원</label>
+						<label htmlFor='numOfRecruited'>모집 인원</label>
 						<CustomSelect
-							id='numOfAllPlayers'
+							id='numOfRecruited'
 							options={optionsForNOR}
 							onSelect={(e: number) => setNumOfRecruited(e)}
 						/>
@@ -150,24 +217,24 @@ export default function PostMatching() {
 				</HalfContainer>
 				<HalfContainer>
 					<InputBox>
-						<label htmlFor='postAge'>모집 연령대</label>
+						<label htmlFor='selectedAge'>모집 연령대</label>
 						<CustomSelect
-							id='postAge'
+							id='selectedAge'
 							options={[
-								{ value: '10 대', label: '10 대' },
-								{ value: '20 대', label: '20 대' },
-								{ value: '30 대', label: '30 대' },
-								{ value: '40 대', label: '40 대' },
-								{ value: '50 대', label: '50 대' },
-								{ value: '60 대', label: '60 대' },
+								{ value: '10대', label: '10대' },
+								{ value: '20대', label: '20대' },
+								{ value: '30대', label: '30대' },
+								{ value: '40대', label: '40대' },
+								{ value: '50대', label: '50대' },
+								{ value: '60대', label: '60대' },
 							]}
 							onSelect={(e: string) => setSelectedAge(e)}
 						/>
 					</InputBox>
 					<InputBox>
-						<label htmlFor='postNTRP'>모집 NTRP</label>
+						<label htmlFor='selectedNTRP'>모집 NTRP</label>
 						<CustomSelect
-							id='postNTRP'
+							id='selectedNTRP'
 							options={[
 								{ value: 'NewBie', label: 'NewBie (1.0 ~ 2.0)' },
 								{ value: 'Beginner', label: 'Beginner (2.5 ~ 3.5)' },
@@ -175,21 +242,13 @@ export default function PostMatching() {
 								{ value: 'Intermediate', label: 'Advanced (5.0 ~ 5.5)' },
 								{ value: 'Pro', label: 'Pro (6.0 ~ 7.0)' },
 							]}
+							{...postMatchingResister('selectedNTRP')}
 							onSelect={(e: string) => {
 								setSelectedNTRP(e);
 							}}
 						/>
 					</InputBox>
 				</HalfContainer>
-				{/* 
-				<InputBox>
-					<label htmlFor='startDateNTime'>경기 시작 일시</label>
-					<DPicker id='startDateNTime' />
-				</InputBox>
-				<InputBox>
-					<label htmlFor='endDateNTime'>경기 종료 일시</label>
-					<DPicker id='endDateNTime' />
-				</InputBox> */}
 
 				<InputBox>
 					<label htmlFor='matchDate'>경기일</label>
@@ -198,51 +257,57 @@ export default function PostMatching() {
 
 				<HalfContainer>
 					<InputBox>
-						<label htmlFor='startTime'>시작 시간</label>
-						<TPicker id='startTime' setState={setMatchStartTime} />
+						<label htmlFor='matchStartTime'>시작 시간</label>
+						<TPicker id='matchStartTime' setState={setMatchStartTime} type={[true, true]} />
 					</InputBox>
 					<InputBox>
-						<label htmlFor='endTime'>종료 시간</label>
-						<TPicker id='endTime' setState={setMatchEndTime} />
+						<label htmlFor='matchEndTime'>종료 시간</label>
+						<TPicker id='matchEndTime' setState={setMatchEndTime} type={[true, true]} />
 					</InputBox>
 				</HalfContainer>
 
-				{/* <HalfContainer>
-					<InputBox>
-						<label htmlFor='deadlineDate'>모집 마감 기한</label>
-						<DPicker id='deadlineDate' setState={setMatchDate} />
-					</InputBox>
-					<InputBox>
-						<label htmlFor='deadlineTime'>.</label>
-						<TPicker id='deadlineTime' setState={} />
-					</InputBox>
-				</HalfContainer> */}
 				<InputBox>
 					<label htmlFor='deadline'>모집 마감 기한</label>
-					<CustomSelect id='deadline' />
-					{/* placeholder={'모집이 마감될 시간을 선택해주세요.'} */}
-					{/* <DPicker id='deadlineDate' setState={setDeadlineDateNTime} /> */}
+					<HalfContainer>
+						<DPicker
+							id='deadlineDate'
+							setState={setDeadlineDate}
+							matchDate={matchDate}
+							type={[true, true, true]}
+						/>
+						<TPicker id='deadlineTime' setState={setDeadlineTime} type={[true, false]} />
+					</HalfContainer>
 				</InputBox>
 
 				<InputBox>
-					<label htmlFor='courtLocation'>구장 주소</label>
-					<InputStyleBtn
-						id='courtLocation'
+					<label htmlFor='courtAddress'>경기장 주소</label>
+					<input
+						type='text'
+						id='courtAddress'
+						value={courtAddress}
+						{...postMatchingResister('courtAddress')}
 						onClick={(e) => {
 							e.preventDefault();
 							setIsSearchDrawerOpen(true);
 						}}
+						readOnly
 					/>
 				</InputBox>
 
 				<HalfContainer>
 					<InputBox>
-						<label htmlFor='confirmReservation'>경기장 예약 여부</label>
-						<ButtonStyleRadio id='confirmReservation' setState={setIsCourtBooked} />
+						<label htmlFor='isCourtBooked'>경기장 예약 여부</label>
+						<ButtonStyleRadio
+							id='isCourtBooked'
+							setState={setIsCourtBooked}
+							{...postMatchingResister('isCourtBooked')}
+						/>
 					</InputBox>
 				</HalfContainer>
 				<CourtFeeArea>
-					<FeeForEachSpan>1인당 {`${feeForEach}`} 원</FeeForEachSpan>
+					<FeeForEachSpan>
+						1인당 {Number.isInteger(feeForEach) ? `${feeForEach}` : '-'} 원
+					</FeeForEachSpan>
 					<InputBox>
 						<label htmlFor='courtFee'>구장 대여비</label>
 						<input
@@ -250,27 +315,32 @@ export default function PostMatching() {
 							id='courtFee'
 							className='text-align-right'
 							pattern='^[0-9]+$'
+							{...postMatchingResister('courtFee')}
 							onChange={(e) => {
-								setCourtFee(Number(e.target.value));
+								postMatchingSetValue('courtFee', Number(e.target.value));
 								const fee = Math.round(Number(e.target.value) / numOfAllPlayers);
 								setFeeForEach(fee);
 							}}
-							// numOfAllPlayer === 1 이면 얼러트 띄우기
 							onClick={() => {
-								if (numOfAllPlayers === 1) alert('경기 유형을 먼저 선택해주세요!');
+								if ([2, 4].filter((ele) => ele === numOfAllPlayers).length)
+									alert('경기 유형을 먼저 선택해주세요!');
+								// 포커스 옮기기
 							}}
 						/>
 					</InputBox>
 				</CourtFeeArea>
 
 				<InputBox>
-					<label htmlFor='courtPhoto'>구장 이미지</label>
+					<label htmlFor='courtPhoto'>경기장 이미지</label>
 					<ImageSection onClick={clickImgFile}>
 						<ImageBox width={'580px'} height={'380px'}>
-							{/* <img src='/images/add-image-rectangle-00.png' alt='add-image' /> */}
-							<img src='/images/add-image-rectangle-00.png' alt='add-image' />
+							<img
+								src={selectedImage || '/images/add-image-rectangle-00.png'}
+								alt='경기장 이미지'
+							/>
 						</ImageBox>
 						<input
+							id='courtPhoto'
 							type='file'
 							style={{ display: 'none' }}
 							ref={fileInputRef}
@@ -281,16 +351,16 @@ export default function PostMatching() {
 				</InputBox>
 
 				<InputBox>
-					<label htmlFor='postContent'>본문 내용</label>
+					<label htmlFor='mainText'>본문 내용</label>
 					<MainTextArea
-						id={'postContent'}
-						value={mainText}
-						onChange={(e) => setMainText(e.target.value)}
+						id={'mainText'}
+						onChange={(e) => postMatchingSetValue('mainText', e.target.value)}
 						placeholder='내용을 입력하세요.'
+						{...postMatchingResister('mainText')}
 					/>
 				</InputBox>
 
-				<SubmitBtn colorstyle={'is-black'} type='submit'>
+				<SubmitBtn colorstyle={'is-black'} type='submit' disabled={checkValidation()}>
 					등록하기
 				</SubmitBtn>
 			</PostMatchingForm>
@@ -351,20 +421,6 @@ const FeeForEachSpan = styled.span`
 
 	font-family: ${FontFamilyRegular};
 	color: ${ReportColor};
-`;
-
-const InputStyleBtn = styled(SquareButton)`
-	height: ${rem('50px')};
-	border: 1px solid ${InputBorderColor};
-	background: ${InputBoxColor};
-	border-radius: 5px;
-	padding: 0 15px;
-	text-align: center;
-
-	&:focus {
-		border: 1px solid ${PrimaryColor};
-		outline: none;
-	}
 `;
 
 const SubmitBtn = styled(RoundButton)`
