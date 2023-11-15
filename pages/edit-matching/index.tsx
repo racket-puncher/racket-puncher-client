@@ -1,5 +1,4 @@
-import React, { FormEvent, useEffect, useRef, useState } from 'react';
-import axios from 'axios';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
 import {
@@ -20,8 +19,10 @@ import TPicker from 'components/contents/postMatching/timePicker/TPicker';
 import ButtonStyleRadio from 'components/common/buttonRadio';
 import SearchCourtDrawer from 'components/contents/postMatching/searchCourtDrawer';
 
-export default function PostMatching() {
+export default function EditMatching() {
 	// To-do
+	// 매칭글id로 기존 글 데이터 받아오기
+	// useEffect(() => {GET});
 	// onSubmit 구현
 	// 프론트에서 모집 마감일 받을 때 등록일 이후~경기시작 시간 이전으로 모집 마감일 선택하도록 설정
 
@@ -40,12 +41,6 @@ export default function PostMatching() {
 					{ value: 2, label: '2 명' },
 					{ value: 3, label: '3 명' },
 			  ]);
-	};
-
-	const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
-		e.preventDefault();
-		const formData = new FormData(e.currentTarget);
-		// 엑시오스 요청~~~
 	};
 
 	const [selectedAge, setSelectedAge] = useState('');
@@ -111,7 +106,7 @@ export default function PostMatching() {
 				setState={setCourtAddress}
 			/>
 			<PageTitleArea>
-				<PageMainTitle>매칭 글 등록</PageMainTitle>
+				<PageMainTitle>매칭 글 수정</PageMainTitle>
 			</PageTitleArea>
 			<PostMatchingForm
 				onSubmit={(e) => {

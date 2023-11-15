@@ -13,7 +13,7 @@ function MyApp({ Component, pageProps }: any) {
 
 	useEffect(() => {
 		const originalError = console.error;
-		console.error = (message) => {
+		console.error = (message: string) => {
 			if (message?.includes('ReactDOM.unstable_renderSubtreeIntoContainer()')) {
 				return;
 			}

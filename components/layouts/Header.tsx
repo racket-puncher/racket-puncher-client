@@ -20,7 +20,9 @@ export default function Header() {
 		if (
 			pathNameStartsWith('/login') ||
 			pathNameStartsWith('/register') ||
-			pathNameStartsWith('/post')
+			pathNameStartsWith('/post-matching') ||
+			pathNameStartsWith('/edit-') ||
+			pathNameStartsWith('/find')
 		) {
 			setIisBackBtnVisible(true);
 		} else {
@@ -28,9 +30,9 @@ export default function Header() {
 		}
 	}, [router.pathname]);
 
-	const [isDrawerOpen, setisDrawerOpen] = useState(false);
-	const showDrawer = () => setisDrawerOpen(true);
-	const toggleDrawer = (prev: boolean) => setisDrawerOpen((prev) => !prev);
+	const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+	const showDrawer = () => setIsDrawerOpen(true);
+	const toggleDrawer = (prev: boolean) => setIsDrawerOpen((prev) => !prev);
 
 	return (
 		<>
@@ -65,7 +67,7 @@ const HeaderContainer = styled.div`
 	z-index: 999;
 
 	display: flex;
-	flex-directioin: row;
+	flex-direction: row;
 	align-items: center;
 	justify-content: space-between;
 
