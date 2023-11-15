@@ -49,7 +49,7 @@ export default function TPicker(props: IPickerProps) {
 					{timeState.getHours()}시 {timeState.getMinutes()}분
 				</p>
 				<ImageBox width={'24px'} height={'24px'}>
-					<img src='./svg/clock-icon.svg' alt='시계' color={LightGrayColor} />
+					<img src='/svg/clock-icon.svg' alt='시계' color={LightGrayColor} />
 				</ImageBox>
 			</CustomDatePickerBox>
 
