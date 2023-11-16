@@ -28,6 +28,7 @@ import { CustomBadge } from '../../styles/ts/components/badge';
 import { prefix } from '../../constants/prefix';
 import MatchesService from '../../service/matches/service';
 import AuthService from '../../service/auth/service';
+import { ageOptions, genderOptions, NTRPOptions } from '../../constants/filterOption';
 
 const schema = yup.object().shape({
 	userName: yup.string().required('이름은 필수입니다.'),
@@ -58,30 +59,6 @@ const schema = yup.object().shape({
 	address: yup.string().required('우편번호는 필수입니다.'),
 	detailAddress: yup.string().required('상세주소는 필수입니다.'),
 });
-
-interface OptionType {
-	value: string;
-	label: string;
-}
-
-const genderOptions: OptionType[] = [
-	{ value: 'MALE', label: '남자' },
-	{ value: 'FEMALE', label: '여자' },
-];
-
-const ageOptions: OptionType[] = [
-	{ value: 'TWENTIES', label: '20대' },
-	{ value: 'THIRTIES', label: '30대' },
-	{ value: 'FORTIES', label: '40대' },
-	{ value: 'SENIOR', label: '50대이상' },
-];
-const NTRPOptions: OptionType[] = [
-	{ value: 'DEVELOPMENT', label: 'Development' },
-	{ value: 'BEGINNER', label: 'Beginner' },
-	{ value: 'INTERMEDIATE', label: 'Intermediate' },
-	{ value: 'ADVANCE', label: 'Advance' },
-	{ value: 'PRO', label: 'Pro' },
-];
 
 export default function register() {
 	const [certifyNumVisible, setCertifyNumVisible] = useState(false);

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
 import InfiniteScroll from 'react-infinite-scroller';
@@ -16,16 +16,53 @@ import Service from '../../../../service/matches/service';
 
 export default function MatchingList() {
 	const { movePage } = useRouterHook();
+
+	// 첫 렌더링 여부
+	const [isFirst, setIsFirst] = useState(true);
+
 	const [isClickFilter, setIsClickFilter] = useState(false);
 	const [matchingList, setMatchingList] = useState([]);
+
 	const [params, setParams] = useState({
 		page: 1,
 		size: 10,
 	});
 
+	const [filterParams, setFilterParams] = useState({
+		sort: '',
+		lat: '',
+		lon: '',
+		startDate: '',
+		endDate: '',
+		startTime: '',
+		endTime: '',
+		regions: [],
+		matchingTypes: [],
+		ageGroups: [],
+		ntrps: [],
+	});
+
 	const getMatchingList = async () => {
+		setIsFirst(false);
+		const payload = {
+			params: {
+				page: params.page,
+				size: params.size,
+				sort: filterParams.sort,
+			},
+			body: {
+				lat: filterParams.lat,
+				lon: filterParams.lon,
+				startDate: filterParams.startDate,
+				regions: filterParams.regions,
+				matchingTypes: filterParams.matchingTypes,
+				ageGroups: filterParams.ageGroups,
+				ntrps: filterParams.ntrps,
+			},
+		};
+		console.log(filterParams);
 		try {
-			const res = await Service.getMatchingList(params);
+			const res = await Service.getMatchingList(payload);
 			setParams((prev) => ({ ...prev, page: prev.page + 1 }));
 			setMatchingList((prev) => [...prev, ...res.data.content]);
 		} catch (e) {
@@ -37,12 +74,27 @@ export default function MatchingList() {
 		movePage('/main/detailMatch');
 	};
 
-	const handleFilterDrawer = () => {
+	const clickFilterXBtnDrawer = () => {
+		console.log('x버튼 클릭');
 		setIsClickFilter((prev) => !prev);
 	};
+
+	const clickApplyBtnDrawer = () => {
+		console.log('적용하기 클릭');
+		setIsClickFilter((prev) => !prev);
+	};
+
 	const handleClickPostMatching = () => {
 		movePage('/post-matching');
 	};
+
+	// useEffect(() => {
+	// 	if (!isFirst) {
+	// 		// getMatchingList();
+	// 		console.log('실행');
+	// 	}
+	// }, [filterParams]);
+
 	return (
 		<>
 			<MatchingContainer>
@@ -57,7 +109,7 @@ export default function MatchingList() {
 						</ImageBox>
 						<p>매칭등록</p>
 					</RoundButton>
-					<ImageBox onClick={handleFilterDrawer}>
+					<ImageBox onClick={clickFilterXBtnDrawer}>
 						<img src={`${prefix}/images/filtering-menu.png`} alt='filtering-menu' />
 					</ImageBox>
 				</ControlBox>
@@ -93,8 +145,13 @@ export default function MatchingList() {
 					placement={'bottom'}
 					width={'50%'}
 					height={'90%'}
-					toggleDrawer={handleFilterDrawer}>
-					<FilteringModal clickFilter={isClickFilter} toggleModal={handleFilterDrawer} />
+					toggleDrawer={clickFilterXBtnDrawer}>
+					<FilteringModal
+						clickFilter={isClickFilter}
+						toggleModal={clickApplyBtnDrawer}
+						params={filterParams}
+						setParams={setFilterParams}
+					/>
 				</HalfDrawerBox>
 			</MatchingContainer>
 		</>
