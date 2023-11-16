@@ -2,12 +2,11 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 import { Radio as AntdRadio, ConfigProvider } from 'antd';
 import { InputBorderColor, InputBoxColor, InputLabelColor, PrimaryColor } from 'styles/ts/common';
-
-import { Dispatch, SetStateAction } from 'react';
+// import { Dispatch, SetStateAction } from 'react';
 
 interface IBtnRadioProps {
 	readonly id?: string;
-	readonly setState: Dispatch<SetStateAction<boolean>>;
+	readonly setState: (stateName: string, value: boolean) => void;
 }
 
 export default function ButtonStyleRadio(props: IBtnRadioProps) {
@@ -26,7 +25,10 @@ export default function ButtonStyleRadio(props: IBtnRadioProps) {
 					},
 				},
 			}}>
-			<RadioGroup id={props.id} size='large' onChange={(e) => props.setState(e.target.value)}>
+			<RadioGroup
+				id={props.id}
+				size='large'
+				onChange={(e) => props.setState('isCourtBooked', e.target.value)}>
 				<RadioButton value={true}>예약 O</RadioButton>
 				<RadioButton value={false}>예약 X</RadioButton>
 			</RadioGroup>
