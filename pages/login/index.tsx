@@ -15,6 +15,7 @@ import ModalBox from '../../components/common/modal';
 import { InputBox } from '../../styles/ts/components/input';
 import { InputErrorText } from '../../styles/ts/components/text';
 import { prefix } from '../../constants/prefix';
+import AuthService from '../../service/auth/service';
 
 interface FormData {
 	readonly email: string;
@@ -61,8 +62,13 @@ export default function Login() {
 		console.log('취소');
 	};
 
-	const clickLoginBtn = (data: FormData) => {
-		console.log(data);
+	// 로그인
+	const clickLoginBtn = async (data: FormData) => {
+		try {
+			await AuthService.login(data);
+		} catch (e) {
+			console.log(e);
+		}
 	};
 
 	// 소셜로그인 --------------------------------------
