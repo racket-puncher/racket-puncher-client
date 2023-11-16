@@ -2,6 +2,7 @@ import styled from 'styled-components';
 import { useEffect, useState } from 'react';
 import MatchingCard from '../card';
 import { v4 as uuidv4 } from 'uuid';
+import { prefix } from '../../../../constants/prefix';
 
 const positions = [
 	{
@@ -45,6 +46,19 @@ export default function MyAroundMatching() {
 		const kakaoMap = new kakao.maps.Map(container, options);
 		setMap(kakaoMap);
 
+		const customMarkerImageUrl = `${prefix}/images/map-pin.png`;
+		const imageSize = new kakao.maps.Size(28, 40);
+		// 마커의 끝점을 기준으로 이미지가 표시
+		const imageOption = { offset: new kakao.maps.Point(27, 69) };
+
+		// 커스텀 마커 이미지 생성
+		const customMarkerImage = new kakao.maps.MarkerImage(
+			customMarkerImageUrl,
+			imageSize,
+			imageOption
+		);
+
+		// 내위치 핀찍기 ----------------------------------------------------------
 		if (navigator.geolocation) {
 			navigator.geolocation.getCurrentPosition(
 				(position) => {
@@ -55,6 +69,7 @@ export default function MyAroundMatching() {
 					const userMarker = new kakao.maps.Marker({
 						map: kakaoMap,
 						position: new kakao.maps.LatLng(lat, lng),
+						image: customMarkerImage,
 					});
 
 					const userInfowindow = new kakao.maps.InfoWindow({
@@ -71,10 +86,12 @@ export default function MyAroundMatching() {
 			console.log('이 브라우저에서는 지원되지 않음');
 		}
 
+		// infoWindow ----------------------------------------------------------
 		const newInfowindows = positions.map((position) => {
 			const marker = new kakao.maps.Marker({
 				map: kakaoMap,
 				position: new kakao.maps.LatLng(position.lat, position.lng),
+				image: customMarkerImage,
 			});
 
 			const infowindow = new kakao.maps.InfoWindow({
@@ -83,13 +100,10 @@ export default function MyAroundMatching() {
 			});
 
 			kakao.maps.event.addListener(marker, 'click', () => {
-				if (selectedMarker && selectedMarker.getPosition) {
-					const selectedPosition = selectedMarker.getPosition();
-					infowindows.forEach((iw) => iw.close());
-					setSelectedMarker(marker);
-					infowindow.open(kakaoMap, marker);
-					kakaoMap.setCenter(selectedPosition);
-				}
+				infowindows.forEach((iw) => iw.close());
+				infowindow.open(kakaoMap, marker);
+				setSelectedMarker(marker); // 선택된 마커 업데이트
+				kakaoMap.setCenter(marker.getPosition());
 			});
 
 			return infowindow;
@@ -99,7 +113,7 @@ export default function MyAroundMatching() {
 	}, []);
 
 	const handleButtonClick = (position, index) => {
-		if (map && selectedMarker && selectedMarker.getPosition) {
+		if (map) {
 			const markerPosition = new kakao.maps.LatLng(position.lat, position.lng);
 			map.setCenter(markerPosition);
 
