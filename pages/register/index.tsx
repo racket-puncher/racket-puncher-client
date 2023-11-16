@@ -217,8 +217,8 @@ export default function register() {
 			phoneNumber: '010-1234-5678',
 		};
 		try {
-			const res = await AuthService.signup(params);
-			console.log(res);
+			// const res = await AuthService.signup(params);
+			// console.log(res);
 		} catch (e) {
 			console.log(e);
 		}
