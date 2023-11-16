@@ -1,4 +1,6 @@
 // 매칭글 게시
+import { array } from 'yup';
+
 export interface reqRegMatchingApiData {
 	title: string; // 제목
 	ageGroup: string; // 연령대
@@ -60,8 +62,20 @@ export interface reqDeleteMatchingListApiData {
 
 // 매칭 리스트 조회
 export interface reqGetMatchingListApiData {
-	page: number;
-	size: number;
+	params: {
+		page: number;
+		size: number;
+		sort: string;
+	};
+	body: {
+		lat: string;
+		lon: string;
+		startDate: string;
+		regions: object;
+		matchingTypes: object;
+		ageGroups: object;
+		ntrps: object;
+	};
 }
 
 // 매칭별 신청 현황 조회

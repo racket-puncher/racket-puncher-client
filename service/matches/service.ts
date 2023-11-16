@@ -29,13 +29,10 @@ const deleteMatchingList = (data: reqDeleteMatchingListApiData) => {
 	return http.delete(`/api/matches/${data}`);
 };
 
-// 매칭리스트 조회 (필터링 X)
+// 매칭리스트 조회
 const getMatchingList = (data: reqGetMatchingListApiData) => {
-	return http.get('/api/matches/list', {
-		params: {
-			page: data.page,
-			size: data.size,
-		},
+	return http.post('/api/matches/list', data.body, {
+		params: data.params,
 	});
 };
 

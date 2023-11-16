@@ -18,6 +18,7 @@ import { RoundButton } from '../../../../styles/ts/components/buttons';
 import CustomDatePicker from '../../../common/datePicker';
 import ModalBox from '../../../common/modal';
 import { RegionBasic, RegionGyeonggi, RegionSeoul } from '../../../../constants/region';
+import { ageOptions, matchingTypesOptions, NTRPOptions } from '../../../../constants/filterOption';
 
 const options: SelectProps['options'] = [];
 
@@ -31,6 +32,8 @@ for (let i = 10; i < 36; i++) {
 interface IFilteringProps {
 	readonly clickFilter: boolean;
 	readonly toggleModal: () => void;
+	readonly params: any;
+	readonly setParams: any;
 }
 
 export default function FilteringModal(props: IFilteringProps) {
@@ -161,6 +164,17 @@ export default function FilteringModal(props: IFilteringProps) {
 		setRealMathTypeValue(filterWatch('matchType'));
 		setRealMatchAgeValue(filterWatch('matchAge'));
 		setRealNTRPValue(filterWatch('matchNTRP'));
+
+		props.setParams((prev) => ({
+			...prev,
+			sort: filterWatch('sort'),
+			startDate: filterWatch('date'),
+			regions: filterWatch('grandParent'),
+			matchingTypes: filterWatch('matchType'),
+			ageGroups: filterWatch('matchAge'),
+			ntrps: filterWatch('matchNTRP'),
+		}));
+
 		props.toggleModal();
 	};
 
@@ -178,7 +192,7 @@ export default function FilteringModal(props: IFilteringProps) {
 					<Radio.Group defaultValue='register' size='large' {...filterRegister('sort')}>
 						<Radio.Button value='register'>등록순</Radio.Button>
 						<Radio.Button value='distance'>거리순</Radio.Button>
-						<Radio.Button value='deadLine'>모집임박순</Radio.Button>
+						<Radio.Button value='due-date'>모집임박순</Radio.Button>
 					</Radio.Group>
 
 					<FilteringOptionContainer>
@@ -234,7 +248,7 @@ export default function FilteringModal(props: IFilteringProps) {
 										{...field}
 										mode='multiple'
 										placeholder='경기 유형을 선택해주세요.'
-										options={options}
+										options={matchingTypesOptions}
 										style={{ width: '100%' }}
 									/>
 								)}
@@ -256,7 +270,7 @@ export default function FilteringModal(props: IFilteringProps) {
 										{...field}
 										mode='multiple'
 										placeholder='연령대를 선택해주세요.'
-										options={options}
+										options={ageOptions}
 										style={{ width: '100%' }}
 									/>
 								)}
@@ -278,7 +292,7 @@ export default function FilteringModal(props: IFilteringProps) {
 										{...field}
 										mode='multiple'
 										placeholder='모집 수준을 선택해주세요.'
-										options={options}
+										options={NTRPOptions}
 										style={{ width: '100%' }}
 									/>
 								)}
