@@ -32,15 +32,17 @@ for (let i = 10; i < 36; i++) {
 interface IFilteringProps {
 	readonly clickFilter: boolean;
 	readonly toggleModal: () => void;
-	readonly params: any;
 	readonly setParams: any;
+	setMatchingList: any;
+	readonly setFilterParams: any;
 }
 
 export default function FilteringModal(props: IFilteringProps) {
 	// 필터링 모달 (1차)
-	const [dateState, setDateState] = useState(new Date());
+	const [dateState, setDateState] = useState('');
+	const [sortState, setSortState] = useState('');
 
-	const [realSortValue, setSortValue] = useState('');
+	const [realSortValue, setSortValue] = useState(null);
 	const [realDateValue, setRealDateValue] = useState('');
 	const [realRegionGrandParentValue, setRealRegionGrandParentValue] = useState([]);
 	const [realMathTypeValue, setRealMathTypeValue] = useState([]);
@@ -81,10 +83,6 @@ export default function FilteringModal(props: IFilteringProps) {
 		matchType: realMathTypeValue,
 		matchAge: realMatchAgeValue,
 		matchNTRP: realNTRPValue,
-	};
-
-	const handleChange = (value: string | string[]) => {
-		console.log(`Selected: ${value}`);
 	};
 
 	// 지역모달 ---------------------------------------------------
@@ -154,27 +152,35 @@ export default function FilteringModal(props: IFilteringProps) {
 		Object.keys(initialFilteringValue).forEach((propName) => {
 			filterSetValue(propName, initialFilteringValue[propName]);
 		});
+		setDateState(initialFilteringValue.date);
+		setSortState(initialFilteringValue.sort);
 	};
 
 	// 필터링 모달 적용하기 클릭
 	const clickApplyBtn = () => {
-		setSortValue(filterWatch('sort'));
-		setRealDateValue(filterWatch('date'));
+		setSortValue(sortState);
+		setRealDateValue(dateState);
 		setRealRegionGrandParentValue(filterWatch('grandParent'));
 		setRealMathTypeValue(filterWatch('matchType'));
 		setRealMatchAgeValue(filterWatch('matchAge'));
 		setRealNTRPValue(filterWatch('matchNTRP'));
 
-		props.setParams((prev) => ({
+		props.setFilterParams((prev) => ({
 			...prev,
-			sort: filterWatch('sort'),
-			startDate: filterWatch('date'),
+			sort: sortState,
+			startDate: dateState,
 			regions: filterWatch('grandParent'),
 			matchingTypes: filterWatch('matchType'),
 			ageGroups: filterWatch('matchAge'),
 			ntrps: filterWatch('matchNTRP'),
 		}));
 
+		props.setParams((prev) => ({
+			...prev,
+			page: 1,
+		}));
+
+		props.setMatchingList([]);
 		props.toggleModal();
 	};
 
@@ -189,7 +195,12 @@ export default function FilteringModal(props: IFilteringProps) {
 			<FilteringModalContainer>
 				<div className={'content-box'}>
 					{/* radio */}
-					<Radio.Group defaultValue='register' size='large' {...filterRegister('sort')}>
+					<Radio.Group
+						size='large'
+						value={sortState}
+						onChange={(e) => {
+							setSortState(e.target.value);
+						}}>
 						<Radio.Button value='register'>등록순</Radio.Button>
 						<Radio.Button value='distance'>거리순</Radio.Button>
 						<Radio.Button value='due-date'>모집임박순</Radio.Button>
@@ -201,11 +212,7 @@ export default function FilteringModal(props: IFilteringProps) {
 							<LabelBox>
 								<SelectTitle>날짜</SelectTitle>
 							</LabelBox>
-							<CustomDatePicker
-								dateState={dateState}
-								setDateState={setDateState}
-								{...filterRegister('date')}
-							/>
+							<CustomDatePicker dateState={dateState} setDateState={setDateState} />
 						</OptionWrap>
 
 						{/* region */}
@@ -410,42 +417,40 @@ const FilteringOptionContainer = styled.div`
 const DatePickerBox = styled.div``;
 
 const OptionWrap = styled.div`
-  margin-bottom: 20px;
+	margin-bottom: 20px;
 
-  div.datePicker__CustomDatePickerBox-sc-1gktdcy-0 {
-    height: 50px;
-    padding: 0% {
-      rem('14px')
-    };
-  }
+	div.datePicker__CustomDatePickerBox-sc-1gktdcy-0 {
+		height: 50px;
+		padding: 0% ${rem('14px')};
+	}
 
-  div.ant-select-selector {
-    padding: 10px 14px;
-    border-radius: 10px;
-    border: 1px solid #dcdcdc !important;
-    background-color: #f9f9f9 !important;
+	div.ant-select-selector {
+		padding: 10px 14px;
+		border-radius: 10px;
+		border: 1px solid #dcdcdc !important;
+		background-color: #f9f9f9 !important;
 
-    span.ant-select-selection-item {
-      border-radius: 10px;
-      background: #84a840;
-      height: 30px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
+		span.ant-select-selection-item {
+			border-radius: 10px;
+			background: #84a840;
+			height: 30px;
+			display: flex;
+			justify-content: center;
+			align-items: center;
 
-      span.ant-select-selection-item-content {
-        color: #fff;
-        font-size: 13px;
-        font-family: Pretendard-Regular;
-        margin-right: 5px;
-      }
+			span.ant-select-selection-item-content {
+				color: #fff;
+				font-size: 13px;
+				font-family: Pretendard-Regular;
+				margin-right: 5px;
+			}
 
-      span.ant-select-selection-item-remove {
-        font-size: 13px;
-        color: #fff;
-      }
-    }
-  }
+			span.ant-select-selection-item-remove {
+				font-size: 13px;
+				color: #fff;
+			}
+		}
+	}
 `;
 
 const SelectTitle = styled.p`

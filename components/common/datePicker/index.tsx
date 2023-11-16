@@ -8,8 +8,8 @@ import { dateFormatter } from '../../../utils/formatter';
 import { prefix } from '../../../constants/prefix';
 
 interface IDatePickerProps {
-	readonly dateState: Date;
-	readonly setDateState: Dispatch<SetStateAction<Date>>;
+	readonly dateState: string;
+	readonly setDateState: any;
 }
 
 const options = {
@@ -22,17 +22,16 @@ const options = {
 
 export default function CustomDatePicker(props: IDatePickerProps) {
 	const [isOpen, setIsOpen] = useState(false);
-	const [showDateStr, setShowDateStr] = useState('');
 
 	const handleSelect = (selectedDate: Date) => {
-		props.setDateState(selectedDate);
-		setShowDateStr(dateFormatter(selectedDate));
+		props.setDateState(dateFormatter(selectedDate));
 		setIsOpen(false);
 	};
+
 	return (
 		<>
 			<CustomDatePickerBox onClick={() => setIsOpen(true)}>
-				<p>{showDateStr}</p>
+				<p>{props.dateState}</p>
 				<ImageBox width={'24px'} height={'24px'}>
 					<img src={`${prefix}/images/calendar.png`} alt='calendar' />
 				</ImageBox>
@@ -40,8 +39,11 @@ export default function CustomDatePicker(props: IDatePickerProps) {
 			<DatePicker
 				isOpen={isOpen}
 				onSelect={handleSelect}
-				onCancel={() => setIsOpen(false)}
-				date={props.dateState}
+				onCancel={() => {
+					props.setDateState('');
+					setIsOpen(false);
+				}}
+				date={new Date()}
 				{...options}
 			/>
 		</>
