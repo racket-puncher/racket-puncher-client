@@ -1,4 +1,5 @@
 import Document, { Head, Html, Main, NextScript } from 'next/document';
+import * as process from 'process';
 
 class MyDocument extends Document {
 	render() {
@@ -8,9 +9,7 @@ class MyDocument extends Document {
 					<script
 						type='text/javascript'
 						src={
-							'//dapi.kakao.com/v2/maps/sdk.js?appkey=' +
-							`${process.env.KAKAO_MAPS_APP_KEY}` +
-							'&autoload=false'
+							'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + `${process.env.KAKAO_MAPS_APP_KEY}`
 						}></script>
 				</Head>
 				<body>
