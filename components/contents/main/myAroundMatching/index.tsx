@@ -38,13 +38,6 @@ export default function MyAroundMatching() {
 
 	useEffect(() => {
 		const container = document.getElementById('kakao-map');
-		const options = {
-			center: new kakao.maps.LatLng(33.450705, 126.570677),
-			level: 3,
-		};
-
-		const kakaoMap = new kakao.maps.Map(container, options);
-		setMap(kakaoMap);
 
 		const customMarkerImageUrl = `${prefix}/images/map-pin.png`;
 		const imageSize = new kakao.maps.Size(28, 40);
@@ -64,6 +57,15 @@ export default function MyAroundMatching() {
 				(position) => {
 					const lat = position.coords.latitude;
 					const lng = position.coords.longitude;
+
+					const options = {
+						center: new kakao.maps.LatLng(lat, lng),
+						level: 3,
+					};
+
+					const kakaoMap = new kakao.maps.Map(container, options);
+					setMap(kakaoMap);
+
 					kakaoMap.setCenter(new kakao.maps.LatLng(lat, lng));
 
 					const userMarker = new kakao.maps.Marker({
@@ -77,6 +79,31 @@ export default function MyAroundMatching() {
 					});
 					userInfowindow.open(kakaoMap, userMarker);
 					infowindows.push(userInfowindow);
+
+					// infoWindow ----------------------------------------------------------
+					const newInfowindows = positions.map((position) => {
+						const marker = new kakao.maps.Marker({
+							map: kakaoMap,
+							position: new kakao.maps.LatLng(position.lat, position.lng),
+							image: customMarkerImage,
+						});
+
+						const infowindow = new kakao.maps.InfoWindow({
+							content: position.content,
+							removable: true,
+						});
+
+						kakao.maps.event.addListener(marker, 'click', () => {
+							infowindows.forEach((iw) => iw.close());
+							infowindow.open(kakaoMap, marker);
+							setSelectedMarker(marker); // 선택된 마커 업데이트
+							kakaoMap.setCenter(marker.getPosition());
+						});
+
+						return infowindow;
+					});
+
+					setInfowindows([...infowindows, ...newInfowindows]);
 				},
 				(error) => {
 					console.error('error: ' + error.message);
@@ -84,32 +111,14 @@ export default function MyAroundMatching() {
 			);
 		} else {
 			console.log('이 브라우저에서는 지원되지 않음');
+			// Geolocation API 사용 불가능 시 기본 위치로 설정
+			const defaultOptions = {
+				center: new kakao.maps.LatLng(33.450705, 126.570677),
+				level: 3,
+			};
+			const kakaoMap = new kakao.maps.Map(container, defaultOptions);
+			setMap(kakaoMap);
 		}
-
-		// infoWindow ----------------------------------------------------------
-		const newInfowindows = positions.map((position) => {
-			const marker = new kakao.maps.Marker({
-				map: kakaoMap,
-				position: new kakao.maps.LatLng(position.lat, position.lng),
-				image: customMarkerImage,
-			});
-
-			const infowindow = new kakao.maps.InfoWindow({
-				content: position.content,
-				removable: true,
-			});
-
-			kakao.maps.event.addListener(marker, 'click', () => {
-				infowindows.forEach((iw) => iw.close());
-				infowindow.open(kakaoMap, marker);
-				setSelectedMarker(marker); // 선택된 마커 업데이트
-				kakaoMap.setCenter(marker.getPosition());
-			});
-
-			return infowindow;
-		});
-
-		setInfowindows([...infowindows, ...newInfowindows]);
 	}, []);
 
 	const handleButtonClick = (position, index) => {
