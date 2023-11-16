@@ -97,6 +97,7 @@ const CustomDatePickerBox = styled.div`
 	align-items: center;
 	cursor: pointer;
 	p {
+		flex: 1;
 		font-size: ${rem(`${FontSizeSpSm}`)};
 		font-family: ${FontFamilyRegular};
 	}
