@@ -45,7 +45,9 @@ export default function Login() {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm();
+	} = useForm({
+		resolver: yupResolver(schema),
+	});
 
 	const [isModalOpenVisible, setIsModalOpenVisible] = useState(false);
 	const toggleModal = () => {
