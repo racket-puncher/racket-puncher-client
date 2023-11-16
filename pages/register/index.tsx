@@ -383,10 +383,10 @@ export default function register() {
 										</AddressBox>
 										<AddressBox>
 											<CustomBadge>지번</CustomBadge>
-											<p>{}</p>
+											<p>{item.jibunAddr}</p>
 										</AddressBox>
 									</AddLeftWrap>
-									<AddRightWrap>13477</AddRightWrap>
+									<AddRightWrap>{item.zipNo}</AddRightWrap>
 								</AddressBoxWrap>
 							);
 						})}

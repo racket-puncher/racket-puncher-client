@@ -51,7 +51,11 @@ const getMatchingApplyState = (data: reqMatchingApplyStateApiData) => {
 
 // 주소 검색
 const searchAddress = (data: any) => {
-	return http.post('/api/matches/location', data);
+	return http.get('/api/matches/address', {
+		params: {
+			keyword: data.keyword,
+		},
+	});
 };
 
 const MatchesService = {
