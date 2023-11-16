@@ -12,7 +12,7 @@ export const CustomBadge = styled.span.withConfig({
 	shouldForwardProp: (props) => props !== 'fontsize',
 })<IBadgeProps>`
 	display: block;
-	width: ${rem('73px')};
+	padding: 0 ${rem('12px')};
 	height: ${rem('30px')};
 	flex-shrink: 0;
 	background-color: ${(props) => props.color || ReportColor};

@@ -17,6 +17,7 @@ export const InputLabelColor = '#343434';
 export const InputErrorColor = '#D73333';
 export const HeaderBtnColor = '#C4C4C4';
 export const PlayerListBGColor = '#F5F5F5';
+export const YellowBgColor = '#F2BE22';
 
 export const FontSizeSpLg = '28px';
 export const FontSizeMdLg = '24px';

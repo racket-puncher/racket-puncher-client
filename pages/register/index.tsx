@@ -171,7 +171,7 @@ export default function register() {
 		};
 		try {
 			const res = await MatchesService.searchAddress(payload);
-			setAddressList(res);
+			setAddressList(res.data);
 			console.log(res);
 		} catch (e) {
 			console.log(e);
