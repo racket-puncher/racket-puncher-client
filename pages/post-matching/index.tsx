@@ -59,7 +59,7 @@ export default function PostMatching() {
 		register: postMatchingResister,
 		handleSubmit: postMatchingHandleSubmit,
 		setValue: postMatchingSetValue,
-		getValues: getValues,
+		getValues: postMatchingGetValues,
 		watch: postMatchingWatch,
 		formState: { errors: postMatchingErrors },
 	} = useForm({
@@ -117,23 +117,23 @@ export default function PostMatching() {
 	const onSubmit = (e: any) => {
 		e.preventDefault();
 		const postedData = {
-			title: `${getValues('postTitle')}`,
-			matchType: `${getValues('matchType')}`,
-			recruitNum: `${getValues('numOfRecruited')}`,
-			ageGroup: `${getValues('selectedAge')}`,
-			ntrp: `${getValues('selectedNTRP')}`,
-			matchingDate: `${getValues('matchDate')}`,
-			matchingStartTime: `${getValues('matchStartTime')}`,
-			matchingEndTime: `${getValues('matchEndTime')}`,
-			recruitDueDate: `${getValues('deadlineDate')}`,
-			recruitDueTime: `${getValues('deadlineTime')}`,
-			location: `${getValues('courtAddress')}`,
+			title: `${postMatchingGetValues('postTitle')}`,
+			matchType: `${postMatchingGetValues('matchType')}`,
+			recruitNum: `${postMatchingGetValues('numOfRecruited')}`,
+			ageGroup: `${postMatchingGetValues('selectedAge')}`,
+			ntrp: `${postMatchingGetValues('selectedNTRP')}`,
+			matchingDate: `${postMatchingGetValues('matchDate')}`,
+			matchingStartTime: `${postMatchingGetValues('matchStartTime')}`,
+			matchingEndTime: `${postMatchingGetValues('matchEndTime')}`,
+			recruitDueDate: `${postMatchingGetValues('deadlineDate')}`,
+			recruitDueTime: `${postMatchingGetValues('deadlineTime')}`,
+			location: `${postMatchingGetValues('courtAddress')}`,
 			lat: '위도',
 			len: '경도',
-			isReserved: `${getValues('isCourtBooked')}`,
-			cost: `${getValues('courtFee')}`,
-			// locationImg: `${getValues('selectedImage')}`,
-			content: `${getValues('mainText')}`,
+			isReserved: `${postMatchingGetValues('isCourtBooked')}`,
+			cost: `${postMatchingGetValues('courtFee')}`,
+			// locationImg: `${postMatchingGetValues('selectedImage')}`,
+			content: `${postMatchingGetValues('mainText')}`,
 		};
 		console.log(e);
 		console.log(postedData);

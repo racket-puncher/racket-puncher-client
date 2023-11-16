@@ -7,6 +7,7 @@ import DatePicker from 'react-mobile-datepicker';
 import { timeFormatter } from 'utils/formatter';
 
 interface IPickerProps {
+	readonly id?: string;
 	readonly setState: Dispatch<SetStateAction<string>>;
 	readonly type: Array<boolean>;
 }
