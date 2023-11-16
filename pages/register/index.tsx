@@ -77,9 +77,7 @@ export default function register() {
 		setValue: signupSetValue,
 		watch: signupWatch,
 		formState: { errors: signErrors },
-	} = useForm({
-		resolver: yupResolver(schema),
-	});
+	} = useForm();
 
 	const {
 		register: addressRegister,
@@ -194,8 +192,8 @@ export default function register() {
 			phoneNumber: '010-1234-5678',
 		};
 		try {
-			// const res = await AuthService.signup(params);
-			// console.log(res);
+			const res = await AuthService.signup(params);
+			console.log(res);
 		} catch (e) {
 			console.log(e);
 		}
