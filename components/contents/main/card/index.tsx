@@ -3,20 +3,31 @@ import { GrayLine, ImageBox } from '../../../../styles/ts/components/box';
 import { CustomBadge } from '../../../../styles/ts/components/badge';
 import React from 'react';
 import { rem } from 'polished';
+import { formatDateTime } from 'utils/formatter';
+
 import {
 	FontSizeLg,
 	FontSizeMc,
-	InputBoxColor,
 	InputLabelColor,
 	PrimaryColor,
 	ReportColor,
+	YellowBgColor,
 } from '../../../../styles/ts/common';
 import { prefix } from '../../../../constants/prefix';
 
-export default function MatchingCard({ onClick }) {
+interface IMatchingCardProps {
+	readonly matchingStartDateTime?: string;
+	readonly matchingType?: string;
+	readonly ntrp?: string;
+	readonly reserved?: boolean;
+	readonly title?: string;
+	readonly onClick?: () => void;
+}
+
+export default function MatchingCard(props: IMatchingCardProps) {
 	return (
 		<>
-			<CardContainer onClick={onClick}>
+			<CardContainer onClick={props.onClick}>
 				<ContentBox>
 					<LeftBox>
 						<ImageBox width={'128.205px'} height={'125px'}>
@@ -26,23 +37,26 @@ export default function MatchingCard({ onClick }) {
 
 					<RightBox>
 						<BadgeBox>
-							<CustomBadge color={ReportColor} fontsize={FontSizeMc}>
-								예약X
+							<CustomBadge
+								color={props.reserved ? YellowBgColor : ReportColor}
+								fontsize={FontSizeMc}>
+								{props.reserved ? '예약완료' : '예약X'}
 							</CustomBadge>
 							<CustomBadge color={'#4682A9'} fontsize={FontSizeMc}>
 								남자 단식
 							</CustomBadge>
 							<CustomBadge color={PrimaryColor} fontsize={FontSizeMc}>
-								NTRP 2.0
+								{props.ntrp}
 							</CustomBadge>
 						</BadgeBox>
 
 						<MatchingTimeBox>
-							<p>10월 10일(월) 오후 2시</p>
+							{/* <p>10월 10일(월) 오후 2시</p> */}
+							<p>{formatDateTime(props.matchingStartDateTime)}</p>
 						</MatchingTimeBox>
 
 						<MatchingTitleBox>
-							<p>양천구 목동 테니스 경기장</p>
+							<p>{props.title}</p>
 						</MatchingTitleBox>
 					</RightBox>
 				</ContentBox>

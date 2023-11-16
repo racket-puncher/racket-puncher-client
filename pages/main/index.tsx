@@ -3,6 +3,7 @@ import styled from 'styled-components';
 import Slider from 'react-slick';
 import { rem } from 'polished';
 import type { TabsProps } from 'antd';
+import InfiniteScroll from 'react-infinite-scroller';
 
 import { GrayLine, ImageBox } from 'styles/ts/components/box';
 import MatchingList from 'components/contents/main/matchingList';
@@ -40,30 +41,17 @@ const items: TabsProps['items'] = [
 export default function MainPage() {
 	const { movePage } = useRouterHook();
 	const [isLoading, setIsLoading] = useState(true);
-	const test = [
-		{
-			id: '1',
-		},
-		{
-			id: '2',
-		},
-		{
-			id: '3',
-		},
-		{
-			id: '4',
-		},
-	];
+	const [matchingList, setMatchingList] = useState([]);
+	const [params, setParams] = useState({
+		page: 1,
+		size: 10,
+	});
 
 	const getMatchingList = async () => {
-		const params = {
-			page: 1,
-			size: 10,
-		};
-
 		try {
 			const res = await Service.getMatchingList(params);
-			console.log('성공', res);
+			setParams((prev) => ({ ...prev, page: prev.page + 1 }));
+			setMatchingList((prev) => [...prev, ...res.data.content]);
 		} catch (e) {
 			console.log(e);
 		}
@@ -72,13 +60,6 @@ export default function MainPage() {
 	const moveDetailMatching = () => {
 		movePage('/main/detailMatch');
 	};
-
-	useEffect(() => {
-		getMatchingList();
-		setTimeout(() => {
-			setIsLoading(false);
-		}, 200);
-	}, []);
 
 	return (
 		<>
@@ -97,17 +78,30 @@ export default function MainPage() {
 				<MainContainer>
 					<CustomTab defaultActiveKey='1' items={items} />
 					<GrayLine />
-					{test.map((item) => {
-						return (
-							<>
-								{isLoading ? (
-									<SkeletonUI />
-								) : (
-									<MatchingCard onClick={moveDetailMatching}></MatchingCard>
-								)}
-							</>
-						);
-					})}
+					<InfiniteScroll
+						pageStart={0}
+						loadMore={getMatchingList}
+						hasMore={true || false}
+						loader={
+							<div className='loader' key={0}>
+								<SkeletonUI />
+							</div>
+						}>
+						{matchingList.map((item) => {
+							return (
+								<>
+									<MatchingCard
+										matchingStartDateTime={item.matchingStartDateTime}
+										matchingType={item.matchingType}
+										ntrp={item.ntrp}
+										reserved={item.reserved}
+										title={item.title}
+										onClick={moveDetailMatching}
+									/>
+								</>
+							);
+						})}
+					</InfiniteScroll>
 				</MainContainer>
 			</MainViewContainer>
 		</>
