@@ -4,28 +4,27 @@ import { rem } from 'polished';
 import { ImageBox } from '../../../../styles/ts/components/box';
 import { FontFamilyRegular, FontSizeSpSm } from '../../../../styles/ts/common';
 import DatePicker from 'react-mobile-datepicker';
+import { dateFormatter } from 'utils/formatter';
 
 interface IPickerProps {
 	readonly id?: string;
-	readonly setState: Dispatch<SetStateAction<Date>>;
+	readonly setState: Dispatch<SetStateAction<string>>;
 	readonly type?: Array<boolean>;
-	readonly matchDate?: Date;
+	readonly matchDate?: string;
 }
 
 export default function DPicker(props: IPickerProps) {
 	const [dateState, setDateState] = useState(new Date());
-	useEffect(
-		() => setDateState(props.matchDate ? new Date(props.matchDate.getDate()) : new Date()),
-		[props.matchDate]
-	);
+	// useEffect(() => props.matchDate && setDateState(new Date(matchDate)), [props.matchDate]);
+
 	const [isOpen, setIsOpen] = useState(false);
 
 	const handleSelect = (selectedDate: Date) => {
 		setDateState(selectedDate);
-		props.setState(selectedDate);
+		props.setState(dateFormatter(selectedDate));
 		setIsOpen(false);
 	};
-	// 못움직이게 하는 방법...?!
+	// 못선택하게 하는 방법...?!
 
 	const dateConfig = {
 		year: {
@@ -52,23 +51,22 @@ export default function DPicker(props: IPickerProps) {
 		confirmText: '확인',
 		cancelText: '취소',
 	};
+	const days = {
+		0: '일',
+		1: '월',
+		2: '화',
+		3: '수',
+		4: '목',
+		5: '금',
+		6: '토',
+	};
 
 	return (
 		<>
 			<CustomDatePickerBox onClick={() => setIsOpen(true)}>
-				{/* <p>
-					{props.matchDate
-						? ''
-						: `${dateState.getFullYear()}` +
-						  '년' +
-						  `${dateState.getMonth() + 1}` +
-						  '월' +
-						  `${dateState.getDate()}` +
-						  '일'}
-				</p> */}
 				<p>
 					{`${dateState.getFullYear()}`}년 {`${dateState.getMonth() + 1}`}월{' '}
-					{`${dateState.getDate()}`}일
+					{`${dateState.getDate()}`}일 {`${days[dateState.getDay()]}`}요일
 				</p>
 				<ImageBox width={'24px'} height={'24px'}>
 					<img src='/images/calendar.png' alt='calendar' />

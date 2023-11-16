@@ -1,13 +1,12 @@
 import { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
-import { ImageBox } from '../../../../styles/ts/components/box';
-import { FontFamilyRegular, FontSizeSpSm, LightGrayColor } from '../../../../styles/ts/common';
+import { ImageBox } from 'styles/ts/components/box';
+import { FontFamilyRegular, FontSizeSpSm, LightGrayColor } from 'styles/ts/common';
 import DatePicker from 'react-mobile-datepicker';
-import { timeFormatter } from '../../../../utils/formatter';
+import { timeFormatter } from 'utils/formatter';
 
 interface IPickerProps {
-	readonly id: string;
 	readonly setState: Dispatch<SetStateAction<string>>;
 	readonly type: Array<boolean>;
 }
@@ -55,8 +54,13 @@ export default function TPicker(props: IPickerProps) {
 		<>
 			<CustomDatePickerBox onClick={() => setIsOpen(true)}>
 				<p>
-					{timeState.getHours()}시 {props.type[1] && timeState.getMinutes() + '분'}
+					{timeState.getHours() > 9 ? timeState.getHours() : '0' + String(timeState.getHours())}시{' '}
+					{props.type[1] && timeState.getMinutes() > 9
+						? timeState.getMinutes()
+						: '0' + String(timeState.getMinutes())}
+					분
 				</p>
+
 				<ImageBox width={'24px'} height={'24px'}>
 					<img src='/svg/clock-icon.svg' alt='시계' color={LightGrayColor} />
 				</ImageBox>
