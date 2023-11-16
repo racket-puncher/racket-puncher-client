@@ -31,9 +31,9 @@ const positions = [
 ];
 
 export default function MyAroundMatching() {
-	const [map, setMap] = useState(null); // map 상태 추가
-	const [infowindows, setInfowindows] = useState([]); // 인포윈도우 목록 상태 추가
-	const [selectedMarker, setSelectedMarker] = useState(null); // 선택한 마커 상태 추가
+	const [map, setMap] = useState(null);
+	const [infowindows, setInfowindows] = useState([]);
+	const [selectedMarker, setSelectedMarker] = useState(null);
 
 	useEffect(() => {
 		const container = document.getElementById('kakao-map');
@@ -43,57 +43,73 @@ export default function MyAroundMatching() {
 		};
 
 		const kakaoMap = new kakao.maps.Map(container, options);
-		setMap(kakaoMap); // map 상태 설정
+		setMap(kakaoMap);
 
-		const infowindowsArray = positions.map((position) => {
+		if (navigator.geolocation) {
+			navigator.geolocation.getCurrentPosition(
+				(position) => {
+					const lat = position.coords.latitude;
+					const lng = position.coords.longitude;
+					kakaoMap.setCenter(new kakao.maps.LatLng(lat, lng));
+
+					const userMarker = new kakao.maps.Marker({
+						map: kakaoMap,
+						position: new kakao.maps.LatLng(lat, lng),
+					});
+
+					const userInfowindow = new kakao.maps.InfoWindow({
+						content: '<div style="padding:5px;">내 위치</div>',
+					});
+					userInfowindow.open(kakaoMap, userMarker);
+					infowindows.push(userInfowindow);
+				},
+				(error) => {
+					console.error('error: ' + error.message);
+				}
+			);
+		} else {
+			console.log('이 브라우저에서는 지원되지 않음');
+		}
+
+		const newInfowindows = positions.map((position) => {
 			const marker = new kakao.maps.Marker({
 				map: kakaoMap,
 				position: new kakao.maps.LatLng(position.lat, position.lng),
 			});
 
-			// 마커에 인포윈도우(정보창) 추가
 			const infowindow = new kakao.maps.InfoWindow({
 				content: position.content,
 				removable: true,
 			});
 
-			kakao.maps.event.addListener(marker, 'click', function () {
-				if (selectedMarker === marker) {
-					infowindow.open(kakaoMap, marker);
-				} else {
-					// 선택한 마커가 아닌 경우, 다른 인포윈도우를 닫고 새로운 마커의 인포윈도우를 열기
-					infowindowsArray.forEach((iw) => iw.close());
+			kakao.maps.event.addListener(marker, 'click', () => {
+				if (selectedMarker && selectedMarker.getPosition) {
+					const selectedPosition = selectedMarker.getPosition();
+					infowindows.forEach((iw) => iw.close());
 					setSelectedMarker(marker);
 					infowindow.open(kakaoMap, marker);
+					kakaoMap.setCenter(selectedPosition);
 				}
-
-				// 클릭한 요소를 가운데로 이동
-				kakaoMap.setCenter(marker.getPosition());
 			});
 
 			return infowindow;
 		});
 
-		// 인포윈도우 목록 상태 업데이트
-		setInfowindows(infowindowsArray);
+		setInfowindows([...infowindows, ...newInfowindows]);
 	}, []);
 
 	const handleButtonClick = (position, index) => {
-		if (map) {
-			const marker = new kakao.maps.Marker({
-				position: new kakao.maps.LatLng(position.lat, position.lng),
+		if (map && selectedMarker && selectedMarker.getPosition) {
+			const markerPosition = new kakao.maps.LatLng(position.lat, position.lng);
+			map.setCenter(markerPosition);
+
+			infowindows.forEach((iw, idx) => {
+				if (index === idx) {
+					iw.open(map, selectedMarker);
+				} else {
+					iw.close();
+				}
 			});
-			const infowindow = infowindows[index];
-
-			if (selectedMarker === marker) {
-				infowindow.open(map, marker);
-			} else {
-				infowindows.forEach((iw) => iw.close());
-				setSelectedMarker(marker);
-				infowindow.open(map, marker);
-			}
-
-			map.setCenter(marker.getPosition());
 		}
 	};
 
@@ -103,13 +119,11 @@ export default function MyAroundMatching() {
 				<MapBox>
 					<div id={'kakao-map'} style={{ width: '100%', height: '400px' }}></div>
 				</MapBox>
-				{positions.map((element1, index) => {
-					return (
-						<div key={uuidv4()}>
-							<MatchingCard onClick={() => handleButtonClick(element1, index)}></MatchingCard>
-						</div>
-					);
-				})}
+				{positions.map((position, index) => (
+					<div key={uuidv4()}>
+						<MatchingCard onClick={() => handleButtonClick(position, index)}></MatchingCard>
+					</div>
+				))}
 			</MyAroundMatchingContainer>
 		</>
 	);
