@@ -68,13 +68,17 @@ export interface reqGetMatchingListApiData {
 		sort: string;
 	};
 	body: {
-		lat: string;
-		lon: string;
-		startDate: string;
-		regions: object;
-		matchingTypes: object;
-		ageGroups: object;
-		ntrps: object;
+		location: {
+			lat: number;
+			lon: number;
+		};
+		filters: {
+			startDate: string;
+			regions: object;
+			matchingTypes: object;
+			ageGroups: object;
+			ntrps: object;
+		};
 	};
 }
 

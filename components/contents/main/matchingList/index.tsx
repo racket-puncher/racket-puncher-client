@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
 import InfiniteScroll from 'react-infinite-scroller';
+import { v4 as uuidv4 } from 'uuid';
 
 import { RoundButton } from '../../../../styles/ts/components/buttons';
 import { ImageBox } from '../../../../styles/ts/components/box';
@@ -17,9 +18,6 @@ import Service from '../../../../service/matches/service';
 export default function MatchingList() {
 	const { movePage } = useRouterHook();
 
-	// 첫 렌더링 여부
-	const [isFirst, setIsFirst] = useState(true);
-
 	const [isClickFilter, setIsClickFilter] = useState(false);
 	const [matchingList, setMatchingList] = useState([]);
 
@@ -30,8 +28,8 @@ export default function MatchingList() {
 
 	const [filterParams, setFilterParams] = useState({
 		sort: '',
-		lat: '',
-		lon: '',
+		lat: 0,
+		lon: 0,
 		startDate: '',
 		endDate: '',
 		startTime: '',
@@ -43,7 +41,6 @@ export default function MatchingList() {
 	});
 
 	const getMatchingList = async () => {
-		setIsFirst(false);
 		const payload = {
 			params: {
 				page: params.page,
@@ -51,16 +48,20 @@ export default function MatchingList() {
 				sort: filterParams.sort,
 			},
 			body: {
-				lat: filterParams.lat,
-				lon: filterParams.lon,
-				startDate: filterParams.startDate,
-				regions: filterParams.regions,
-				matchingTypes: filterParams.matchingTypes,
-				ageGroups: filterParams.ageGroups,
-				ntrps: filterParams.ntrps,
+				location: {
+					lat: filterParams.sort === 'distance' ? filterParams.lat : 0,
+					lon: filterParams.sort === 'distance' ? filterParams.lon : 0,
+				},
+				filters: {
+					startDate: filterParams.startDate,
+					regions: filterParams.regions,
+					matchingTypes: filterParams.matchingTypes,
+					ageGroups: filterParams.ageGroups,
+					ntrps: filterParams.ntrps,
+				},
 			},
 		};
-		console.log(filterParams);
+
 		try {
 			const res = await Service.getMatchingList(payload);
 			setParams((prev) => ({ ...prev, page: prev.page + 1 }));
@@ -74,13 +75,7 @@ export default function MatchingList() {
 		movePage('/main/detailMatch');
 	};
 
-	const clickFilterXBtnDrawer = () => {
-		console.log('x버튼 클릭');
-		setIsClickFilter((prev) => !prev);
-	};
-
-	const clickApplyBtnDrawer = () => {
-		console.log('적용하기 클릭');
+	const clickFilterClose = () => {
 		setIsClickFilter((prev) => !prev);
 	};
 
@@ -88,12 +83,17 @@ export default function MatchingList() {
 		movePage('/post-matching');
 	};
 
-	// useEffect(() => {
-	// 	if (!isFirst) {
-	// 		// getMatchingList();
-	// 		console.log('실행');
-	// 	}
-	// }, [filterParams]);
+	useEffect(() => {
+		if ('geolocation' in navigator) {
+			navigator.geolocation.getCurrentPosition(function (position) {
+				const latitudeValue = position.coords.latitude;
+				const longitudeValue = position.coords.longitude;
+				setFilterParams((prev) => ({ ...prev, lat: latitudeValue, lon: longitudeValue }));
+			});
+		} else {
+			console.log('Geolocation을 지원하지 않는 브라우저입니다.');
+		}
+	}, []);
 
 	return (
 		<>
@@ -109,7 +109,7 @@ export default function MatchingList() {
 						</ImageBox>
 						<p>매칭등록</p>
 					</RoundButton>
-					<ImageBox onClick={clickFilterXBtnDrawer}>
+					<ImageBox onClick={clickFilterClose}>
 						<img src={`${prefix}/images/filtering-menu.png`} alt='filtering-menu' />
 					</ImageBox>
 				</ControlBox>
@@ -119,7 +119,7 @@ export default function MatchingList() {
 					loadMore={getMatchingList}
 					hasMore={true || false}
 					loader={
-						<div className='loader' key={0}>
+						<div className='loader' key={uuidv4()}>
 							<SkeletonUI />
 						</div>
 					}>
@@ -127,6 +127,7 @@ export default function MatchingList() {
 						return (
 							<>
 								<MatchingCard
+									key={uuidv4()}
 									matchingStartDateTime={item.matchingStartDateTime}
 									matchingType={item.matchingType}
 									ntrp={item.ntrp}
@@ -145,12 +146,13 @@ export default function MatchingList() {
 					placement={'bottom'}
 					width={'50%'}
 					height={'90%'}
-					toggleDrawer={clickFilterXBtnDrawer}>
+					toggleDrawer={clickFilterClose}>
 					<FilteringModal
 						clickFilter={isClickFilter}
-						toggleModal={clickApplyBtnDrawer}
-						params={filterParams}
-						setParams={setFilterParams}
+						toggleModal={clickFilterClose}
+						setParams={setParams}
+						setMatchingList={setMatchingList}
+						setFilterParams={setFilterParams}
 					/>
 				</HalfDrawerBox>
 			</MatchingContainer>
