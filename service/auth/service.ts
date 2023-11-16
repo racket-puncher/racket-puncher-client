@@ -14,12 +14,12 @@ import {
 
 // 회원가입
 const signup = (data: reqSignupApiData) => {
-	return http.post('/api/auth/sign-up', data);
+	return http.post('/api/auth/signup', data);
 };
 
 // 로그인
 const login = (data: reqLoginApiData) => {
-	return http.post('/api/auth/sign-in', data);
+	return http.post('/api/auth/signin', data);
 };
 
 // 카카오톡 회원가입
