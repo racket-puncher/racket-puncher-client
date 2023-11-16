@@ -1,20 +1,15 @@
 // 회원가입
 export interface reqSignupApiData {
-	user_id: string;
-	nickname: string;
-	password: string;
 	email: string;
-	phone_number: string;
-	photo_url: string;
-	manner_score: string;
-	penalty_score: string;
+	password: string;
+	nickname: string;
+	roles: object;
+	ageGroup: string;
 	gender: string;
+	address: string;
+	zipCode: string;
 	ntrp: string;
-	location_si: string;
-	location_gu: string;
-	age: string;
-	signin_date: string;
-	auth_check: string;
+	phoneNumber: string;
 }
 
 // 로그인

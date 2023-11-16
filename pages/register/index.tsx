@@ -77,7 +77,9 @@ export default function register() {
 		setValue: signupSetValue,
 		watch: signupWatch,
 		formState: { errors: signErrors },
-	} = useForm();
+	} = useForm({
+		resolver: yupResolver(schema),
+	});
 
 	const {
 		register: addressRegister,
