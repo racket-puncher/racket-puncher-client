@@ -27,6 +27,7 @@ import {
 import { CustomBadge } from '../../styles/ts/components/badge';
 import { prefix } from '../../constants/prefix';
 import MatchesService from '../../service/matches/service';
+import AuthService from '../../service/auth/service';
 
 const schema = yup.object().shape({
 	userName: yup.string().required('이름은 필수입니다.'),
@@ -57,6 +58,30 @@ const schema = yup.object().shape({
 	address: yup.string().required('우편번호는 필수입니다.'),
 	detailAddress: yup.string().required('상세주소는 필수입니다.'),
 });
+
+interface OptionType {
+	value: string;
+	label: string;
+}
+
+const genderOptions: OptionType[] = [
+	{ value: 'MALE', label: '남자' },
+	{ value: 'FEMALE', label: '여자' },
+];
+
+const ageOptions: OptionType[] = [
+	{ value: 'TWENTIES', label: '20대' },
+	{ value: 'THIRTIES', label: '30대' },
+	{ value: 'FORTIES', label: '40대' },
+	{ value: 'SENIOR', label: '50대이상' },
+];
+const NTRPOptions: OptionType[] = [
+	{ value: 'DEVELOPMENT', label: 'Development' },
+	{ value: 'BEGINNER', label: 'Beginner' },
+	{ value: 'INTERMEDIATE', label: 'Intermediate' },
+	{ value: 'ADVANCE', label: 'Advance' },
+	{ value: 'PRO', label: 'Pro' },
+];
 
 export default function register() {
 	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
@@ -134,15 +159,12 @@ export default function register() {
 		}
 	};
 
+	// 주소 검색 모달 ---------------------------------------------------------------
 	const handleAddressDrawer = () => {
 		setAddressDrawer((prev) => !prev);
 	};
 
-	const onClickAddressItem = (item: any) => {
-		handleAddressDrawer();
-		signupSetValue('address', item.roadAddr);
-	};
-
+	// 주소 검색
 	const onClickSearchAddress = async (data: any) => {
 		const payload = {
 			keyword: data.address,
@@ -154,6 +176,12 @@ export default function register() {
 		} catch (e) {
 			console.log(e);
 		}
+	};
+
+	// 주소 아이템 클릭시
+	const onClickAddressItem = (item: any) => {
+		handleAddressDrawer();
+		signupSetValue('address', item.roadAddr);
 	};
 
 	const checkValidation = () => {
@@ -174,8 +202,26 @@ export default function register() {
 		}
 	};
 
-	const signUpComplete = () => {
-		console.log('회원가입');
+	// 회원가입 ------------------------------------------------------------------
+	const signUpComplete = async () => {
+		const params = {
+			email: 'qwerty@gmail.com',
+			password: 'asd',
+			nickname: '',
+			roles: ['ROLE_USER'],
+			ageGroup: 'TWENTIES',
+			gender: 'MALE',
+			address: '강남',
+			zipCode: '12345',
+			ntrp: 'PRO',
+			phoneNumber: '010-1234-5678',
+		};
+		try {
+			const res = await AuthService.signup(params);
+			console.log(res);
+		} catch (e) {
+			console.log(e);
+		}
 	};
 
 	return (
@@ -201,7 +247,6 @@ export default function register() {
 						<label htmlFor='registerUserName'>이름</label>
 						<input id='registerUserName' type={'text'} {...signUpRegister('userName')} />
 					</InputBox>
-
 					<InputButtonBox>
 						<InputBox>
 							<label htmlFor='registerPhoneNum'>휴대폰 번호</label>
@@ -225,7 +270,6 @@ export default function register() {
 							인증번호 전송
 						</SquareButton>
 					</InputButtonBox>
-
 					{certifyNumVisible && (
 						<InputButtonBox>
 							<InputBox certify='true'>
@@ -252,23 +296,20 @@ export default function register() {
 							</SquareButton>
 						</InputButtonBox>
 					)}
-
 					<SelectBox>
 						<InputBox>
 							<label htmlFor='registerGender'>성별</label>
-							<CustomSelect id='registerGender'></CustomSelect>
+							<CustomSelect id='registerGender' options={genderOptions}></CustomSelect>
 						</InputBox>
 						<InputBox>
 							<label htmlFor='registerAge'>연령대</label>
-							<CustomSelect id='registerAge'></CustomSelect>
+							<CustomSelect id='registerAge' options={ageOptions}></CustomSelect>
 						</InputBox>
 					</SelectBox>
-
 					<InputBox>
 						<label htmlFor='registerNTRP'>NTRP</label>
-						<CustomSelect id='registerNTRP'></CustomSelect>
+						<CustomSelect id='registerNTRP' options={NTRPOptions}></CustomSelect>
 					</InputBox>
-
 					<InputBox>
 						<label htmlFor='registerEmail'>이메일</label>
 						<input id='registerEmail' {...signUpRegister('email')} />
@@ -276,7 +317,6 @@ export default function register() {
 							<InputErrorText>{signErrors.email.message}</InputErrorText>
 						)}
 					</InputBox>
-
 					<InputBox>
 						<label htmlFor='registerPassword'>비밀번호</label>
 						<input id='registerPassword' type={'password'} {...signUpRegister('password')} />
@@ -284,7 +324,6 @@ export default function register() {
 							<InputErrorText>{signErrors.password.message}</InputErrorText>
 						)}
 					</InputBox>
-
 					<InputBox>
 						<label htmlFor='registerRePwd'>비밀번호 확인</label>
 						<input id='registerRePwd' type={'password'} {...signUpRegister('rePassword')} />
@@ -292,7 +331,6 @@ export default function register() {
 							<InputErrorText>{signErrors.rePassword.message}</InputErrorText>
 						)}
 					</InputBox>
-
 					<InputButtonBox>
 						<InputBox>
 							<label htmlFor='registerNickNm'>닉네임</label>
@@ -302,7 +340,6 @@ export default function register() {
 							중복체크
 						</SquareButton>
 					</InputButtonBox>
-
 					<InputButtonBox>
 						<InputBox>
 							<label htmlFor='registerAddress'>주소</label>
@@ -328,10 +365,7 @@ export default function register() {
 				</InputContainer>
 
 				<ButtonBox>
-					<RoundButton
-						colorstyle={'is-green'}
-						disabled={checkValidation()}
-						onClick={signupHandleSubmit(signUpComplete)}>
+					<RoundButton colorstyle={'is-green'} onClick={signupHandleSubmit(signUpComplete)}>
 						회원가입
 					</RoundButton>
 				</ButtonBox>
