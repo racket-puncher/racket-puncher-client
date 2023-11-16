@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
+import InfiniteScroll from 'react-infinite-scroller';
 
 import { RoundButton } from '../../../../styles/ts/components/buttons';
 import { ImageBox } from '../../../../styles/ts/components/box';
@@ -9,10 +10,32 @@ import HalfDrawerBox from '../../../common/drawer/halfDrawer';
 import FilteringModal from '../filteringModal';
 import { prefix } from '../../../../constants/prefix';
 import useRouterHook from 'utils/useRouterHook';
+import MatchingCard from 'components/contents/main/card';
+import SkeletonUI from 'components/common/loading/skeleton';
+import Service from '../../../../service/matches/service';
 
 export default function MatchingList() {
 	const { movePage } = useRouterHook();
 	const [isClickFilter, setIsClickFilter] = useState(false);
+	const [matchingList, setMatchingList] = useState([]);
+	const [params, setParams] = useState({
+		page: 1,
+		size: 10,
+	});
+
+	const getMatchingList = async () => {
+		try {
+			const res = await Service.getMatchingList(params);
+			setParams((prev) => ({ ...prev, page: prev.page + 1 }));
+			setMatchingList((prev) => [...prev, ...res.data.content]);
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
+	const moveDetailMatching = () => {
+		movePage('/main/detailMatch');
+	};
 
 	const handleFilterDrawer = () => {
 		setIsClickFilter((prev) => !prev);
@@ -38,6 +61,31 @@ export default function MatchingList() {
 						<img src={`${prefix}/images/filtering-menu.png`} alt='filtering-menu' />
 					</ImageBox>
 				</ControlBox>
+
+				<InfiniteScroll
+					pageStart={0}
+					loadMore={getMatchingList}
+					hasMore={true || false}
+					loader={
+						<div className='loader' key={0}>
+							<SkeletonUI />
+						</div>
+					}>
+					{matchingList.map((item) => {
+						return (
+							<>
+								<MatchingCard
+									matchingStartDateTime={item.matchingStartDateTime}
+									matchingType={item.matchingType}
+									ntrp={item.ntrp}
+									reserved={item.reserved}
+									title={item.title}
+									onClick={moveDetailMatching}
+								/>
+							</>
+						);
+					})}
+				</InfiniteScroll>
 
 				{/* 핉터링 모달 */}
 				<HalfDrawerBox
