@@ -50,5 +50,5 @@ const LayoutAlign = styled.div.withConfig({
 	min-height: 100vh;
 	display: flex;
 	flex-direction: column;
-	padding: ${(props) => (props.isPadding ? `${rem('0px')} ${rem('30px')}` : 'initial')};
+	padding: ${(props) => (props.isPadding ? `${rem('0px')} ${rem('10px')}` : 'initial')};
 `;
