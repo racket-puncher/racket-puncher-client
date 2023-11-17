@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import Cookies from 'js-cookie';
+import { useRouter } from 'next/router';
+import useToast from './useToast';
 
 // 쿠키의 값이 문자열일 경우
 type CookieValue = string;
@@ -21,6 +23,11 @@ function useCookies() {
 		return cookies[key] || Cookies.get(key);
 	};
 
+	const checkLogin = () => {
+		const res = getCookie('accessToken');
+		return res;
+	};
+
 	// 쿠키 설정
 	const setCookie = (key: string, value: CookieValue, options?: CookieOptions) => {
 		Cookies.set(key, value, options);
@@ -37,6 +44,7 @@ function useCookies() {
 	return {
 		cookies,
 		getCookie,
+		checkLogin,
 		setCookie,
 		removeCookie,
 	};

@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 // import { rem } from 'polished';
 import { RoundButton } from '../../styles/ts/components/buttons';
@@ -7,8 +7,15 @@ import { CustomTab } from '../../styles/ts/components/tab';
 
 import MyProfile from '../../components/contents/my/myProfile';
 import MyMatchingList from '../../components/contents/my/myMatchingList';
+import useCookies from '../../utils/useCookies';
+import useToast from '../../utils/useToast';
+import { useRouter } from 'next/router';
 
 const MyPage = () => {
+	const { checkLogin } = useCookies();
+	const { error, contextHolder } = useToast();
+	const router = useRouter();
+
 	// To-do
 	// userInfos get 요청
 
@@ -38,8 +45,15 @@ const MyPage = () => {
 		},
 	];
 
+	useEffect(() => {
+		if (!checkLogin()) {
+			router.replace('/login');
+		}
+	}, []);
+
 	return (
 		<>
+			{contextHolder}
 			<MyProfile userInfos={userInfos} />
 			<RoundButton colorstyle='is-black' aria-label='프로필 수정페이지로 이동'>
 				프로필 수정

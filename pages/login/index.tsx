@@ -31,13 +31,11 @@ const schema = yup.object().shape({
 			/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
 			'이메일 형식이 올바르지 않습니다.'
 		),
-	password: yup
-		.string()
-		.required('비밀번호는 필수입니다.')
-		.matches(
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
-			'비밀번호는 8자 이상, 숫자/소문자/대문자/특수문자를 각 최소 하나씩 포함해야 합니다.'
-		),
+	password: yup.string().required('비밀번호는 필수입니다.'),
+	// .matches(
+	// 	/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
+	// 	'비밀번호는 8자 이상, 숫자/소문자/대문자/특수문자를 각 최소 하나씩 포함해야 합니다.'
+	// ),
 });
 export default function Login() {
 	const { movePage } = useRouterHook();
@@ -69,6 +67,7 @@ export default function Login() {
 		try {
 			const res = await AuthService.login(data);
 			setCookie('accessToken', res.data, { expires: 7 });
+			movePage('/main');
 		} catch (e) {
 			console.log(e);
 		}
