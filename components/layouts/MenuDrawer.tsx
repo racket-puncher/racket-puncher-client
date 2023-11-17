@@ -1,9 +1,11 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
 import useRouterHook from '../../utils/useRouterHook';
 import { RoundButton } from '../../styles/ts/components/buttons';
 import DrawerBox from '../common/drawer';
+import useCookies from '../../utils/useCookies';
+import { useRouter } from 'next/router';
 
 interface MenuDrawerProps {
 	readonly isOpen: boolean;
@@ -11,11 +13,12 @@ interface MenuDrawerProps {
 }
 
 export default function MenuDrawer(props: MenuDrawerProps) {
-	// To do
-	// 로그인 여부에 따라 로그인 관련 버튼 선택적으로 노출 분기 처리~
+	const { checkLogin, removeCookie } = useCookies();
+	const router = useRouter();
 
 	const { isOpen, toggleDrawer } = props;
 	const { movePage } = useRouterHook();
+
 	return (
 		<DrawerBox
 			placement='right'
@@ -24,55 +27,85 @@ export default function MenuDrawer(props: MenuDrawerProps) {
 			isOpen={isOpen}
 			toggleDrawer={() => toggleDrawer(isOpen)}>
 			<MenuContainer>
-				<MenuArea>
-					<RoundButton
-						onClick={() => {
-							movePage('/');
-							toggleDrawer(isOpen);
-						}}
-						colorstyle={'is-green'}
-						aria-label='메인 페이지로 이동'>
-						소셜 매치
-					</RoundButton>
-					<RoundButton
-						onClick={() => {
-							movePage('/my');
-							toggleDrawer(isOpen);
-						}}
-						colorstyle={'is-green'}
-						aria-label='마이 페이지로 이동'>
-						마이페이지
-					</RoundButton>
-					<RoundButton
-						onClick={() => {
-							movePage('/alarm');
-							toggleDrawer(isOpen);
-						}}
-						colorstyle={'is-green'}
-						aria-label='알림 페이지로 이동'>
-						알림 페이지
-					</RoundButton>
-				</MenuArea>
-				<SignArea>
-					<RoundButton
-						onClick={() => {
-							movePage('/login');
-							toggleDrawer(isOpen);
-						}}
-						colorstyle={'is-black'}
-						aria-label='로그인 페이지로 이동'>
-						로그인
-					</RoundButton>
-					<RoundButton
-						onClick={() => {
-							movePage('/register');
-							toggleDrawer(isOpen);
-						}}
-						colorstyle={'is-black'}
-						aria-label='회원가입 페이지로 이동'>
-						회원가입
-					</RoundButton>
-				</SignArea>
+				{checkLogin() ? (
+					<>
+						<MenuArea>
+							<RoundButton
+								onClick={() => {
+									movePage('/');
+									toggleDrawer(isOpen);
+								}}
+								colorstyle={'is-green'}
+								aria-label='메인 페이지로 이동'>
+								소셜 매치
+							</RoundButton>
+							<RoundButton
+								onClick={() => {
+									movePage('/my');
+									toggleDrawer(isOpen);
+								}}
+								colorstyle={'is-green'}
+								aria-label='마이 페이지로 이동'>
+								마이페이지
+							</RoundButton>
+							<RoundButton
+								onClick={() => {
+									movePage('/alarm');
+									toggleDrawer(isOpen);
+								}}
+								colorstyle={'is-green'}
+								aria-label='알림 페이지로 이동'>
+								알림 페이지
+							</RoundButton>
+						</MenuArea>
+						<SignArea>
+							<RoundButton
+								colorstyle={'is-black'}
+								aria-label='로그아웃'
+								onClick={() => {
+									removeCookie('accessToken');
+									toggleDrawer(isOpen);
+									router.reload();
+								}}>
+								로그아웃
+							</RoundButton>
+						</SignArea>
+					</>
+				) : (
+					<>
+						<MenuArea>
+							<RoundButton
+								onClick={() => {
+									movePage('/');
+									toggleDrawer(isOpen);
+								}}
+								colorstyle={'is-green'}
+								aria-label='소셜 매치'>
+								소셜 매치
+							</RoundButton>
+						</MenuArea>
+						<SignArea>
+							<RoundButton
+								onClick={() => {
+									movePage('/login');
+									toggleDrawer(isOpen);
+								}}
+								colorstyle={'is-black'}
+								aria-label='로그인 페이지로 이동'>
+								로그인
+							</RoundButton>
+							<RoundButton
+								onClick={() => {
+									movePage('/register');
+									toggleDrawer(isOpen);
+								}}
+								colorstyle={'is-black'}
+								aria-label='회원가입 페이지로 이동'>
+								회원가입
+							</RoundButton>
+						</SignArea>
+					</>
+				)}
 			</MenuContainer>
 		</DrawerBox>
 	);
@@ -89,6 +122,7 @@ const MenuContainer = styled.div`
 
 const MenuArea = styled.div`
 	width: 100%;
+
 	button {
 		text-align: right;
 		margin-bottom: ${rem('20px')};
