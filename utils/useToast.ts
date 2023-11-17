@@ -1,29 +1,20 @@
-import { message } from 'antd';
+import { useRecoilValue, useSetRecoilState } from 'recoil';
+import { messageValueState } from '../lib/store/common';
 
 const useToast = () => {
-	const [messageApi, contextHolder] = message.useMessage();
-	const success = (message: string) => {
-		messageApi.open({
-			type: 'success',
-			content: message,
-		});
+	const setMessageVal = useSetRecoilState(messageValueState);
+	const messageValue = useRecoilValue(messageValueState);
+
+	const setMessage = (type: string, message: string) => {
+		const payload = {
+			isHandle: !messageValue.isHandle,
+			type,
+			message,
+		};
+		setMessageVal(payload);
 	};
 
-	const error = (message: string) => {
-		messageApi.open({
-			type: 'error',
-			content: message,
-		});
-	};
-
-	const warning = (message: string) => {
-		messageApi.open({
-			type: 'warning',
-			content: message,
-		});
-	};
-
-	return { success, error, warning, contextHolder };
+	return { setMessage };
 };
 
 export default useToast;

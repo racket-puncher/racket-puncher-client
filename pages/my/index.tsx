@@ -13,7 +13,7 @@ import { useRouter } from 'next/router';
 
 const MyPage = () => {
 	const { checkLogin } = useCookies();
-	const { error, contextHolder } = useToast();
+	const { setMessage } = useToast();
 	const router = useRouter();
 
 	// To-do
@@ -47,13 +47,13 @@ const MyPage = () => {
 
 	useEffect(() => {
 		if (!checkLogin()) {
+			setMessage('error', '로그인이 필요한 서비스입니다.');
 			router.replace('/login');
 		}
 	}, []);
 
 	return (
 		<>
-			{contextHolder}
 			<MyProfile userInfos={userInfos} />
 			<RoundButton colorstyle='is-black' aria-label='프로필 수정페이지로 이동'>
 				프로필 수정
