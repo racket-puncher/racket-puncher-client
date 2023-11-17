@@ -10,6 +10,7 @@ import {
 	reqLogoutApiData,
 	reqPhoneVerifyApiData,
 	reqSignupApiData,
+	reqUploadImgSignupApiData,
 } from './interface';
 
 // 회원가입
@@ -20,6 +21,15 @@ const signup = (data: reqSignupApiData) => {
 // 로그인
 const login = (data: reqLoginApiData) => {
 	return http.post('/api/auth/signin', data);
+};
+
+// 회원가입 프로필 이미지
+const uploadImgSignup = (data: reqUploadImgSignupApiData) => {
+	return http.post('/api/auth/upload-profile-image', {
+		params: {
+			imageFile: data.imageFile,
+		},
+	});
 };
 
 // 카카오톡 회원가입
@@ -70,6 +80,7 @@ const findPwd = (data: reqFindPwdApiData) => {
 const AuthService = {
 	signup,
 	login,
+	uploadImgSignup,
 	kakaoSignup,
 	kakaoLogin,
 	logout,

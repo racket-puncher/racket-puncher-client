@@ -18,6 +18,11 @@ export interface reqLoginApiData {
 	password: string;
 }
 
+// 회원가입 프로필 이미지
+export interface reqUploadImgSignupApiData {
+	imageFile: string;
+}
+
 // 카카오톡 회원가입
 export interface reqKakaoSignupApiData {
 	email: string;
