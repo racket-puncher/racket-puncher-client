@@ -10,15 +10,18 @@ import 'slick-carousel/slick/slick-theme.css';
 
 function MyApp({ Component, pageProps }: any) {
 	const router = useRouter();
-
 	useEffect(() => {
 		const originalError = console.error;
-		console.error = (message: string) => {
-			if (message?.includes('ReactDOM.unstable_renderSubtreeIntoContainer()')) {
+		// ...args : 함수에 전달되는 모든 인자들
+		console.error = (...args) => {
+			if (
+				typeof args[0] === 'string' &&
+				args[0].includes('ReactDOM.unstable_renderSubtreeIntoContainer()')
+			) {
 				return;
 			}
 			// 기본 동작 실행
-			originalError(message);
+			originalError(...args);
 		};
 	}, []);
 
