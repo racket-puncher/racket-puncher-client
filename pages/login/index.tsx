@@ -16,6 +16,7 @@ import { InputBox } from '../../styles/ts/components/input';
 import { InputErrorText } from '../../styles/ts/components/text';
 import { prefix } from '../../constants/prefix';
 import AuthService from '../../service/auth/service';
+import useCookies from '../../utils/useCookies';
 
 interface FormData {
 	readonly email: string;
@@ -40,14 +41,13 @@ const schema = yup.object().shape({
 });
 export default function Login() {
 	const { movePage } = useRouterHook();
+	const { setCookie } = useCookies();
 
 	const {
 		register,
 		handleSubmit,
 		formState: { errors },
-	} = useForm({
-		resolver: yupResolver(schema),
-	});
+	} = useForm();
 
 	const [isModalOpenVisible, setIsModalOpenVisible] = useState(false);
 	const toggleModal = () => {
@@ -65,7 +65,8 @@ export default function Login() {
 	// 로그인
 	const clickLoginBtn = async (data: FormData) => {
 		try {
-			await AuthService.login(data);
+			const res = await AuthService.login(data);
+			setCookie('accessToken', res.data, { expires: 7 });
 		} catch (e) {
 			console.log(e);
 		}
