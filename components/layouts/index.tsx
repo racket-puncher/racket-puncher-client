@@ -5,6 +5,7 @@ import { useRouter } from 'next/router';
 
 import Header from './Header';
 import LoadingSpin from '../common/loading/spin';
+import MessageBox from '../common/message';
 
 interface ILayoutProps {
 	readonly children: ReactNode;
@@ -29,6 +30,7 @@ export default function LayoutContainer(props: ILayoutProps) {
 	return (
 		<>
 			<LoadingSpin>
+				<MessageBox />
 				<LayoutWrapper>
 					<Header />
 					<LayoutAlign isPadding={isPadding}>{props.children}</LayoutAlign>
