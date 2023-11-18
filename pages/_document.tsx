@@ -9,7 +9,9 @@ class MyDocument extends Document {
 					<script
 						type='text/javascript'
 						src={
-							'//dapi.kakao.com/v2/maps/sdk.js?appkey=' + `${process.env.KAKAO_MAPS_APP_KEY}`
+							'//dapi.kakao.com/v2/maps/sdk.js?appkey=' +
+							`${process.env.KAKAO_MAPS_APP_KEY}` +
+							'&libraries=services'
 						}></script>
 				</Head>
 				<body>
