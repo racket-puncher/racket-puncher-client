@@ -6,34 +6,35 @@ import { InputBox } from 'styles/ts/components/input';
 import { SquareButton } from 'styles/ts/components/buttons';
 import { GrayLine } from 'styles/ts/components/box';
 import {
-	PrimaryColor,
-	BlackColor,
 	LightBlackColor,
 	InputBoxColor,
 	InputBorderColor,
+	BlackColor,
+	PrimaryColor,
 	FontSizeSpSm,
 	FontSizeMd,
 	FontSizeMdLg,
 } from 'styles/ts/common';
 import { CustomBadge } from 'styles/ts/components/badge';
 
-// import ResultList from './resultList';
-
 interface ISearchDrawerProps {
 	readonly isOpen: boolean;
 	readonly toggleDrawer: () => void;
-	readonly setState: Dispatch<SetStateAction<string>>;
+	readonly setState: Dispatch<
+		SetStateAction<{ address: string; name: string; lat: string; len: string }>
+	>;
 }
 
 export default function SearchCourtDrawer(props: ISearchDrawerProps) {
-	const { isOpen, toggleDrawer } = props;
+	const { isOpen, toggleDrawer, setState } = props;
 	const [keyword, setKeyword] = useState('');
-
+	const [resultData, setResultData] = useState([]);
 	const getResult = (typedKeyword: string) => {
 		const places = new kakao.maps.services.Places();
 		places.keywordSearch(typedKeyword, (result, status, _pagination) => {
 			if (status === kakao.maps.services.Status.OK) {
 				console.log(result);
+				setResultData(result);
 			} else {
 				console.log(status);
 			}
@@ -74,21 +75,39 @@ export default function SearchCourtDrawer(props: ISearchDrawerProps) {
 					</p>
 				</DescTextBox>
 				<GrayLine />
-				{/* <ResultList data={data} /> */}
 				<AddressContainer>
-					<AddressBoxWrap>
-						<AddLeftWrap>
-							<AddressBox>
-								<CustomBadge color={PrimaryColor}>도로명</CustomBadge>
-								<p>경기도 성남시 분당구 판교공원4길 27(판교동)</p>
-							</AddressBox>
-							<AddressBox>
-								<CustomBadge>지번</CustomBadge>
-								<p>경기도 성남시 분당구 판교공원4길 27(판교동)</p>
-							</AddressBox>
-						</AddLeftWrap>
-						<AddRightWrap>13477</AddRightWrap>
-					</AddressBoxWrap>
+					{resultData.map((_, i) => {
+						return (
+							<AddressBoxWrap>
+								<AddLeftWrap>
+									<LocationName href={resultData[i].place_url} target='_blank'>
+										{resultData[i].place_name}
+									</LocationName>
+
+									<AddressBox>
+										<CustomBadge color={PrimaryColor}>도로명</CustomBadge>
+										<p>{resultData[i].road_address_name}</p>
+									</AddressBox>
+									<AddressBox>
+										<CustomBadge>지번</CustomBadge>
+										<p>{resultData[i].address_name}</p>
+									</AddressBox>
+								</AddLeftWrap>
+								<AddRightWrap
+									onClick={() => {
+										toggleDrawer();
+										setState({
+											address: resultData[i].road_address_name || resultData[i].address_name,
+											name: resultData[i].place_name,
+											lat: resultData[i].x,
+											len: resultData[i].y,
+										});
+									}}>
+									선택
+								</AddRightWrap>
+							</AddressBoxWrap>
+						);
+					})}
 				</AddressContainer>
 			</DrawerBox>
 		</>
@@ -137,7 +156,16 @@ const AddressBoxWrap = styled.div`
 `;
 
 const AddLeftWrap = styled.div`
+	display: flex;
+	flex-direction: column;
+	gap: 10px;
 	margin-right: ${rem('20px')};
+`;
+
+const LocationName = styled.a`
+	font-size: ${rem(FontSizeSpSm)};
+	color: ${LightBlackColor};
+	font-family: Pretendard-Bold;
 `;
 
 const AddressBox = styled.div`
