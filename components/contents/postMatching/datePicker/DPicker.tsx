@@ -7,8 +7,8 @@ import DatePicker from 'react-mobile-datepicker';
 import { dateFormatter } from 'utils/formatter';
 
 interface IPickerProps {
-	readonly id?: string;
-	readonly setState: Dispatch<SetStateAction<string>>;
+	readonly name: string;
+	readonly setState: (name: string, data: string) => void;
 	readonly type?: Array<boolean>;
 	readonly matchDate?: string;
 }
@@ -21,7 +21,7 @@ export default function DPicker(props: IPickerProps) {
 
 	const handleSelect = (selectedDate: Date) => {
 		setDateState(selectedDate);
-		props.setState(dateFormatter(selectedDate));
+		props.setState(props.name, dateFormatter(selectedDate));
 		setIsOpen(false);
 	};
 	// 못선택하게 하는 방법...?!
