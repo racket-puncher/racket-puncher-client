@@ -1,0 +1,26 @@
+import axios from 'axios';
+
+const http = axios.create({
+	baseURL: 'http://3.38.50.101:8080',
+	timeout: 10000,
+	headers: {
+		'Content-Type': 'multipart/form-data',
+	},
+	withCredentials: true,
+});
+
+http.interceptors.request.use(
+	(config) => {
+		return config;
+	}
+	// (ignore) => {}
+);
+
+http.interceptors.response.use(
+	(res) => {
+		return res;
+	}
+	// (ignore) => {}
+);
+
+export default http;

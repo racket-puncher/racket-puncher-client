@@ -40,36 +40,36 @@ export default function MatchingList() {
 		ntrps: [],
 	});
 
-	const getMatchingList = async () => {
-		const payload = {
-			params: {
-				page: params.page,
-				size: params.size,
-				sort: filterParams.sort,
-			},
-			body: {
-				location: {
-					lat: filterParams.sort === 'distance' ? filterParams.lat : 0,
-					lon: filterParams.sort === 'distance' ? filterParams.lon : 0,
-				},
-				filters: {
-					startDate: filterParams.startDate,
-					regions: filterParams.regions,
-					matchingTypes: filterParams.matchingTypes,
-					ageGroups: filterParams.ageGroups,
-					ntrps: filterParams.ntrps,
-				},
-			},
-		};
-
-		try {
-			const res = await Service.getMatchingList(payload);
-			setParams((prev) => ({ ...prev, page: prev.page + 1 }));
-			setMatchingList((prev) => [...prev, ...res.data.content]);
-		} catch (e) {
-			console.log(e);
-		}
-	};
+	// const getMatchingList = async () => {
+	// 	const payload = {
+	// 		params: {
+	// 			page: params.page,
+	// 			size: params.size,
+	// 			sort: filterParams.sort,
+	// 		},
+	// 		body: {
+	// 			location: {
+	// 				lat: filterParams.sort === 'distance' ? filterParams.lat : 0,
+	// 				lon: filterParams.sort === 'distance' ? filterParams.lon : 0,
+	// 			},
+	// 			filters: {
+	// 				startDate: filterParams.startDate,
+	// 				regions: filterParams.regions,
+	// 				matchingTypes: filterParams.matchingTypes,
+	// 				ageGroups: filterParams.ageGroups,
+	// 				ntrps: filterParams.ntrps,
+	// 			},
+	// 		},
+	// 	};
+	//
+	// 	try {
+	// 		const res = await Service.getMatchingList(payload);
+	// 		setParams((prev) => ({ ...prev, page: prev.page + 1 }));
+	// 		setMatchingList((prev) => [...prev, ...res.data.content]);
+	// 	} catch (e) {
+	// 		console.log(e);
+	// 	}
+	// };
 
 	const moveDetailMatching = () => {
 		movePage('/main/detailMatch');
@@ -116,7 +116,7 @@ export default function MatchingList() {
 
 				<InfiniteScroll
 					pageStart={0}
-					loadMore={getMatchingList}
+					// loadMore={getMatchingList}
 					hasMore={true || false}
 					loader={
 						<div className='loader' key={uuidv4()}>

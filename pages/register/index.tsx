@@ -62,13 +62,18 @@ const schema = yup.object().shape({
 
 export default function register() {
 	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
-	const fileInputRef = useRef<HTMLInputElement | null>(null);
 
+	// file
+	const fileInputRef = useRef<HTMLInputElement | null>(null);
+	const [fileData, setFileData] = useState(null);
+	const [virtualImgData, setVirtualImgData] = useState(null);
+
+	// timer
 	const [timer, setTimer] = useState(180);
 	const [intervalId, setIntervalId] = useState<number | null>(null);
 
+	// address
 	const [addressDrawer, setAddressDrawer] = useState(false);
-
 	const [addressList, setAddressList] = useState(null);
 
 	const {
@@ -96,10 +101,14 @@ export default function register() {
 	};
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const files = event.target.files;
-		if (files && files.length > 0) {
-			const selectedFile = files[0];
-		}
+		const files = event.target.files[0];
+		const fileReader = new FileReader();
+
+		fileReader.onload = (event) => {
+			setVirtualImgData(event.target.result);
+		};
+		setFileData(files);
+		fileReader.readAsDataURL(files);
 	};
 
 	const clickCertifyBtn = () => {
@@ -180,6 +189,20 @@ export default function register() {
 	};
 
 	// 회원가입 ------------------------------------------------------------------
+	const uploadImg = async () => {
+		try {
+			const formData = new FormData();
+			formData.append('file', fileData);
+			const payload = {
+				imageFile: formData,
+			};
+			const res = await AuthService.uploadImgSignup(payload);
+			return res;
+		} catch (e) {
+			console.log(e);
+		}
+	};
+
 	const signUpComplete = async () => {
 		const params = {
 			email: 'qwerty@gmail.com',
@@ -192,10 +215,14 @@ export default function register() {
 			zipCode: '12345',
 			ntrp: 'PRO',
 			phoneNumber: '010-1234-5678',
+			fileUrl: '',
 		};
 		try {
-			const res = await AuthService.signup(params);
-			console.log(res);
+			const fileUrl = uploadImg();
+			// console.log({ ...params, fileUrl });
+			// const res = await AuthService.signup({ ...params, fileUrl: fileUrl });
+			// const res = await AuthService.signup(params);
+			// console.log(res);
 		} catch (e) {
 			console.log(e);
 		}
@@ -208,7 +235,15 @@ export default function register() {
 
 				<ImageSection onClick={clickImgFile}>
 					<ImageBox width={'200px'} height={'200px'}>
-						<img src={`${prefix}/images/add-image.png`} alt='add-image' />
+						{virtualImgData ? (
+							<>
+								<img src={virtualImgData} alt='virtualImgData' />
+							</>
+						) : (
+							<>
+								<img src={`${prefix}/images/add-image.png`} alt='add-image' />
+							</>
+						)}
 					</ImageBox>
 					<input
 						type='file'
