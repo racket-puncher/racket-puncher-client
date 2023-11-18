@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
+import { v4 as uuidv4 } from 'uuid';
 import DrawerBox from 'components/common/drawer';
 import { InputBox } from 'styles/ts/components/input';
 import { SquareButton } from 'styles/ts/components/buttons';
@@ -78,7 +79,7 @@ export default function SearchCourtDrawer(props: ISearchDrawerProps) {
 				<AddressContainer>
 					{resultData.map((_, i) => {
 						return (
-							<AddressBoxWrap>
+							<AddressBoxWrap key={uuidv4()}>
 								<AddLeftWrap>
 									<LocationName href={resultData[i].place_url} target='_blank'>
 										{resultData[i].place_name}
