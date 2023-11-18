@@ -7,8 +7,8 @@ import DatePicker from 'react-mobile-datepicker';
 import { timeFormatter } from 'utils/formatter';
 
 interface IPickerProps {
-	readonly id?: string;
-	readonly setState: Dispatch<SetStateAction<string>>;
+	readonly name: string;
+	readonly setState: (name: string, data: string) => void;
 	readonly type: Array<boolean>;
 }
 
@@ -47,7 +47,7 @@ export default function TPicker(props: IPickerProps) {
 
 	const handleSelect = (selected: Date) => {
 		setTimeState(selected);
-		props.setState(timeFormatter(selected));
+		props.setState(props.name, timeFormatter(selected));
 		setIsOpen(false);
 	};
 

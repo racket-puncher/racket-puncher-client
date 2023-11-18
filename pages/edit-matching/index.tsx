@@ -18,7 +18,7 @@ import ButtonStyleRadio from 'components/common/buttonRadio';
 import SearchCourtDrawer from 'components/contents/postMatching/searchCourtDrawer';
 // import useToast from 'utils/useToast';
 
-export default function EditMatching() {
+export default function PostMatching() {
 	// To-do
 	// 프론트에서 모집 마감일 받을 때 등록일 이후~경기시작 시간 이전으로 모집 마감일 선택하도록 설정
 
@@ -58,7 +58,7 @@ export default function EditMatching() {
 		{ value: null, label: '경기 유형을 먼저 선택해주세요.' },
 	]);
 	const selectHandler = (option: string) => {
-		option.includes('단식')
+		option.includes('SINGLE')
 			? setOptionsForNOR([{ value: 1, label: '1 명' }])
 			: setOptionsForNOR([
 					{ value: 1, label: '1 명' },
@@ -124,9 +124,9 @@ export default function EditMatching() {
 		};
 		console.log(e);
 		console.log(postedData);
-		// MatchesService.regMatchingData(postedData)
-		// 	.then(() => console.log('포스트됨'))
-		// 	.catch((e) => console.log(e));
+		MatchesService.regMatchingData(postedData)
+			.then(() => console.log('포스트됨'))
+			.catch((e) => console.log(e));
 	};
 
 	const checkValidation = () => {
@@ -141,7 +141,7 @@ export default function EditMatching() {
 			!postMatchingWatch('matchEndTime') ||
 			!postMatchingWatch('deadlineDate') ||
 			!postMatchingWatch('deadlineTime') ||
-			// !postMatchingWatch('courtAddress') ||
+			!postMatchingWatch('courtAddress') ||
 			!postMatchingWatch('isCourtBooked') ||
 			!postMatchingWatch('courtFee') ||
 			// !postMatchingWatch('courtPhoto') ||
@@ -158,7 +158,8 @@ export default function EditMatching() {
 			<SearchCourtDrawer
 				isOpen={isSearchDrawerOpen}
 				toggleDrawer={toggleSearchDrawer}
-				setState={setCourtInfos}
+				setCourtInfos={setCourtInfos}
+				setAddress={postMatchingSetValue}
 			/>
 			<PageTitleArea>
 				<PageMainTitle>매칭 글 등록</PageMainTitle>
@@ -177,19 +178,18 @@ export default function EditMatching() {
 					<InputBox>
 						<label htmlFor='matchType'>경기 유형</label>
 						<CustomSelect
-							// ref={matchTypeREF}
 							id='matchType'
 							options={[
-								{ value: '단식', label: '단식' },
-								{ value: '혼성 단식', label: '혼성 단식' },
-								{ value: '복식', label: '복식' },
-								{ value: '혼성 복식', label: '혼성 복식' },
+								{ value: 'SINGLE', label: '단식' },
+								{ value: 'MIXED SINGLE', label: '혼성 단식' },
+								{ value: 'DOUBLE', label: '복식' },
+								{ value: 'MIXED DOUBLE', label: '혼성 복식' },
 							]}
 							{...postMatchingResister('matchType')}
 							onChange={(e: ChangeEvent<HTMLInputElement>) => {
 								const selected = e + '';
 								postMatchingSetValue('matchType', selected);
-								setNumOfAllPlayers(selected.includes('단') ? 2 : 4);
+								setNumOfAllPlayers(selected.includes('SINGLE') ? 2 : 4);
 								selectHandler(selected);
 							}}
 						/>
@@ -210,12 +210,12 @@ export default function EditMatching() {
 						<CustomSelect
 							id='selectedAge'
 							options={[
-								{ value: '10대', label: '10대' },
-								{ value: '20대', label: '20대' },
-								{ value: '30대', label: '30대' },
-								{ value: '40대', label: '40대' },
-								{ value: '50대', label: '50대' },
-								{ value: '60대', label: '60대' },
+								{ value: 'TEENAGER', label: '10대' },
+								{ value: 'TWENTIES', label: '20대' },
+								{ value: 'THIRTIES', label: '30대' },
+								{ value: 'FORTIES', label: '40대' },
+								{ value: 'FIFTIES', label: '50대' },
+								{ value: 'SIXTIES', label: '60대' },
 							]}
 							onChange={(e: string) => postMatchingSetValue('selectedAge', e)}
 						/>
@@ -225,60 +225,51 @@ export default function EditMatching() {
 						<CustomSelect
 							id='selectedNTRP'
 							options={[
-								{ value: 'NewBie', label: 'NewBie (1.0 ~ 2.0)' },
-								{ value: 'Beginner', label: 'Beginner (2.5 ~ 3.5)' },
-								{ value: 'Intermediate', label: 'Intermediate (4.0 ~ 4.5)' },
-								{ value: 'Intermediate', label: 'Advanced (5.0 ~ 5.5)' },
-								{ value: 'Pro', label: 'Pro (6.0 ~ 7.0)' },
+								{ value: 'DEVELOPMENT', label: 'NewBie (1.0 ~ 2.0)' },
+								{ value: 'BEGINNER', label: 'Beginner (2.5 ~ 3.5)' },
+								{ value: 'INTERMEDIATE', label: 'Intermediate (4.0 ~ 4.5)' },
+								{ value: 'ADVANCED', label: 'Advanced (5.0 ~ 5.5)' },
+								{ value: 'PRO', label: 'Pro (6.0 ~ 7.0)' },
 							]}
 							{...postMatchingResister('selectedNTRP')}
-							onChange={(e: string) => postMatchingSetValue('selectedNTRP', e)}
+							onChange={(e: string) => {
+								postMatchingSetValue('selectedNTRP', e);
+							}}
 						/>
 					</InputBox>
 				</HalfContainer>
 
 				<InputBox>
 					<label htmlFor='matchDate'>경기일</label>
-					<DPicker setState={setMatchDate} />
+					<DPicker name='matchDate' setState={postMatchingSetValue} />
 					<HiddenInput
 						type='text'
 						id='matchDate'
 						value={`${matchDate}`}
 						{...postMatchingResister('matchDate')}
 						readOnly
-						onChange={(e: ChangeEvent<HTMLInputElement>) =>
-							postMatchingSetValue('matchDate', e.target.value)
-						}
 					/>
 				</InputBox>
 
 				<HalfContainer>
 					<InputBox>
 						<label htmlFor='matchStartTime'>시작 시간</label>
-						<TPicker setState={setMatchStartTime} type={[true, true]} />
+						<TPicker name='matchStartTime' setState={postMatchingSetValue} type={[true, true]} />
 						<HiddenInput
 							type='text'
 							id='matchStartTime'
-							value={`${matchStartTime}`}
 							{...postMatchingResister('matchStartTime')}
 							readOnly
-							onChange={(e: ChangeEvent<HTMLInputElement>) =>
-								postMatchingSetValue('matchStartTime', e.target.value)
-							}
 						/>
 					</InputBox>
 					<InputBox>
 						<label htmlFor='matchEndTime'>종료 시간</label>
-						<TPicker setState={setMatchEndTime} type={[true, true]} />
+						<TPicker name='matchEndTime' setState={postMatchingSetValue} type={[true, true]} />
 						<HiddenInput
 							type='text'
 							id='matchEndTime'
-							value={`${matchEndTime}`}
 							{...postMatchingResister('matchEndTime')}
 							readOnly
-							onChange={(e: ChangeEvent<HTMLInputElement>) =>
-								postMatchingSetValue('matchEndTime', e.target.value)
-							}
 						/>
 					</InputBox>
 				</HalfContainer>
@@ -287,31 +278,27 @@ export default function EditMatching() {
 					<label htmlFor='deadlineDnT'>모집 마감 기한</label>
 					<HalfContainer>
 						<DPicker
-							id='deadlineDate'
-							setState={setDeadlineDate}
+							name='deadlineDate'
+							setState={postMatchingSetValue}
 							matchDate={`${deadlineDate}`}
 							type={[true, true, true]}
 						/>
 						<HiddenInput
 							type='text'
 							id='deadlineDate'
-							value={`${deadlineDate}`}
 							{...postMatchingResister('deadlineDate')}
 							readOnly
-							onChange={(e: ChangeEvent<HTMLInputElement>) =>
-								postMatchingSetValue('deadlineDate', e.target.value)
-							}
+							onChange={(e: ChangeEvent<HTMLInputElement>) => {
+								postMatchingSetValue('deadlineDate', e.target.value);
+								console.log(postMatchingGetValues('deadlineDate'));
+							}}
 						/>
-						<TPicker setState={setDeadlineTime} type={[true, false]} />
+						<TPicker name='deadlineTime' setState={postMatchingSetValue} type={[true, false]} />
 						<HiddenInput
 							type='text'
 							id='deadlineTime'
-							value={`${deadlineTime}`}
 							{...postMatchingResister('deadlineTime')}
 							readOnly
-							onChange={(e: ChangeEvent<HTMLInputElement>) =>
-								postMatchingSetValue('deadlineTime', e.target.value)
-							}
 						/>
 					</HalfContainer>
 				</InputBox>
@@ -321,7 +308,8 @@ export default function EditMatching() {
 					<input
 						type='text'
 						id='courtAddress'
-						value={`${courtInfos.address}` + ' (' + `${courtInfos.name}` + ')'}
+						defaultValue={''}
+						value={`${courtInfos.address}` + `${courtInfos.name}`}
 						{...postMatchingResister('courtAddress')}
 						onClick={(e) => {
 							e.preventDefault();
@@ -404,8 +392,6 @@ export default function EditMatching() {
 		</>
 	);
 }
-
-// const PostMatchingContainer = styled.div``;
 
 const PageTitleArea = styled.div`
 	margin: ${rem('50px')} auto;
