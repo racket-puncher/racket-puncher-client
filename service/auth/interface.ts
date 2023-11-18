@@ -20,7 +20,7 @@ export interface reqLoginApiData {
 
 // 회원가입 프로필 이미지
 export interface reqUploadImgSignupApiData {
-	imageFile: string;
+	imageFile: any;
 }
 
 // 카카오톡 회원가입

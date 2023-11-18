@@ -1,4 +1,5 @@
 import http from '../../lib/http/httpInterceptor';
+import httpFile from '../../lib/http/httpFileInterceptor';
 import {
 	reqCheckIdApiData,
 	reqDeleteUserApiData,
@@ -24,12 +25,8 @@ const login = (data: reqLoginApiData) => {
 };
 
 // 회원가입 프로필 이미지
-const uploadImgSignup = (data: reqUploadImgSignupApiData) => {
-	return http.post('/api/auth/upload-profile-image', {
-		params: {
-			imageFile: data.imageFile,
-		},
-	});
+const uploadImgSignup = (data: any) => {
+	return httpFile.post('/api/auth/upload-profile-image', data);
 };
 
 // 카카오톡 회원가입
