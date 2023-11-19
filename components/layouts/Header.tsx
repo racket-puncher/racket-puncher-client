@@ -22,7 +22,8 @@ export default function Header() {
 			pathNameStartsWith('/register') ||
 			pathNameStartsWith('/post-matching') ||
 			pathNameStartsWith('/edit-') ||
-			pathNameStartsWith('/find')
+			pathNameStartsWith('/find') ||
+			pathNameStartsWith('/main/detailMatch')
 		) {
 			setIisBackBtnVisible(true);
 		} else {
