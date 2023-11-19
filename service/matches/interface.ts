@@ -73,7 +73,7 @@ export interface reqGetMatchingListApiData {
 			lon: number;
 		};
 		filters: {
-			startDate: string;
+			date: string;
 			regions: object;
 			matchingTypes: object;
 			ageGroups: object;

@@ -49,8 +49,8 @@ const logout = (data: reqLogoutApiData) => {
 // 	return http.delete('/api/auth/quit', data);
 // };
 
-// 아이디 중복 체크
-const checkId = (data: reqCheckIdApiData) => {
+// 닉네임 중복 체크
+const checkNickname = (data: reqCheckIdApiData) => {
 	return http.post('/api/auth/id-check', data);
 };
 
@@ -82,7 +82,7 @@ const AuthService = {
 	kakaoLogin,
 	logout,
 	// deleteUser,
-	checkId,
+	checkNickname,
 	phoneVerify,
 	emailVerify,
 	findId,
