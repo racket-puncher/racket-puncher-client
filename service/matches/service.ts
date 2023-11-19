@@ -20,8 +20,8 @@ const getDetailMatchingList = (data: reqGetDetailMatchingListApiData) => {
 };
 
 // 매칭글 수정(알림)
-const modifyMatchingList = (data: reqModifyMatchingApiData) => {
-	return http.patch(`/api/matches/${data}`);
+const modifyMatchingList = (matching_id, data: reqModifyMatchingApiData) => {
+	return http.patch(`/api/matches/${matching_id}`, data);
 };
 
 // 매칭글 삭제(알림)
