@@ -89,7 +89,12 @@ export default function MyAroundMatching() {
 						});
 
 						const infowindow = new kakao.maps.InfoWindow({
-							content: position.content,
+							content: `
+								<div class="custom-infowindow">
+									<h4>${position.title}</h4>
+									<p>${position.content}</p>
+								</div>
+							`,
 							removable: true,
 						});
 
@@ -152,7 +157,15 @@ export default function MyAroundMatching() {
 	);
 }
 
-const MyAroundMatchingContainer = styled.div``;
+const MyAroundMatchingContainer = styled.div`
+	.custom-infowindow {
+		padding: 10px;
+		border: 1px solid #ccc;
+		background-color: white;
+		border-radius: 5px;
+		font-size: 14px;
+	}
+`;
 
 const MapBox = styled.div`
 	margin: 20px 0;
