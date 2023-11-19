@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
-import { useForm } from 'react-hook-form';
+import { useForm, Controller } from 'react-hook-form';
 import { rem } from 'polished';
 import { v4 as uuidv4 } from 'uuid';
 
@@ -58,6 +58,9 @@ const schema = yup.object().shape({
 	nickName: yup.string().required('닉네임은 필수입니다.'),
 	address: yup.string().required('우편번호는 필수입니다.'),
 	detailAddress: yup.string().required('상세주소는 필수입니다.'),
+	gender: yup.string().required('성별을 선택해주세요.'),
+	age: yup.string().required('연령대를 선택해주세요.'),
+	NTRP: yup.string().required('NTRP를 선택해주세요.'),
 });
 
 export default function register() {
@@ -77,8 +80,10 @@ export default function register() {
 	const [addressList, setAddressList] = useState(null);
 
 	const {
+		control: signupControl,
 		register: signUpRegister,
 		handleSubmit: signupHandleSubmit,
+		getValues: signupGetValue,
 		setValue: signupSetValue,
 		watch: signupWatch,
 		formState: { errors: signErrors },
@@ -157,8 +162,7 @@ export default function register() {
 		};
 		try {
 			const res = await MatchesService.searchAddress(payload);
-			setAddressList(res.data);
-			console.log(res);
+			setAddressList(res.data.response);
 		} catch (e) {
 			console.log(e);
 		}
@@ -181,6 +185,9 @@ export default function register() {
 			!signupWatch('nickName') ||
 			!signupWatch('address') ||
 			!signupWatch('detailAddress')
+			// !signupWatch('gender') ||
+			// !signupWatch('age') ||
+			// !signupWatch('NTRP')
 		) {
 			return true;
 		} else {
@@ -205,24 +212,24 @@ export default function register() {
 
 	const signUpComplete = async () => {
 		const params = {
-			email: 'qwerty@gmail.com',
-			password: 'asd',
-			nickname: '',
+			email: signupGetValue('userName'),
+			password: signupGetValue('password'),
+			nickname: signupGetValue('nickName'),
 			roles: ['ROLE_USER'],
-			ageGroup: 'TWENTIES',
-			gender: 'MALE',
-			address: '강남',
-			zipCode: '12345',
-			ntrp: 'PRO',
-			phoneNumber: '010-1234-5678',
+			ageGroup: signupGetValue('age'),
+			gender: signupGetValue('gender'),
+			address: signupGetValue('address'),
+			zipCode: addressList.zipNo,
+			ntrp: signupGetValue('NTRP'),
+			phoneNumber: signupGetValue('phoneNumber'),
 			fileUrl: '',
 		};
 		try {
 			const fileUrl = uploadImg();
 			// console.log({ ...params, fileUrl });
 			// const res = await AuthService.signup({ ...params, fileUrl: fileUrl });
-			// const res = await AuthService.signup(params);
-			// console.log(res);
+			const res = await AuthService.signup(params);
+			console.log(res);
 		} catch (e) {
 			console.log(e);
 		}
@@ -311,16 +318,28 @@ export default function register() {
 					<SelectBox>
 						<InputBox>
 							<label htmlFor='registerGender'>성별</label>
-							<CustomSelect id='registerGender' options={genderOptions}></CustomSelect>
+							<Controller
+								name='gender'
+								control={signupControl}
+								render={({ field }) => <CustomSelect {...field} options={genderOptions} />}
+							/>
 						</InputBox>
 						<InputBox>
 							<label htmlFor='registerAge'>연령대</label>
-							<CustomSelect id='registerAge' options={ageOptions}></CustomSelect>
+							<Controller
+								name='age'
+								control={signupControl}
+								render={({ field }) => <CustomSelect {...field} options={ageOptions} />}
+							/>
 						</InputBox>
 					</SelectBox>
 					<InputBox>
 						<label htmlFor='registerNTRP'>NTRP</label>
-						<CustomSelect id='registerNTRP' options={NTRPOptions}></CustomSelect>
+						<Controller
+							name='NTRP'
+							control={signupControl}
+							render={({ field }) => <CustomSelect {...field} options={NTRPOptions} />}
+						/>
 					</InputBox>
 					<InputBox>
 						<label htmlFor='registerEmail'>이메일</label>
