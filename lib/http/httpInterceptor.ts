@@ -9,8 +9,21 @@ const http = axios.create({
 	withCredentials: true,
 });
 
+const getCookie = (name: string) => {
+	const matches = document.cookie.match(
+		new RegExp(
+			// eslint-disable-next-line no-useless-escape
+			'(?:^|; )' + name.replace(/([\.$?*|{}\()\[\]\\`\/\+^])/g, '\\$1') + '=([^;]*)'
+		)
+	);
+	return matches ? decodeURIComponent(matches[1]) : undefined;
+};
+
 http.interceptors.request.use(
 	(config) => {
+		if (getCookie('accessToken') !== undefined) {
+			config.headers.Authorization = 'Bearer ' + getCookie('accessToken');
+		}
 		return config;
 	}
 	// (ignore) => {}
