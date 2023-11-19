@@ -54,7 +54,6 @@ export default function MainPage() {
 
 				<MainContainer>
 					<CustomTab defaultActiveKey='1' items={items} />
-					<GrayLine />
 				</MainContainer>
 			</MainViewContainer>
 		</>
