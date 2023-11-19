@@ -131,6 +131,17 @@ export default function register() {
 	};
 
 	// 닉네임 중복 체크 ---------------------------------------------------------------
+	const checkNickname = async () => {
+		const params = {
+			email: signupGetValue('nickName'),
+		};
+		try {
+			const res = await AuthService.checkNickname(params);
+			console.log(res);
+		} catch (e) {
+			console.log(e);
+		}
+	};
 
 	// 인증번호 ---------------------------------------------------------------
 	// 인증번호 타이머
@@ -378,7 +389,10 @@ export default function register() {
 							<label htmlFor='registerNickNm'>닉네임</label>
 							<input id='registerNickNm' type={'text'} {...signUpRegister('nickName')} />
 						</InputBox>
-						<SquareButton height={'50px'} disabled={!signupWatch('nickName')}>
+						<SquareButton
+							height={'50px'}
+							disabled={!signupWatch('nickName')}
+							onClick={checkNickname}>
 							중복체크
 						</SquareButton>
 					</InputButtonBox>

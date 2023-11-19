@@ -49,7 +49,6 @@ export interface reqDeleteUserApiData {
 // 아이디 중복 체크
 export interface reqCheckIdApiData {
 	email: string;
-	password: string;
 }
 
 // 핸드폰 인증
