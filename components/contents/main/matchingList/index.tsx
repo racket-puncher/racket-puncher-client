@@ -79,8 +79,8 @@ export default function MatchingList() {
 		}
 	};
 
-	const moveDetailMatching = () => {
-		movePage('/main/detailMatch');
+	const moveDetailMatching = (id: any) => {
+		movePage(`/main/detailMatch/${id}`);
 	};
 
 	const clickFilterClose = () => {
