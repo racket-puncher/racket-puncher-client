@@ -17,6 +17,7 @@ import { InputErrorText } from '../../styles/ts/components/text';
 import { prefix } from '../../constants/prefix';
 import AuthService from '../../service/auth/service';
 import useCookies from '../../utils/useCookies';
+import useToast from '../../utils/useToast';
 
 interface FormData {
 	readonly email: string;
@@ -40,6 +41,7 @@ const schema = yup.object().shape({
 export default function Login() {
 	const { movePage } = useRouterHook();
 	const { setCookie } = useCookies();
+	const { setMessage } = useToast();
 
 	const {
 		register,
@@ -70,6 +72,7 @@ export default function Login() {
 			movePage('/main');
 		} catch (e) {
 			console.log(e);
+			setMessage('error', e.response.data.message);
 		}
 	};
 

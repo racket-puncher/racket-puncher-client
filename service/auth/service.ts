@@ -51,7 +51,7 @@ const logout = (data: reqLogoutApiData) => {
 
 // 닉네임 중복 체크
 const checkNickname = (data: reqCheckIdApiData) => {
-	return http.post('/api/auth/id-check', data);
+	return http.post('/api/auth/check-email', data);
 };
 
 // 핸드폰 인증
