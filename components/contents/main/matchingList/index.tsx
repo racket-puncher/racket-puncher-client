@@ -55,7 +55,7 @@ export default function MatchingList() {
 					lon: filterParams.sort === 'distance' ? filterParams.lon : 0,
 				},
 				filters: {
-					startDate: filterParams.startDate,
+					date: filterParams.startDate,
 					regions: filterParams.regions,
 					matchingTypes: filterParams.matchingTypes,
 					ageGroups: filterParams.ageGroups,
@@ -66,10 +66,10 @@ export default function MatchingList() {
 
 		try {
 			const res = await Service.getMatchingList(payload);
-			if (res.data.content.length > 0) {
+			if (res.data.response.content.length > 0) {
 				setHasMoreData(true);
 				setParams((prev) => ({ ...prev, page: prev.page + 1 }));
-				setMatchingList((prev) => [...prev, ...res.data.content]);
+				setMatchingList((prev) => [...prev, ...res.data.response.content]);
 			} else {
 				setHasMoreData(false);
 			}
@@ -123,38 +123,32 @@ export default function MatchingList() {
 				</ControlBox>
 
 				<GrayLine />
-
-				{matchingList.length > 0 ? (
-					<InfiniteScroll
-						pageStart={0}
-						loadMore={getMatchingList}
-						hasMore={hasMoreData}
-						loader={
-							<div className='loader' key={uuidv4()}>
-								<SkeletonUI />
-							</div>
-						}>
-						{matchingList.map((item) => {
-							return (
-								<>
-									<MatchingCard
-										key={uuidv4()}
-										matchingStartDateTime={item.matchingStartDateTime}
-										matchingType={item.matchingType}
-										ntrp={item.ntrp}
-										reserved={item.reserved}
-										title={item.title}
-										onClick={moveDetailMatching}
-									/>
-								</>
-							);
-						})}
-					</InfiniteScroll>
-				) : (
-					<>
-						<NoResultBox />
-					</>
-				)}
+				<InfiniteScroll
+					pageStart={0}
+					loadMore={getMatchingList}
+					hasMore={hasMoreData}
+					loader={
+						<div className='loader' key={uuidv4()}>
+							<SkeletonUI />
+						</div>
+					}>
+					{matchingList.map((item) => {
+						return (
+							<>
+								<MatchingCard
+									key={uuidv4()}
+									matchingStartDateTime={item.matchingStartDateTime}
+									matchingType={item.matchingType}
+									ntrp={item.ntrp}
+									reserved={item.reserved}
+									title={item.title}
+									onClick={moveDetailMatching}
+								/>
+							</>
+						);
+					})}
+				</InfiniteScroll>
+				{matchingList.length === 0 && <NoResultBox />}
 
 				{/* 핉터링 모달 */}
 				<HalfDrawerBox
