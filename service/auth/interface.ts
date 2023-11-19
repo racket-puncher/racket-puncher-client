@@ -10,6 +10,7 @@ export interface reqSignupApiData {
 	zipCode: string;
 	ntrp: string;
 	phoneNumber: string;
+	profileImg: string;
 }
 
 // 로그인
