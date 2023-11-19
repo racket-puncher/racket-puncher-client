@@ -4,15 +4,26 @@ import { rem } from 'polished';
 import { ImageBox } from 'styles/ts/components/box';
 import { FontFamilyRegular, FontSizeSpSm, LightGrayColor } from 'styles/ts/common';
 import DatePicker from 'react-mobile-datepicker';
-import { timeFormatter } from 'utils/formatter';
+import { timeFormatter, stringToTimeFormatter } from 'utils/formatter';
 
 interface IPickerProps {
 	readonly name: string;
 	readonly setState: (name: string, data: string) => void;
 	readonly type: Array<boolean>;
+	readonly defaultValue?: string;
 }
 
 export default function TPicker(props: IPickerProps) {
+	const [timeState, setTimeState] = useState(new Date(0, 0, 0, 0, 0, 0, 0));
+	const [isOpen, setIsOpen] = useState(false);
+	useEffect(() => {
+		if (props.defaultValue) {
+			const hour = stringToTimeFormatter(props.defaultValue)[0];
+			const time = stringToTimeFormatter(props.defaultValue)[1];
+			setTimeState(new Date(0, 0, 0, hour, time, 0, 0));
+		}
+	}, [props.defaultValue]);
+
 	const options = {
 		headerFormat: props.type[1] ? 'hh시 mm분' : 'hh시',
 		dateFormat: ['hh', 'mm'],
@@ -42,9 +53,6 @@ export default function TPicker(props: IPickerProps) {
 				},
 		  };
 
-	const [timeState, setTimeState] = useState(new Date(0, 0, 0, 0, 0, 0, 0));
-	const [isOpen, setIsOpen] = useState(false);
-
 	const handleSelect = (selected: Date) => {
 		setTimeState(selected);
 		props.setState(props.name, timeFormatter(selected));
@@ -55,10 +63,10 @@ export default function TPicker(props: IPickerProps) {
 		<>
 			<CustomDatePickerBox onClick={() => setIsOpen(true)}>
 				<p>
-					{timeState.getHours() > 9 ? timeState.getHours() : '0' + String(timeState.getHours())}시{' '}
+					{timeState.getHours() > 9 ? `${timeState.getHours()}` : '0' + `${timeState.getHours()}`}시{' '}
 					{props.type[1] && timeState.getMinutes() > 9
-						? timeState.getMinutes()
-						: '0' + String(timeState.getMinutes())}
+						? `${timeState.getMinutes()}`
+						: '0' + `${timeState.getMinutes()}`}
 					분
 				</p>
 
