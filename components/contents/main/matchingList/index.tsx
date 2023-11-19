@@ -5,7 +5,7 @@ import InfiniteScroll from 'react-infinite-scroller';
 import { v4 as uuidv4 } from 'uuid';
 
 import { RoundButton } from '../../../../styles/ts/components/buttons';
-import { ImageBox } from '../../../../styles/ts/components/box';
+import { GrayLine, ImageBox } from '../../../../styles/ts/components/box';
 import { FontSizeSm } from '../../../../styles/ts/common';
 import HalfDrawerBox from '../../../common/drawer/halfDrawer';
 import FilteringModal from '../filteringModal';
@@ -14,6 +14,7 @@ import useRouterHook from 'utils/useRouterHook';
 import MatchingCard from 'components/contents/main/card';
 import SkeletonUI from 'components/common/loading/skeleton';
 import Service from '../../../../service/matches/service';
+import NoResultBox from '../../../common/noResult';
 
 export default function MatchingList() {
 	const { movePage } = useRouterHook();
@@ -121,31 +122,39 @@ export default function MatchingList() {
 					</ImageBox>
 				</ControlBox>
 
-				<InfiniteScroll
-					pageStart={0}
-					loadMore={getMatchingList}
-					hasMore={hasMoreData}
-					loader={
-						<div className='loader' key={uuidv4()}>
-							<SkeletonUI />
-						</div>
-					}>
-					{matchingList.map((item) => {
-						return (
-							<>
-								<MatchingCard
-									key={uuidv4()}
-									matchingStartDateTime={item.matchingStartDateTime}
-									matchingType={item.matchingType}
-									ntrp={item.ntrp}
-									reserved={item.reserved}
-									title={item.title}
-									onClick={moveDetailMatching}
-								/>
-							</>
-						);
-					})}
-				</InfiniteScroll>
+				<GrayLine />
+
+				{matchingList.length > 0 ? (
+					<InfiniteScroll
+						pageStart={0}
+						loadMore={getMatchingList}
+						hasMore={hasMoreData}
+						loader={
+							<div className='loader' key={uuidv4()}>
+								<SkeletonUI />
+							</div>
+						}>
+						{matchingList.map((item) => {
+							return (
+								<>
+									<MatchingCard
+										key={uuidv4()}
+										matchingStartDateTime={item.matchingStartDateTime}
+										matchingType={item.matchingType}
+										ntrp={item.ntrp}
+										reserved={item.reserved}
+										title={item.title}
+										onClick={moveDetailMatching}
+									/>
+								</>
+							);
+						})}
+					</InfiniteScroll>
+				) : (
+					<>
+						<NoResultBox />
+					</>
+				)}
 
 				{/* 핉터링 모달 */}
 				<HalfDrawerBox
