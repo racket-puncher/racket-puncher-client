@@ -26,7 +26,8 @@ const login = (data: reqLoginApiData) => {
 
 // 회원가입 프로필 이미지
 const uploadImgSignup = (data: any) => {
-	return httpFile.post('/api/auth/upload-profile-image', data);
+	console.log(data);
+	return httpFile.post('/api/auth/upload-image', data);
 };
 
 // 카카오톡 회원가입

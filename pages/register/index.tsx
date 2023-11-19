@@ -29,6 +29,7 @@ import { prefix } from '../../constants/prefix';
 import MatchesService from '../../service/matches/service';
 import AuthService from '../../service/auth/service';
 import { ageOptions, genderOptions, NTRPOptions } from '../../constants/filterOption';
+import useRouterHook from '../../utils/useRouterHook';
 
 const schema = yup.object().shape({
 	userName: yup.string().required('이름은 필수입니다.'),
@@ -64,6 +65,7 @@ const schema = yup.object().shape({
 });
 
 export default function register() {
+	const { movePage } = useRouterHook();
 	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
 
 	// file
@@ -220,20 +222,6 @@ export default function register() {
 	};
 
 	// 회원가입 ------------------------------------------------------------------
-	const uploadImg = async () => {
-		try {
-			const formData = new FormData();
-			formData.append('file', fileData);
-			const payload = {
-				imageFile: formData,
-			};
-			const res = await AuthService.uploadImgSignup(payload);
-			return res;
-		} catch (e) {
-			console.log(e);
-		}
-	};
-
 	const signUpComplete = async () => {
 		const params = {
 			email: signupGetValue('userName'),
@@ -246,14 +234,14 @@ export default function register() {
 			zipCode: signupGetValue('address'),
 			ntrp: signupGetValue('NTRP'),
 			phoneNumber: signupGetValue('phoneNumber'),
-			fileUrl: '',
+			profileImg: '',
 		};
 		try {
-			const fileUrl = uploadImg();
-			// console.log({ ...params, fileUrl });
-			// const res = await AuthService.signup({ ...params, fileUrl: fileUrl });
-			const res = await AuthService.signup(params);
-			console.log(res);
+			const formData = new FormData();
+			formData.append('imageFile', fileData);
+			const fileUrl = await AuthService.uploadImgSignup(formData);
+			const res = await AuthService.signup({ ...params, profileImg: fileUrl.data.response });
+			movePage('/main');
 		} catch (e) {
 			console.log(e);
 		}
