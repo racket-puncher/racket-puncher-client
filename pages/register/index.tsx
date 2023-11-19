@@ -130,6 +130,9 @@ export default function register() {
 		setCertifyNumVisible(true);
 	};
 
+	// 닉네임 중복 체크 ---------------------------------------------------------------
+
+	// 인증번호 ---------------------------------------------------------------
 	// 인증번호 타이머
 	const setCertTimer = () => {
 		if (intervalId) {
