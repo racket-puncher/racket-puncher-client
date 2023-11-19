@@ -8,10 +8,14 @@ const useRouterHook = () => {
 	const moveToBack = () => {
 		route.back();
 	};
+	const reload = () => {
+		route.reload();
+	};
 	const pathNameStartsWith = (url: string) => {
 		return route.pathname.startsWith(url);
 	};
-	return { movePage, moveToBack, pathNameStartsWith };
+
+	return { movePage, moveToBack, reload, pathNameStartsWith };
 };
 
 export default useRouterHook;

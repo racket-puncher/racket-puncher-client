@@ -5,7 +5,7 @@ import useRouterHook from '../../utils/useRouterHook';
 import { RoundButton } from '../../styles/ts/components/buttons';
 import DrawerBox from '../common/drawer';
 import useCookies from '../../utils/useCookies';
-import { useRouter } from 'next/router';
+import Link from 'next/link';
 
 interface MenuDrawerProps {
 	readonly isOpen: boolean;
@@ -14,10 +14,8 @@ interface MenuDrawerProps {
 
 export default function MenuDrawer(props: MenuDrawerProps) {
 	const { checkLogin, removeCookie } = useCookies();
-	const router = useRouter();
-
 	const { isOpen, toggleDrawer } = props;
-	const { movePage } = useRouterHook();
+	const { movePage, reload } = useRouterHook();
 
 	return (
 		<DrawerBox
@@ -30,33 +28,39 @@ export default function MenuDrawer(props: MenuDrawerProps) {
 				{checkLogin() ? (
 					<>
 						<MenuArea>
-							<RoundButton
-								onClick={() => {
-									movePage('/');
-									toggleDrawer(isOpen);
-								}}
-								colorstyle={'is-green'}
-								aria-label='메인 페이지로 이동'>
-								소셜 매치
-							</RoundButton>
-							<RoundButton
-								onClick={() => {
-									movePage('/my');
-									toggleDrawer(isOpen);
-								}}
-								colorstyle={'is-green'}
-								aria-label='마이 페이지로 이동'>
-								마이페이지
-							</RoundButton>
-							<RoundButton
-								onClick={() => {
-									movePage('/alarm');
-									toggleDrawer(isOpen);
-								}}
-								colorstyle={'is-green'}
-								aria-label='알림 페이지로 이동'>
-								알림 페이지
-							</RoundButton>
+							<Link href='/main'>
+								<RoundButton
+									onClick={() => {
+										// movePage('/main');
+										toggleDrawer(isOpen);
+									}}
+									colorstyle={'is-green'}
+									aria-label='메인 페이지로 이동'>
+									소셜 매치
+								</RoundButton>
+							</Link>
+							<Link href='/my'>
+								<RoundButton
+									onClick={() => {
+										// movePage('/my');
+										toggleDrawer(isOpen);
+									}}
+									colorstyle={'is-green'}
+									aria-label='마이 페이지로 이동'>
+									마이페이지
+								</RoundButton>
+							</Link>
+							<Link href='/alarm'>
+								<RoundButton
+									onClick={() => {
+										// movePage('/alarm');
+										toggleDrawer(isOpen);
+									}}
+									colorstyle={'is-green'}
+									aria-label='알림 페이지로 이동'>
+									알림 페이지
+								</RoundButton>
+							</Link>
 						</MenuArea>
 						<SignArea>
 							<RoundButton
@@ -65,7 +69,7 @@ export default function MenuDrawer(props: MenuDrawerProps) {
 								onClick={() => {
 									removeCookie('accessToken');
 									toggleDrawer(isOpen);
-									router.reload();
+									reload();
 								}}>
 								로그아웃
 							</RoundButton>
@@ -74,35 +78,41 @@ export default function MenuDrawer(props: MenuDrawerProps) {
 				) : (
 					<>
 						<MenuArea>
-							<RoundButton
-								onClick={() => {
-									movePage('/');
-									toggleDrawer(isOpen);
-								}}
-								colorstyle={'is-green'}
-								aria-label='소셜 매치'>
-								소셜 매치
-							</RoundButton>
+							<Link href='/main'>
+								<RoundButton
+									onClick={() => {
+										// movePage('/main');
+										toggleDrawer(isOpen);
+									}}
+									colorstyle={'is-green'}
+									aria-label='소셜 매치'>
+									소셜 매치
+								</RoundButton>
+							</Link>
 						</MenuArea>
 						<SignArea>
-							<RoundButton
-								onClick={() => {
-									movePage('/login');
-									toggleDrawer(isOpen);
-								}}
-								colorstyle={'is-black'}
-								aria-label='로그인 페이지로 이동'>
-								로그인
-							</RoundButton>
-							<RoundButton
-								onClick={() => {
-									movePage('/register');
-									toggleDrawer(isOpen);
-								}}
-								colorstyle={'is-black'}
-								aria-label='회원가입 페이지로 이동'>
-								회원가입
-							</RoundButton>
+							<Link href='/login'>
+								<RoundButton
+									onClick={() => {
+										// movePage('/login');
+										toggleDrawer(isOpen);
+									}}
+									colorstyle={'is-black'}
+									aria-label='로그인 페이지로 이동'>
+									로그인
+								</RoundButton>
+							</Link>
+							<Link href='/register'>
+								<RoundButton
+									onClick={() => {
+										// movePage('/register');
+										toggleDrawer(isOpen);
+									}}
+									colorstyle={'is-black'}
+									aria-label='회원가입 페이지로 이동'>
+									회원가입
+								</RoundButton>
+							</Link>
 						</SignArea>
 					</>
 				)}
