@@ -75,7 +75,7 @@ export default function MyAroundMatching() {
 					});
 
 					const userInfowindow = new kakao.maps.InfoWindow({
-						content: '<div style="padding:5px;">내 위치</div>',
+						content: '<div class="custom-infowindow"">내 위치</div>',
 					});
 					userInfowindow.open(kakaoMap, userMarker);
 					infowindows.push(userInfowindow);

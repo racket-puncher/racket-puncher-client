@@ -418,7 +418,7 @@ export default function register() {
 				height={'100%'}
 				toggleDrawer={handleAddressDrawer}>
 				<>
-					<InputButtonBox>
+					<InputNoTitleButtonBox>
 						<InputBox>
 							<input
 								id='registerAddress'
@@ -429,7 +429,7 @@ export default function register() {
 						<SquareButton height={'50px'} onClick={addressHandleSubmit(onClickSearchAddress)}>
 							주소 검색
 						</SquareButton>
-					</InputButtonBox>
+					</InputNoTitleButtonBox>
 
 					<DescTextBox>
 						<p>
@@ -571,4 +571,19 @@ const AddRightWrap = styled.div`
 	font-size: ${rem(FontSizeMd)};
 	font-family: Pretendard-Regular;
 	color: ${BlackColor};
+`;
+
+const InputNoTitleButtonBox = styled.div`
+	display: flex;
+	justify-content: space-between;
+
+	.input__InputBox-sc-w6l3ed-0 {
+		flex-basis: 380px;
+	}
+
+	.buttons__SquareButton-sc-xhpq7c-1 {
+		flex-basis: 180px;
+		margin-bottom: 20px;
+		margin-left: ${rem('20px')};
+	}
 `;
