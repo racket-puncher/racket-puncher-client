@@ -30,6 +30,7 @@ import MatchesService from '../../service/matches/service';
 import AuthService from '../../service/auth/service';
 import { ageOptions, genderOptions, NTRPOptions } from '../../constants/filterOption';
 import useRouterHook from '../../utils/useRouterHook';
+import useToast from '../../utils/useToast';
 
 const schema = yup.object().shape({
 	userName: yup.string().required('이름은 필수입니다.'),
@@ -66,6 +67,8 @@ const schema = yup.object().shape({
 
 export default function register() {
 	const { movePage } = useRouterHook();
+	const { setMessage } = useToast();
+
 	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
 
 	// file
@@ -139,6 +142,7 @@ export default function register() {
 		};
 		try {
 			const res = await AuthService.checkNickname(params);
+			setMessage('success', res.data.response);
 			console.log(res);
 		} catch (e) {
 			console.log(e);
@@ -200,29 +204,13 @@ export default function register() {
 		signupSetValue('address', item.zipNo);
 	};
 
-	const checkValidation = () => {
-		if (
-			!signupWatch('userName') ||
-			!signupWatch('phoneNumber') ||
-			!signupWatch('certifyNumber') ||
-			!signupWatch('email') ||
-			!signupWatch('password') ||
-			!signupWatch('rePassword') ||
-			!signupWatch('nickName') ||
-			!signupWatch('address') ||
-			!signupWatch('detailAddress')
-			// !signupWatch('gender') ||
-			// !signupWatch('age') ||
-			// !signupWatch('NTRP')
-		) {
-			return true;
-		} else {
-			return false;
-		}
-	};
-
 	// 회원가입 ------------------------------------------------------------------
 	const signUpComplete = async () => {
+		if (!virtualImgData) {
+			setMessage('error', '이미지를 추가해주세요.');
+			return;
+		}
+
 		const params = {
 			email: signupGetValue('userName'),
 			password: signupGetValue('password'),
@@ -241,7 +229,7 @@ export default function register() {
 			formData.append('imageFile', fileData);
 			const fileUrl = await AuthService.uploadImgSignup(formData);
 			const res = await AuthService.signup({ ...params, profileImg: fileUrl.data.response });
-			movePage('/main');
+			movePage('/login');
 		} catch (e) {
 			console.log(e);
 		}
