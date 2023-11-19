@@ -1,23 +1,31 @@
 import { useEffect, useState, Dispatch, SetStateAction } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
-import { ImageBox } from '../../../../styles/ts/components/box';
-import { FontFamilyRegular, FontSizeSpSm } from '../../../../styles/ts/common';
+import { ImageBox } from 'styles/ts/components/box';
+import { FontFamilyRegular, FontSizeSpSm } from 'styles/ts/common';
 import DatePicker from 'react-mobile-datepicker';
-import { dateFormatter } from 'utils/formatter';
+import { dateFormatter, stringToDateFormatter } from 'utils/formatter';
 
 interface IPickerProps {
 	readonly name: string;
 	readonly setState: (name: string, data: string) => void;
 	readonly type?: Array<boolean>;
 	readonly matchDate?: string;
+	readonly defaultValue?: string;
 }
 
 export default function DPicker(props: IPickerProps) {
 	const [dateState, setDateState] = useState(new Date());
-	// useEffect(() => props.matchDate && setDateState(new Date(matchDate)), [props.matchDate]);
-
 	const [isOpen, setIsOpen] = useState(false);
+	// useEffect(() => props.matchDate && setDateState(new Date(matchDate)), [props.matchDate]);
+	useEffect(() => {
+		if (props.defaultValue) {
+			const yy = stringToDateFormatter(props.defaultValue)[0];
+			const mm = stringToDateFormatter(props.defaultValue)[1];
+			const dd = stringToDateFormatter(props.defaultValue)[2];
+			setDateState(new Date(yy, mm, dd, 0, 0, 0, 0));
+		}
+	}, [props.defaultValue]);
 
 	const handleSelect = (selectedDate: Date) => {
 		setDateState(selectedDate);

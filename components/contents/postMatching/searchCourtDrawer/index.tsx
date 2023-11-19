@@ -21,9 +21,7 @@ import { CustomBadge } from 'styles/ts/components/badge';
 interface ISearchDrawerProps {
 	readonly isOpen: boolean;
 	readonly toggleDrawer: () => void;
-	readonly setCourtInfos: Dispatch<
-		SetStateAction<{ address: string; name: string; lat: string; len: string }>
-	>;
+	readonly setCourtInfos: Dispatch<SetStateAction<{ address: string; lat: string; lon: string }>>;
 	readonly setAddress: (name: string, address: string) => void;
 }
 
@@ -98,14 +96,16 @@ export default function SearchCourtDrawer(props: ISearchDrawerProps) {
 								<AddRightWrap
 									onClick={() => {
 										setCourtInfos({
-											address: resultData[i].road_address_name || resultData[i].address_name,
-											name: '(' + resultData[i].place_name + ')',
+											address:
+												(resultData[i].road_address_name || resultData[i].address_name) +
+												('(' + resultData[i].place_name + ')'),
 											lat: resultData[i].x,
-											len: resultData[i].y,
+											lon: resultData[i].y,
 										});
 										setAddress(
 											'courtAddress',
-											resultData[i].road_address_name || resultData[i].address_name
+											(resultData[i].road_address_name || resultData[i].address_name) +
+												('(' + resultData[i].place_name + ')')
 										);
 										toggleDrawer();
 									}}>

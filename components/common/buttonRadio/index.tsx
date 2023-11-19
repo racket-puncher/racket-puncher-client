@@ -2,14 +2,17 @@ import styled from 'styled-components';
 import { rem } from 'polished';
 import { Radio as AntdRadio, ConfigProvider } from 'antd';
 import { InputBorderColor, InputBoxColor, InputLabelColor, PrimaryColor } from 'styles/ts/common';
+import { useEffect } from 'react';
 // import { Dispatch, SetStateAction } from 'react';
 
 interface IBtnRadioProps {
-	readonly id?: string;
+	readonly idString?: string;
 	readonly setState: (stateName: string, value: boolean) => void;
+	readonly defaultValue?: boolean;
 }
 
 export default function ButtonStyleRadio(props: IBtnRadioProps) {
+	useEffect(() => props.setState('isCourtBooked', props.defaultValue), [props.defaultValue]);
 	return (
 		<ConfigProvider
 			theme={{
@@ -26,7 +29,7 @@ export default function ButtonStyleRadio(props: IBtnRadioProps) {
 				},
 			}}>
 			<RadioGroup
-				id={props.id}
+				id={props.idString}
 				size='large'
 				onChange={(e) => props.setState('isCourtBooked', e.target.value)}>
 				<RadioButton value={true}>예약 O</RadioButton>
