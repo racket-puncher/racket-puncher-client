@@ -15,9 +15,15 @@ import MatchingCard from 'components/contents/main/card';
 import SkeletonUI from 'components/common/loading/skeleton';
 import Service from '../../../../service/matches/service';
 import NoResultBox from '../../../common/noResult';
+import useCookies from '../../../../utils/useCookies';
+import useToast from '../../../../utils/useToast';
+import { useRouter } from 'next/router';
 
 export default function MatchingList() {
 	const { movePage } = useRouterHook();
+	const { checkLogin } = useCookies();
+	const { setMessage } = useToast();
+	const router = useRouter();
 
 	const [isClickFilter, setIsClickFilter] = useState(false);
 	const [matchingList, setMatchingList] = useState([]);
@@ -88,7 +94,12 @@ export default function MatchingList() {
 	};
 
 	const handleClickPostMatching = () => {
-		movePage('/post-matching');
+		if (!checkLogin()) {
+			setMessage('error', '로그인이 필요한 서비스입니다.');
+			router.replace('/login');
+		} else {
+			movePage('/post-matching');
+		}
 	};
 
 	useEffect(() => {
