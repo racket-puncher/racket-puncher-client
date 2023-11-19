@@ -171,7 +171,7 @@ export default function register() {
 	// 주소 아이템 클릭시
 	const onClickAddressItem = (item: any) => {
 		handleAddressDrawer();
-		signupSetValue('address', item.roadAddr);
+		signupSetValue('address', item.zipNo);
 	};
 
 	const checkValidation = () => {
@@ -218,8 +218,8 @@ export default function register() {
 			roles: ['ROLE_USER'],
 			ageGroup: signupGetValue('age'),
 			gender: signupGetValue('gender'),
-			address: signupGetValue('address'),
-			zipCode: addressList.zipNo,
+			address: signupGetValue('detailAddress'),
+			zipCode: signupGetValue('address'),
 			ntrp: signupGetValue('NTRP'),
 			phoneNumber: signupGetValue('phoneNumber'),
 			fileUrl: '',
