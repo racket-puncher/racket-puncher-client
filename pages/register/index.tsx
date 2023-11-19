@@ -79,6 +79,16 @@ export default function register() {
 	const [addressDrawer, setAddressDrawer] = useState(false);
 	const [addressList, setAddressList] = useState(null);
 
+	const profileImgStyle = {
+		backgroundImage: `url(${virtualImgData})`,
+		border: `1px solid ${InputBorderColor}`,
+		borderRadius: '50%',
+		height: '100%',
+		backgroundPosition: 'center',
+		backgroundRepeat: 'no-repeat',
+		backgroundSize: 'cover',
+	};
+
 	const {
 		control: signupControl,
 		register: signUpRegister,
@@ -243,9 +253,7 @@ export default function register() {
 				<ImageSection onClick={clickImgFile}>
 					<ImageBox width={'200px'} height={'200px'}>
 						{virtualImgData ? (
-							<>
-								<img src={virtualImgData} alt='virtualImgData' />
-							</>
+							<div className='img-align-box' style={profileImgStyle} />
 						) : (
 							<>
 								<img src={`${prefix}/images/add-image.png`} alt='add-image' />
@@ -493,7 +501,6 @@ const SelectBox = styled.div`
 const InputButtonBox = styled.div`
 	display: flex;
 	justify-content: space-between;
-	align-items: flex-end;
 
 	.input__InputBox-sc-w6l3ed-0 {
 		flex-basis: 380px;
@@ -501,6 +508,7 @@ const InputButtonBox = styled.div`
 
 	.buttons__SquareButton-sc-xhpq7c-1 {
 		flex-basis: 180px;
+		margin-top: 24px;
 		margin-bottom: 20px;
 		margin-left: ${rem('20px')};
 	}
