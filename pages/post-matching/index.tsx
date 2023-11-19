@@ -1,4 +1,4 @@
-import React, { ChangeEvent, useEffect, useRef, useState } from 'react';
+import React, { ChangeEvent, useRef, useState } from 'react';
 import MatchesService from 'service/matches/service';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
@@ -16,32 +16,33 @@ import DPicker from 'components/contents/postMatching/datePicker/DPicker';
 import TPicker from 'components/contents/postMatching/timePicker/TPicker';
 import ButtonStyleRadio from 'components/common/buttonRadio';
 import SearchCourtDrawer from 'components/contents/postMatching/searchCourtDrawer';
-// import useToast from 'utils/useToast';
+import useToast from 'utils/useToast';
 
+const schema = yup.object().shape({
+	postTitle: yup.string().required('제목을 입력해주세요.'),
+	matchType: yup.string().required('경기 유형을 선택해주세요.'),
+	numOfRecruited: yup.number().required('모집 인원수를 선택해주세요.'),
+	selectedAge: yup.string().required('모집 연령대를 선택해주세요.'),
+	selectedNTRP: yup.string().required('모집할 NTRP를 선택해주세요.'),
+	matchDate: yup.string().required('경기 날짜를 선택해주세요.'),
+	matchStartTime: yup.string().required('경기 시작 시간을 선택해주세요.'),
+	matchEndTime: yup.string().required('경기 종료 시간을 선택해주세요.'),
+	deadlineDate: yup.string().required('모집 마감일을 선택해주세요.'),
+	deadlineTime: yup.string().required('모집 마감 시간을 선택해주세요.'),
+	courtAddress: yup.string().required('경기장 주소를 입력해주세요.'),
+	isCourtBooked: yup.boolean().required('경기장 예약 여부를 선택해주세요.'),
+	courtFee: yup
+		.number()
+		.required('경기장 대여료를 입력해주세요. (무료일 경우 0을 입력해주세요.)')
+		.min(0),
+	locationImg: yup.string(),
+	mainText: yup.string().required('본문 내용을 입력해주세요.'),
+});
 export default function PostMatching() {
 	// To-do
 	// 프론트에서 모집 마감일 받을 때 등록일 이후~경기시작 시간 이전으로 모집 마감일 선택하도록 설정
+	// 이미지 api 붙이기
 
-	const schema = yup.object().shape({
-		postTitle: yup.string().required('제목을 입력해주세요.'),
-		matchType: yup.string().required('경기 유형을 선택해주세요.'),
-		numOfRecruited: yup.number().required('모집 인원수를 선택해주세요.'),
-		selectedAge: yup.string().required('모집 연령대를 선택해주세요.'),
-		selectedNTRP: yup.string().required('모집할 NTRP를 선택해주세요.'),
-		matchDate: yup.string().required('경기 날짜를 선택해주세요.'),
-		matchStartTime: yup.string().required('경기 시작 시간을 선택해주세요.'),
-		matchEndTime: yup.string().required('경기 종료 시간을 선택해주세요.'),
-		deadlineDate: yup.string().required('모집 마감일을 선택해주세요.'),
-		deadlineTime: yup.string().required('모집 마감 시간을 선택해주세요.'),
-		courtAddress: yup.string().required('경기장 주소를 입력해주세요.'),
-		isCourtBooked: yup.boolean().required('경기장 예약 여부를 선택해주세요.'),
-		courtFee: yup
-			.number()
-			.required('경기장 대여료를 입력해주세요. (무료일 경우 0을 입력해주세요.)')
-			.min(0),
-		locationImg: yup.string(),
-		mainText: yup.string().required('본문 내용을 입력해주세요.'),
-	});
 	const {
 		register: postMatchingResister,
 		handleSubmit: postMatchingHandleSubmit,
@@ -52,8 +53,15 @@ export default function PostMatching() {
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
-
-	// const matchTypeREF = useRef(null);
+	const { setMessage } = useToast();
+	const [matchDate, setMatchDate] = useState(null);
+	const [matchStartTime, setMatchStartTime] = useState('');
+	const [matchEndTime, setMatchEndTime] = useState('');
+	const [deadlineDate, setDeadlineDate] = useState('');
+	const [deadlineTime, setDeadlineTime] = useState('');
+	const [courtInfos, setCourtInfos] = useState({ address: '', lat: '', lon: '' });
+	const [numOfAllPlayers, setNumOfAllPlayers] = useState(1);
+	const [selectedImage, setSelectedImage] = useState(null);
 	const [optionsForNOR, setOptionsForNOR] = useState([
 		{ value: null, label: '경기 유형을 먼저 선택해주세요.' },
 	]);
@@ -66,16 +74,6 @@ export default function PostMatching() {
 					{ value: 3, label: '3 명' },
 			  ]);
 	};
-
-	const [matchDate, setMatchDate] = useState(null);
-	const [matchStartTime, setMatchStartTime] = useState('');
-	const [matchEndTime, setMatchEndTime] = useState('');
-	const [deadlineDate, setDeadlineDate] = useState('');
-	const [deadlineTime, setDeadlineTime] = useState('');
-	const [courtInfos, setCourtInfos] = useState({ address: '', name: '', lat: '', len: '' });
-	const [numOfAllPlayers, setNumOfAllPlayers] = useState(1);
-	const [feeForEach, setFeeForEach] = useState(0);
-	const [selectedImage, setSelectedImage] = useState(null);
 
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
 	const clickImgFile = () => {
@@ -101,34 +99,6 @@ export default function PostMatching() {
 	const [isSearchDrawerOpen, setIsSearchDrawerOpen] = useState(false);
 	const toggleSearchDrawer = () => setIsSearchDrawerOpen((prev: boolean) => !prev);
 
-	const onSubmit = (e: any) => {
-		e.preventDefault();
-		const postedData = {
-			title: postMatchingGetValues('postTitle'),
-			matchingType: postMatchingGetValues('matchType'),
-			recruitNum: postMatchingGetValues('numOfRecruited'),
-			ageGroup: postMatchingGetValues('selectedAge'),
-			ntrp: postMatchingGetValues('selectedNTRP'),
-			matchingDate: postMatchingGetValues('matchDate'),
-			matchingStartTime: postMatchingGetValues('matchStartTime'),
-			matchingEndTime: postMatchingGetValues('matchEndTime'),
-			recruitDueDate: postMatchingGetValues('deadlineDate'),
-			recruitDueTime: postMatchingGetValues('deadlineTime'),
-			location: postMatchingGetValues('courtAddress'),
-			lat: `${courtInfos.lat}`,
-			len: `${courtInfos.len}`,
-			isReserved: postMatchingGetValues('isCourtBooked'),
-			cost: postMatchingGetValues('courtFee'),
-			locationImg: postMatchingGetValues('locationImg'),
-			content: postMatchingGetValues('mainText'),
-		};
-		console.log(e);
-		console.log(postedData);
-		MatchesService.regMatchingData(postedData)
-			.then(() => console.log('포스트됨'))
-			.catch((e) => console.log(e));
-	};
-
 	const checkValidation = () => {
 		if (
 			!postMatchingWatch('postTitle') ||
@@ -151,6 +121,34 @@ export default function PostMatching() {
 		} else {
 			return false;
 		}
+	};
+
+	const onSubmit = (e: any) => {
+		e.preventDefault();
+		const postedData = {
+			title: postMatchingGetValues('postTitle'),
+			matchingType: postMatchingGetValues('matchType'),
+			recruitNum: postMatchingGetValues('numOfRecruited'),
+			ageGroup: postMatchingGetValues('selectedAge'),
+			ntrp: postMatchingGetValues('selectedNTRP'),
+			matchingDate: postMatchingGetValues('matchDate'),
+			matchingStartTime: postMatchingGetValues('matchStartTime'),
+			matchingEndTime: postMatchingGetValues('matchEndTime'),
+			recruitDueDate: postMatchingGetValues('deadlineDate'),
+			recruitDueTime: postMatchingGetValues('deadlineTime'),
+			location: postMatchingGetValues('courtAddress'),
+			lat: `${courtInfos.lat}`,
+			len: `${courtInfos.lon}`,
+			isReserved: postMatchingGetValues('isCourtBooked'),
+			cost: postMatchingGetValues('courtFee'),
+			locationImg: postMatchingGetValues('locationImg'),
+			content: postMatchingGetValues('mainText'),
+		};
+		console.log(e);
+		console.log(postedData);
+		MatchesService.regMatchingData(postedData)
+			.then(() => console.log('포스트됨'))
+			.catch((e) => console.log(e));
 	};
 
 	return (
@@ -181,9 +179,9 @@ export default function PostMatching() {
 							id='matchType'
 							options={[
 								{ value: 'SINGLE', label: '단식' },
-								{ value: 'MIXED SINGLE', label: '혼성 단식' },
+								{ value: 'MIXED_SINGLE', label: '혼성 단식' },
 								{ value: 'DOUBLE', label: '복식' },
-								{ value: 'MIXED DOUBLE', label: '혼성 복식' },
+								{ value: 'MIXED_DOUBLE', label: '혼성 복식' },
 							]}
 							{...postMatchingResister('matchType')}
 							onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -258,6 +256,7 @@ export default function PostMatching() {
 						<HiddenInput
 							type='text'
 							id='matchStartTime'
+							value={`${matchStartTime}`}
 							{...postMatchingResister('matchStartTime')}
 							readOnly
 						/>
@@ -268,6 +267,7 @@ export default function PostMatching() {
 						<HiddenInput
 							type='text'
 							id='matchEndTime'
+							value={`${matchEndTime}`}
 							{...postMatchingResister('matchEndTime')}
 							readOnly
 						/>
@@ -286,6 +286,7 @@ export default function PostMatching() {
 						<HiddenInput
 							type='text'
 							id='deadlineDate'
+							value={`${deadlineDate}`}
 							{...postMatchingResister('deadlineDate')}
 							readOnly
 							onChange={(e: ChangeEvent<HTMLInputElement>) => {
@@ -297,6 +298,7 @@ export default function PostMatching() {
 						<HiddenInput
 							type='text'
 							id='deadlineTime'
+							value={`${deadlineTime}`}
 							{...postMatchingResister('deadlineTime')}
 							readOnly
 						/>
@@ -309,7 +311,7 @@ export default function PostMatching() {
 						type='text'
 						id='courtAddress'
 						defaultValue={''}
-						value={`${courtInfos.address}` + `${courtInfos.name}`}
+						value={`${courtInfos.address}`}
 						{...postMatchingResister('courtAddress')}
 						onClick={(e) => {
 							e.preventDefault();
@@ -323,7 +325,7 @@ export default function PostMatching() {
 					<InputBox>
 						<label htmlFor='isCourtBooked'>경기장 예약 여부</label>
 						<ButtonStyleRadio
-							id='isCourtBooked'
+							idString='isCourtBooked'
 							setState={postMatchingSetValue}
 							{...postMatchingResister('isCourtBooked')}
 						/>
@@ -331,24 +333,24 @@ export default function PostMatching() {
 				</HalfContainer>
 				<CourtFeeArea>
 					<FeeForEachSpan>
-						1인당 {Number.isInteger(feeForEach) ? `${feeForEach}` : '-'} 원
+						1인당{' '}
+						{Number.isInteger(postMatchingGetValues('courtFee') / numOfAllPlayers)
+							? `${postMatchingGetValues('courtFee') / numOfAllPlayers}`
+							: '-'}{' '}
+						원
 					</FeeForEachSpan>
 					<InputBox>
 						<label htmlFor='courtFee'>구장 대여비</label>
 						<input
-							type='text'
+							type='number'
 							id='courtFee'
 							className='text-align-right'
 							pattern='^[0-9]+$'
 							{...postMatchingResister('courtFee')}
-							onChange={(e) => {
-								postMatchingSetValue('courtFee', Number(e.target.value));
-								const fee = Math.round(Number(e.target.value) / numOfAllPlayers);
-								setFeeForEach(fee);
+							onChange={(e) => postMatchingSetValue('courtFee', Number(e.target.value))}
+							onClick={() => {
+								if (numOfAllPlayers === 0) setMessage('warning', '경기 유형을 먼저 선택해주세요!');
 							}}
-							// onClick={() => {
-							// 	if (numOfAllPlayers * 2) useToast.warning('경기 유형을 먼저 선택해주세요!');
-							// }}
 							// 포커스 옮기기
 							// matchTypeREF.current.focus();
 						/>

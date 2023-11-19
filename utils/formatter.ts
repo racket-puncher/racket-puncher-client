@@ -9,8 +9,18 @@ export const dateFormatter = (date: Date) => {
 export const timeFormatter = (time: Date) => {
 	const hour = time.getHours() > 9 ? time.getHours() + '' : '0' + time.getHours() + '';
 	const minute = time.getMinutes() > 9 ? time.getMinutes() + '' : '0' + time.getMinutes() + '';
-
 	return hour + ':' + minute;
+};
+
+// 날짜 역 포매터 (DPicker)
+export const stringToDateFormatter = (dateString: string) => {
+	console.log(dateString.split('-').map((ele, i) => (i < 2 ? parseInt(ele) - 1 : parseInt(ele))));
+	return dateString.split('-').map((ele, i) => (i < 2 ? parseInt(ele) - 1 : parseInt(ele)));
+};
+// 시간 역 포매터 (TPicker)
+export const stringToTimeFormatter = (timeString: string) => {
+	console.log(timeString.split(':').map((ele) => parseInt(ele)));
+	return timeString.split(':').map((ele) => parseInt(ele));
 };
 
 // 휴대폰번호 포맷터
