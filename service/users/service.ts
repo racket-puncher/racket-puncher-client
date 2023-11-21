@@ -27,7 +27,7 @@ const getMyAppliedMatchingList = (userId: string) => {
 };
 
 // 프로필 이미지 올리기
-const postProfileImg = (userId: string, data: reqPostUserProfileImg) => {
+const postProfileImg = (userId: string, data: any) => {
 	return http.post(`/api/users/${userId}/upload-profile-image`, data);
 };
 
