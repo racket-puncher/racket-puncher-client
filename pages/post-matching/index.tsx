@@ -8,10 +8,12 @@ import { rem } from 'polished';
 import { FontFamilyRegular, InputBorderColor, InputBoxColor, ReportColor } from 'styles/ts/common';
 import { PageMainTitle } from 'styles/ts/components/titles';
 import { InputBox } from 'styles/ts/components/input';
+import { ImageBox } from 'styles/ts/components/box';
 import { RoundButton } from 'styles/ts/components/buttons';
 import { CustomSelect } from 'styles/ts/components/select';
-import { ImageBox } from 'styles/ts/components/box';
+import { prefix } from '../../constants/prefix';
 import { TextArea } from 'styles/ts/components/textarea';
+import { InputErrorText } from 'styles/ts/components/text';
 import DPicker from 'components/contents/postMatching/datePicker/DPicker';
 import TPicker from 'components/contents/postMatching/timePicker/TPicker';
 import ButtonStyleRadio from 'components/common/buttonRadio';
@@ -60,7 +62,7 @@ export default function PostMatching() {
 	const [deadlineDate, setDeadlineDate] = useState('');
 	const [deadlineTime, setDeadlineTime] = useState('');
 	const [courtInfos, setCourtInfos] = useState({ address: '', lat: '', lon: '' });
-	const [numOfAllPlayers, setNumOfAllPlayers] = useState(1);
+	const [numOfAllPlayers, setNumOfAllPlayers] = useState(0);
 	const [selectedImage, setSelectedImage] = useState(null);
 	const [optionsForNOR, setOptionsForNOR] = useState([
 		{ value: null, label: '경기 유형을 먼저 선택해주세요.' },
@@ -75,29 +77,40 @@ export default function PostMatching() {
 			  ]);
 	};
 
+	// 드로어
+	const [isSearchDrawerOpen, setIsSearchDrawerOpen] = useState(false);
+	const toggleSearchDrawer = () => setIsSearchDrawerOpen((prev: boolean) => !prev);
+
+	// 이미지
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
+	const [fileData, setFileData] = useState(null);
+	const [virtualImgData, setVirtualImgData] = useState(null);
+
 	const clickImgFile = () => {
 		if (fileInputRef.current) {
 			fileInputRef.current.click();
 		}
 	};
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const files = event.target.files;
-		if (files && files.length > 0) {
-			const selectedFile = files[0];
+		const files = event.target.files[0];
+		const fileReader = new FileReader();
 
-			const fileReader = new FileReader();
-			fileReader.readAsDataURL(selectedFile);
-			fileReader.onloadend = () => {
-				setSelectedImage(fileReader.result);
-			};
-			console.log(fileReader);
-			postMatchingSetValue('locationImg', `${fileReader.result}`);
-		}
+		fileReader.onload = (event) => {
+			setVirtualImgData(event.target.result);
+		};
+		setFileData(files);
+		fileReader.readAsDataURL(files);
 	};
 
-	const [isSearchDrawerOpen, setIsSearchDrawerOpen] = useState(false);
-	const toggleSearchDrawer = () => setIsSearchDrawerOpen((prev: boolean) => !prev);
+	const courtImgStyle = {
+		backgroundImage: `url(${virtualImgData})`,
+		border: `1px solid ${InputBorderColor}`,
+		borderRadius: '5px',
+		height: '100%',
+		backgroundPosition: 'center',
+		backgroundRepeat: 'no-repeat',
+		backgroundSize: 'cover',
+	};
 
 	const checkValidation = () => {
 		if (
@@ -114,7 +127,6 @@ export default function PostMatching() {
 			!postMatchingWatch('courtAddress') ||
 			!postMatchingWatch('isCourtBooked') ||
 			!postMatchingWatch('courtFee') ||
-			// !postMatchingWatch('courtPhoto') ||
 			!postMatchingWatch('mainText')
 		) {
 			return true;
@@ -123,8 +135,11 @@ export default function PostMatching() {
 		}
 	};
 
-	const onSubmit = (e: any) => {
-		e.preventDefault();
+	const onSubmit = async () => {
+		if (!virtualImgData) {
+			setMessage('error', '이미지를 추가해주세요.');
+			return;
+		}
 		const postedData = {
 			title: postMatchingGetValues('postTitle'),
 			matchingType: postMatchingGetValues('matchType'),
@@ -141,14 +156,21 @@ export default function PostMatching() {
 			len: `${courtInfos.lon}`,
 			isReserved: postMatchingGetValues('isCourtBooked'),
 			cost: postMatchingGetValues('courtFee'),
-			locationImg: postMatchingGetValues('locationImg'),
 			content: postMatchingGetValues('mainText'),
 		};
-		console.log(e);
 		console.log(postedData);
-		MatchesService.regMatchingData(postedData)
-			.then(() => console.log('포스트됨'))
-			.catch((e) => console.log(e));
+
+		try {
+			const formData = new FormData();
+			formData.append('imageFile', fileData);
+			const fileUrl = await MatchesService.uploadMatchingImage('1', formData);
+			const res = await MatchesService.regMatchingData({
+				...postedData,
+				locationImg: fileUrl.data.response,
+			});
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
 	return (
@@ -162,7 +184,7 @@ export default function PostMatching() {
 			<PageTitleArea>
 				<PageMainTitle>매칭 글 등록</PageMainTitle>
 			</PageTitleArea>
-			<PostMatchingForm onSubmit={onSubmit}>
+			<PostMatchingForm onSubmit={postMatchingHandleSubmit(onSubmit)}>
 				<InputBox>
 					<label htmlFor='postTitle'>제목</label>
 					<input
@@ -171,6 +193,9 @@ export default function PostMatching() {
 						{...postMatchingResister('postTitle')}
 						onChange={(e) => postMatchingSetValue('postTitle', e.target.value)}
 					/>
+					{postMatchingErrors.postTitle?.message && (
+						<InputErrorText>{postMatchingErrors.postTitle.message}</InputErrorText>
+					)}
 				</InputBox>
 				<HalfContainer>
 					<InputBox>
@@ -179,7 +204,6 @@ export default function PostMatching() {
 							id='matchType'
 							options={[
 								{ value: 'SINGLE', label: '단식' },
-								{ value: 'MIXED_SINGLE', label: '혼성 단식' },
 								{ value: 'DOUBLE', label: '복식' },
 								{ value: 'MIXED_DOUBLE', label: '혼성 복식' },
 							]}
@@ -187,7 +211,7 @@ export default function PostMatching() {
 							onChange={(e: ChangeEvent<HTMLInputElement>) => {
 								const selected = e + '';
 								postMatchingSetValue('matchType', selected);
-								setNumOfAllPlayers(selected.includes('SINGLE') ? 2 : 4);
+								setNumOfAllPlayers(selected === 'SINGLE' ? 2 : 4);
 								selectHandler(selected);
 							}}
 						/>
@@ -246,7 +270,10 @@ export default function PostMatching() {
 						value={`${matchDate}`}
 						{...postMatchingResister('matchDate')}
 						readOnly
-					/>
+					/>{' '}
+					{postMatchingErrors.matchDate?.message && (
+						<InputErrorText>{postMatchingErrors.matchDate.message}</InputErrorText>
+					)}
 				</InputBox>
 
 				<HalfContainer>
@@ -260,6 +287,9 @@ export default function PostMatching() {
 							{...postMatchingResister('matchStartTime')}
 							readOnly
 						/>
+						{postMatchingErrors.matchStartTime?.message && (
+							<InputErrorText>{postMatchingErrors.matchStartTime.message}</InputErrorText>
+						)}
 					</InputBox>
 					<InputBox>
 						<label htmlFor='matchEndTime'>종료 시간</label>
@@ -271,6 +301,9 @@ export default function PostMatching() {
 							{...postMatchingResister('matchEndTime')}
 							readOnly
 						/>
+						{postMatchingErrors.matchEndTime?.message && (
+							<InputErrorText>{postMatchingErrors.matchEndTime.message}</InputErrorText>
+						)}
 					</InputBox>
 				</HalfContainer>
 
@@ -294,6 +327,9 @@ export default function PostMatching() {
 								console.log(postMatchingGetValues('deadlineDate'));
 							}}
 						/>
+						{postMatchingErrors.deadlineDate?.message && (
+							<InputErrorText>{postMatchingErrors.deadlineDate.message}</InputErrorText>
+						)}
 						<TPicker name='deadlineTime' setState={postMatchingSetValue} type={[true, false]} />
 						<HiddenInput
 							type='text'
@@ -302,6 +338,9 @@ export default function PostMatching() {
 							{...postMatchingResister('deadlineTime')}
 							readOnly
 						/>
+						{postMatchingErrors.deadlineTime?.message && (
+							<InputErrorText>{postMatchingErrors.deadlineTime.message}</InputErrorText>
+						)}
 					</HalfContainer>
 				</InputBox>
 
@@ -319,6 +358,9 @@ export default function PostMatching() {
 						}}
 						readOnly
 					/>
+					{postMatchingErrors.courtAddress?.message && (
+						<InputErrorText>{postMatchingErrors.courtAddress.message}</InputErrorText>
+					)}
 				</InputBox>
 
 				<HalfContainer>
@@ -354,18 +396,26 @@ export default function PostMatching() {
 							// 포커스 옮기기
 							// matchTypeREF.current.focus();
 						/>
+						{postMatchingErrors.courtFee?.message && (
+							<InputErrorText>{postMatchingErrors.courtFee.message}</InputErrorText>
+						)}
 					</InputBox>
 				</CourtFeeArea>
 
 				<InputBox>
 					<label htmlFor='courtPhoto'>경기장 이미지</label>
 					<ImageSection onClick={clickImgFile}>
-						<ImageBox width={'620px'} height={'380px'}>
-							<img
-								src={selectedImage || '/images/add-image-rectangle-00.png'}
-								alt='경기장 이미지'
-							/>
-						</ImageBox>
+						<ImageContainer>
+							<ImageBox width={'620px'} height={'400px'}>
+								{virtualImgData ? (
+									<div className='img-align-box' style={courtImgStyle} />
+								) : (
+									<>
+										<img src={`${prefix}/images/add-image-rectangle-00.png`} alt='add-image' />
+									</>
+								)}
+							</ImageBox>
+						</ImageContainer>
 						<input
 							id='courtPhoto'
 							type='file'
@@ -385,6 +435,9 @@ export default function PostMatching() {
 						placeholder='내용을 입력하세요.'
 						{...postMatchingResister('mainText')}
 					/>
+					{postMatchingErrors.mainText?.message && (
+						<InputErrorText>{postMatchingErrors.mainText.message}</InputErrorText>
+					)}
 				</InputBox>
 
 				<SubmitBtn colorstyle={'is-black'} type='submit' disabled={checkValidation()}>
@@ -413,7 +466,6 @@ const PostMatchingForm = styled.form`
 		}
 	}
 `;
-
 const HalfContainer = styled.div`
 	display: flex;
 	flex-direction: row;
@@ -425,12 +477,14 @@ const HalfContainer = styled.div`
 		.text-align-right {
 			text-align: right;
 		}
+	}
 
-		.select__CustomSelect-sc-10zdv74-0 {
-			margin-bottom: 0px;
-		}
+	* .buttonRadio__RadioButton-sc-b6o1nr-1,
+	* .select__CustomSelect-sc-10zdv74-0 {
+		margin-bottom: 0px;
 	}
 `;
+
 const CourtFeeArea = styled.div`
 	position: relative;
 	width: 100%;
@@ -456,21 +510,26 @@ const ImageSection = styled.div`
 	display: flex;
 	justify-content: center;
 	cursor: pointer;
-	width: 100%;
-	min-height: fit-content;
+	min-width: 100%;
 	max-width: ${rem('620px')};
-	max-height: ${rem('400px')};
+	// min-height: fit-content;
 	border: none;
 	margin-bottom: ${rem('30px')};
-
+	background-color: ${InputBoxColor};
 	img {
-		width: 100%;
+		max-width: 100%;
 		border-radius: 5px;
 		border: 1px solid ${InputBorderColor};
-
-		background: ${InputBoxColor};
 		overflow: hidden;
 	}
+	input {
+		height: 0px; !important;
+		padding: 0px; !important;
+	}	
+`;
+
+const ImageContainer = styled.div`
+	width: 100%;
 `;
 
 const MainTextArea = styled(TextArea)`

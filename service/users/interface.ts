@@ -4,19 +4,20 @@ export interface reqGetUserInfoApiData {
 }
 
 export interface reqPostUserProfileImg {
-	URL: string;
+	imageFile: any;
 }
 
 export interface reqPatchMyProfileInfo {
 	nickname: string; // 닉네임
-	password: string; // 비밀번호
+	// password: string; // 비밀번호
 	email: string; // 이메일
-	phoneNumber: string; // 전화번호
+	// phoneNumber: string; // 전화번호
 	address: string; // 주소
 	zipCode: string; // 우편번호
 	ntrp: string; // NTRP
-	gender: string; // 성별
-	ageGroup: string; // 연령대
+	// gender: string; // 성별
+	// ageGroup: string; // 연령대
+	profileImg: string;
 }
 
 export interface reqPostReportUser {

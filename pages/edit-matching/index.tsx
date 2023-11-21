@@ -19,6 +19,9 @@ import SearchCourtDrawer from 'components/contents/postMatching/searchCourtDrawe
 import useRouterHook from 'utils/useRouterHook';
 import axios from 'axios';
 import useToast from 'utils/useToast';
+import { ageOptions, matchingTypesOptions } from 'constants/filterOption';
+import { InputErrorText } from 'styles/ts/components/text';
+import { prefix } from '../../constants/prefix';
 
 interface IEdtMatchingProps {
 	matching_id: string;
@@ -35,7 +38,7 @@ const schema = yup.object().shape({
 	matchEndTime: yup.string().required('경기 종료 시간을 선택해주세요.'),
 	deadlineDate: yup.string().required('모집 마감일을 선택해주세요.'),
 	deadlineTime: yup.string().required('모집 마감 시간을 선택해주세요.'),
-	courtAddress: yup.string().required('경기장 주소를 입력해주세요.'),
+	address: yup.string().required('경기장 주소를 입력해주세요.'),
 	isCourtBooked: yup.boolean().required('경기장 예약 여부를 선택해주세요.'),
 	courtFee: yup
 		.number()
@@ -52,7 +55,7 @@ export default function EditMatching(props: IEdtMatchingProps) {
 
 	const {
 		register: editMatchingResister,
-		// handleSubmit: editMatchingHandleSubmit,
+		handleSubmit: editMatchingHandleSubmit,
 		setValue: editMatchingSetValue,
 		getValues: editMatchingGetValues,
 		watch: editMatchingWatch,
@@ -75,13 +78,56 @@ export default function EditMatching(props: IEdtMatchingProps) {
 		},
 	]);
 
+	// 오프라인 테스트용
+	// const db = {
+	// 	title: '테스트 제목',
+	// 	matchingType: 'SINGLE',
+	// 	recruitNum: 3,
+	// 	ageGroup: 'TWENTIES',
+	// 	ntrp: 'INTERMEDIATE',
+	// 	date: '2000-11-23',
+	// 	startTime: '12:34',
+	// 	endTime: '12:34',
+	// 	recruitDueDate: '2000-11-22',
+	// 	recruitDueTime: '12:00',
+	// 	location: '테스트 주소',
+	// 	isReserved: false,
+	// 	cost: 20000,
+	// 	locationImg: '-',
+	// 	content: '테스트 본문',
+	// 	lat: '12.34',
+	// 	lon: '12.34',
+	// };
+
+	// useEffect(() => {
+	// 	setPostData(db);
+	// 	editMatchingSetValue('postTitle', db.title);
+	// 	editMatchingSetValue('matchType', db.matchingType);
+	// 	editMatchingSetValue('numOfRecruited', db.recruitNum);
+	// 	editMatchingSetValue('selectedAge', db.ageGroup);
+	// 	editMatchingSetValue('selectedNTRP', db.ntrp);
+	// 	editMatchingSetValue('matchDate', db.date);
+	// 	editMatchingSetValue('matchStartTime', db.startTime);
+	// 	editMatchingSetValue('matchEndTime', db.endTime);
+	// 	editMatchingSetValue('deadlineDate', db.recruitDueDate);
+	// 	editMatchingSetValue('deadlineTime', db.recruitDueTime);
+	// 	editMatchingSetValue('address', db.location);
+	// 	editMatchingSetValue('isCourtBooked', db.isReserved);
+	// 	editMatchingSetValue('courtFee', db.cost);
+	// 	editMatchingSetValue('locationImg', db.locationImg);
+	// 	editMatchingSetValue('mainText', db.content);
+	// 	console.log(db);
+	// 	setCourtInfos({ ...courtInfos, lat: db.lat, lon: db.lon });
+	// 	setNumOfAllPlayers(db.matchingType === 'SINGLE' ? 2 : 4);
+	// }, []);
+
 	useEffect(() => {
 		// MatchesService.getDetailMatchingList(
 		// 	{ matchingId: 1, matching_id: '1' }
 		// )
 		const getNSsetData = async () => {
 			try {
-				// const res = await axios.get('http://3.38.50.101:8080/api/matches/' + `${props.postId}`)
+				// const res = await axios.get(`http://3.38.50.101:8080/api/matches/${props.matching_id}`)
 				const res = await axios.get('http://3.38.50.101:8080/api/matches/1');
 				const db = res.data.response;
 				setPostData(db);
@@ -95,19 +141,19 @@ export default function EditMatching(props: IEdtMatchingProps) {
 				editMatchingSetValue('matchEndTime', db.endTime);
 				editMatchingSetValue('deadlineDate', db.recruitDueDate);
 				editMatchingSetValue('deadlineTime', db.recruitDueTime);
-				editMatchingSetValue('courtAddress', db.location);
+				editMatchingSetValue('address', db.location);
 				editMatchingSetValue('isCourtBooked', db.isReserved);
 				editMatchingSetValue('courtFee', db.cost);
 				editMatchingSetValue('locationImg', db.locationImg);
 				editMatchingSetValue('mainText', db.content);
 				console.log(db);
 				setCourtInfos({ ...courtInfos, lat: db.lat, lon: db.lon });
-				setNumOfAllPlayers(db.matchingType.includes('SINGLE') ? 2 : 4);
+				setNumOfAllPlayers(db.matchingType === 'SINGLE' ? 2 : 4);
 			} catch (err) {
 				console.log(err);
 			}
 		};
-		getNSsetData();
+		// getNSsetData();
 		console.log(postData);
 	}, []);
 
@@ -122,24 +168,33 @@ export default function EditMatching(props: IEdtMatchingProps) {
 	};
 
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
+	const [fileData, setFileData] = useState(null);
+	const [virtualImgData, setVirtualImgData] = useState(null);
+
 	const clickImgFile = () => {
 		if (fileInputRef.current) {
 			fileInputRef.current.click();
 		}
 	};
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const files = event.target.files;
-		if (files && files.length > 0) {
-			const selectedFile = files[0];
+		const files = event.target.files[0];
+		const fileReader = new FileReader();
 
-			const fileReader = new FileReader();
-			fileReader.readAsDataURL(selectedFile);
-			fileReader.onloadend = () => {
-				setSelectedImage(fileReader.result);
-			};
-			console.log(fileReader);
-			editMatchingSetValue('locationImg', `${fileReader.result}`);
-		}
+		fileReader.onload = (event) => {
+			setVirtualImgData(event.target.result);
+		};
+		setFileData(files);
+		fileReader.readAsDataURL(files);
+	};
+
+	const courtImgStyle = {
+		backgroundImage: `url(${virtualImgData})`,
+		border: `1px solid ${InputBorderColor}`,
+		borderRadius: '5px',
+		height: '100%',
+		backgroundPosition: 'center',
+		backgroundRepeat: 'no-repeat',
+		backgroundSize: 'cover',
 	};
 
 	const [isSearchDrawerOpen, setIsSearchDrawerOpen] = useState(false);
@@ -157,10 +212,9 @@ export default function EditMatching(props: IEdtMatchingProps) {
 			!editMatchingWatch('matchEndTime') ||
 			!editMatchingWatch('deadlineDate') ||
 			!editMatchingWatch('deadlineTime') ||
-			!editMatchingWatch('courtAddress') ||
+			!editMatchingWatch('address') ||
 			!editMatchingWatch('isCourtBooked') ||
 			!editMatchingWatch('courtFee') ||
-			// !editMatchingWatch('courtPhoto') ||
 			!editMatchingWatch('mainText')
 		) {
 			return true;
@@ -169,8 +223,11 @@ export default function EditMatching(props: IEdtMatchingProps) {
 		}
 	};
 
-	const onSubmit = (e: any) => {
-		e.preventDefault();
+	const onSubmit = async () => {
+		if (!virtualImgData) {
+			setMessage('error', '이미지를 추가해주세요.');
+			return;
+		}
 		const editedData = {
 			...postData,
 			title: editMatchingGetValues('postTitle'),
@@ -183,7 +240,7 @@ export default function EditMatching(props: IEdtMatchingProps) {
 			matchingEndTime: editMatchingGetValues('matchEndTime'),
 			recruitDueDate: editMatchingGetValues('deadlineDate'),
 			recruitDueTime: editMatchingGetValues('deadlineTime'),
-			location: editMatchingGetValues('courtAddress'),
+			location: editMatchingGetValues('address'),
 			lat: `${courtInfos.lat}`,
 			lon: `${courtInfos.lon}`,
 			isReserved: editMatchingGetValues('isCourtBooked'),
@@ -191,12 +248,23 @@ export default function EditMatching(props: IEdtMatchingProps) {
 			locationImg: editMatchingGetValues('locationImg'),
 			content: editMatchingGetValues('mainText'),
 		};
-		console.log(e);
 		console.log(editedData);
-		// MatchesService.modifyMatchingList(props.postId, editedData)
-		MatchesService.modifyMatchingList(1, editedData)
+		// MatchesService.modifyMatchingList(props.matching_id, editedData)
+		MatchesService.modifyMatchingList('1', editedData)
 			.then(() => console.log('수정됨'))
 			.catch((e) => console.log(e));
+
+		try {
+			const formData = new FormData();
+			formData.append('imageFile', fileData);
+			const fileUrl = await MatchesService.uploadMatchingImage('1', formData);
+			const res = await MatchesService.modifyMatchingList(props.matching_id, {
+				...editedData,
+				locationImg: fileUrl.data.response,
+			});
+		} catch (err) {
+			console.log(err);
+		}
 	};
 
 	return (
@@ -204,13 +272,13 @@ export default function EditMatching(props: IEdtMatchingProps) {
 			<SearchCourtDrawer
 				isOpen={isSearchDrawerOpen}
 				toggleDrawer={toggleSearchDrawer}
-				setCourtInfos={setCourtInfos}
 				setAddress={editMatchingSetValue}
+				setCourtInfos={setCourtInfos}
 			/>
 			<PageTitleArea>
 				<PageMainTitle>매칭 글 수정</PageMainTitle>
 			</PageTitleArea>
-			<PostMatchingForm onSubmit={onSubmit}>
+			<PostMatchingForm onSubmit={editMatchingHandleSubmit(onSubmit)}>
 				<InputBox>
 					<label htmlFor='postTitle'>제목</label>
 					<input
@@ -219,24 +287,23 @@ export default function EditMatching(props: IEdtMatchingProps) {
 						{...editMatchingResister('postTitle')}
 						onChange={(e) => editMatchingSetValue('postTitle', e.target.value)}
 					/>
+					{editMatchingErrors.postTitle?.message && (
+						<InputErrorText>{editMatchingErrors.postTitle.message}</InputErrorText>
+					)}
 				</InputBox>
 				<HalfContainer>
 					<InputBox>
 						<label htmlFor='matchType'>경기 유형</label>
 						<Selector
 							idString='matchType'
-							options={[
-								{ value: 'SINGLE', label: '단식' },
-								{ value: 'MIXED_SINGLE', label: '혼성 단식' },
-								{ value: 'DOUBLE', label: '복식' },
-								{ value: 'MIXED_DOUBLE', label: '혼성 복식' },
-							]}
+							options={matchingTypesOptions}
 							value={editMatchingGetValues('matchType')}
 							{...editMatchingResister('matchType')}
-							onChangeHandler={(e: string) => {
-								editMatchingSetValue('matchType', e);
-								setNumOfAllPlayers(e.includes('SINGLE') ? 2 : 4);
-								selectHandler(e);
+							onChangeHandler={(e) => {
+								const selected = e + '';
+								editMatchingSetValue('matchType', selected);
+								setNumOfAllPlayers(selected === 'SINGLE' ? 2 : 4);
+								selectHandler(selected);
 							}}
 						/>
 					</InputBox>
@@ -257,14 +324,7 @@ export default function EditMatching(props: IEdtMatchingProps) {
 						<label htmlFor='selectedAge'>모집 연령대</label>
 						<Selector
 							idString='selectedAge'
-							options={[
-								{ value: 'TEENAGER', label: '10대' },
-								{ value: 'TWENTIES', label: '20대' },
-								{ value: 'THIRTIES', label: '30대' },
-								{ value: 'FORTIES', label: '40대' },
-								{ value: 'FIFTIES', label: '50대' },
-								{ value: 'SIXTIES', label: '60대' },
-							]}
+							options={ageOptions}
 							{...editMatchingResister('selectedAge')}
 							onChangeHandler={(e: string) => editMatchingSetValue('selectedAge', e)}
 							value={editMatchingGetValues('selectedAge')}
@@ -292,7 +352,7 @@ export default function EditMatching(props: IEdtMatchingProps) {
 				</HalfContainer>
 
 				<InputBox>
-					<label htmlFor='matchDate'>경기일</label>
+					<label htmlFor='matchDate'>경기 날짜</label>
 					<DPicker
 						name='matchDate'
 						setState={editMatchingSetValue}
@@ -305,6 +365,9 @@ export default function EditMatching(props: IEdtMatchingProps) {
 						{...editMatchingResister('matchDate')}
 						readOnly
 					/>
+					{editMatchingErrors.matchDate?.message && (
+						<InputErrorText>{editMatchingErrors.matchDate.message}</InputErrorText>
+					)}
 				</InputBox>
 
 				<HalfContainer>
@@ -322,6 +385,9 @@ export default function EditMatching(props: IEdtMatchingProps) {
 							{...editMatchingResister('matchStartTime')}
 							readOnly
 						/>
+						{editMatchingErrors.matchStartTime?.message && (
+							<InputErrorText>{editMatchingErrors.matchStartTime.message}</InputErrorText>
+						)}
 					</InputBox>
 					<InputBox>
 						<label htmlFor='matchEndTime'>종료 시간</label>
@@ -337,6 +403,9 @@ export default function EditMatching(props: IEdtMatchingProps) {
 							{...editMatchingResister('matchEndTime')}
 							readOnly
 						/>
+						{editMatchingErrors.matchEndTime?.message && (
+							<InputErrorText>{editMatchingErrors.matchEndTime.message}</InputErrorText>
+						)}
 					</InputBox>
 				</HalfContainer>
 
@@ -350,7 +419,6 @@ export default function EditMatching(props: IEdtMatchingProps) {
 							type={[true, true, true]}
 						/>
 						<HiddenInput
-							type='text'
 							id='deadlineDate'
 							{...editMatchingResister('deadlineDate')}
 							readOnly
@@ -359,34 +427,38 @@ export default function EditMatching(props: IEdtMatchingProps) {
 								console.log(editMatchingGetValues('deadlineDate'));
 							}}
 						/>
+						{editMatchingErrors.deadlineDate?.message && (
+							<InputErrorText>{editMatchingErrors.deadlineDate.message}</InputErrorText>
+						)}
 						<TPicker
 							name='deadlineTime'
 							setState={editMatchingSetValue}
 							type={[true, false]}
 							defaultValue={editMatchingGetValues('deadlineTime')}
 						/>
-						<HiddenInput
-							type='text'
-							id='deadlineTime'
-							{...editMatchingResister('deadlineTime')}
-							readOnly
-						/>
+						<HiddenInput id='deadlineTime' {...editMatchingResister('deadlineTime')} />
+						{editMatchingErrors.deadlineTime?.message && (
+							<InputErrorText>{editMatchingErrors.deadlineTime.message}</InputErrorText>
+						)}
 					</HalfContainer>
 				</InputBox>
 
 				<InputBox>
-					<label htmlFor='courtAddress'>경기장 주소</label>
+					<label htmlFor='address'>경기장 주소</label>
 					<input
 						type='text'
-						id='courtAddress'
-						value={editMatchingGetValues('courtAddress')}
-						{...editMatchingResister('courtAddress')}
+						id='address'
+						value={editMatchingGetValues('address')}
+						{...editMatchingResister('address')}
 						onClick={(e) => {
 							e.preventDefault();
 							setIsSearchDrawerOpen(true);
 						}}
 						readOnly
 					/>
+					{editMatchingErrors.address?.message && (
+						<InputErrorText>{editMatchingErrors.address.message}</InputErrorText>
+					)}
 				</InputBox>
 
 				<HalfContainer>
@@ -425,16 +497,22 @@ export default function EditMatching(props: IEdtMatchingProps) {
 							// matchTypeREF.current.focus();
 						/>
 					</InputBox>
+					{editMatchingErrors.courtFee?.message && (
+						<InputErrorText>{editMatchingErrors.courtFee.message}</InputErrorText>
+					)}
 				</CourtFeeArea>
 
 				<InputBox>
 					<label htmlFor='courtPhoto'>경기장 이미지</label>
 					<ImageArea onClick={clickImgFile}>
 						<ImageBox width={'620px'} height={'400px'}>
-							<img
-								src={selectedImage || '/images/add-image-rectangle-00.png'}
-								alt='경기장 이미지'
-							/>
+							{virtualImgData ? (
+								<div className='img-align-box' style={courtImgStyle} />
+							) : (
+								<>
+									<img src={`${prefix}/images/add-image-rectangle-00.png`} alt='add-image' />
+								</>
+							)}
 						</ImageBox>
 						<input
 							id='courtPhoto'
@@ -454,7 +532,10 @@ export default function EditMatching(props: IEdtMatchingProps) {
 						onChange={(e) => editMatchingSetValue('mainText', e.target.value)}
 						placeholder='내용을 입력하세요.'
 						{...editMatchingResister('mainText')}
-					/>
+					/>{' '}
+					{editMatchingErrors.mainText?.message && (
+						<InputErrorText>{editMatchingErrors.mainText.message}</InputErrorText>
+					)}
 				</InputBox>
 				<HalfContainer>
 					<Buttons colorstyle={'is-black'} type='submit'>
@@ -500,10 +581,11 @@ const HalfContainer = styled.div`
 		.text-align-right {
 			text-align: right;
 		}
+	}
 
-		.select__CustomSelect-sc-10zdv74-0 {
-			margin-bottom: 0px;
-		}
+	* .buttonRadio__RadioButton-sc-b6o1nr-1,
+	* .select__CustomSelect-sc-10zdv74-0 {
+		margin-bottom: 0px;
 	}
 `;
 const CourtFeeArea = styled.div`
