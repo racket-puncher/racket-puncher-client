@@ -1,4 +1,6 @@
 import http from '../../lib/http/httpInterceptor';
+import httpFile from '../../lib/http/httpFileInterceptor';
+
 import {
 	reqDeleteMatchingListApiData,
 	reqGetDetailMatchingListApiData,
@@ -55,6 +57,11 @@ const searchAddress = (data: any) => {
 	});
 };
 
+// 구장 이미지 업로드/수정
+const uploadMatchingImage = (matching_id: string, data: any) => {
+	return httpFile.post(`api/matches/${matching_id}/upload-image`, data);
+};
+
 const MatchesService = {
 	regMatchingData,
 	getDetailMatchingList,
@@ -63,6 +70,7 @@ const MatchesService = {
 	deleteMatchingList,
 	getMatchingApplyState,
 	searchAddress,
+	uploadMatchingImage,
 };
 
 export default MatchesService;

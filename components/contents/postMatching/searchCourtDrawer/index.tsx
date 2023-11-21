@@ -21,7 +21,7 @@ import { CustomBadge } from 'styles/ts/components/badge';
 interface ISearchDrawerProps {
 	readonly isOpen: boolean;
 	readonly toggleDrawer: () => void;
-	readonly setCourtInfos: Dispatch<SetStateAction<{ address: string; lat: string; lon: string }>>;
+	readonly setCourtInfos?: Dispatch<SetStateAction<{ address: string; lat: string; lon: string }>>;
 	readonly setAddress: (name: string, address: string) => void;
 }
 
