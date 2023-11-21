@@ -1,35 +1,56 @@
-import React, { useRef, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import styled from 'styled-components';
 import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import { rem } from 'polished';
 
-import { InputBox } from '../../styles/ts/components/input';
-import { RoundButton, SquareButton } from '../../styles/ts/components/buttons';
-import { CustomSelect } from '../../styles/ts/components/select';
-import { PageMainTitle } from '../../styles/ts/components/titles';
-import { GrayLine, ImageBox } from '../../styles/ts/components/box';
-import DrawerBox from '../../components/common/drawer';
-import { onlyNumber } from '../../utils/formatter';
-import { InputErrorText } from '../../styles/ts/components/text';
-import {
-	BlackColor,
-	FontSizeMd,
-	FontSizeMdLg,
-	FontSizeSpSm,
-	InputBorderColor,
-	InputBoxColor,
-	LightBlackColor,
-	PrimaryColor,
-} from '../../styles/ts/common';
-import { CustomBadge } from '../../styles/ts/components/badge';
-import { prefix } from '../../constants/prefix';
+import { InputBorderColor } from 'styles/ts/common';
+import { InputBox } from 'styles/ts/components/input';
+import { RoundButton, SquareButton } from 'styles/ts/components/buttons';
+import { PageMainTitle } from 'styles/ts/components/titles';
+import { ImageBox } from 'styles/ts/components/box';
+import { InputErrorText } from 'styles/ts/components/text';
+import { prefix } from 'constants/prefix';
+import useToast from 'utils/useToast';
+import useCookies from 'utils/useCookies';
+import useRouterHook from 'utils/useRouterHook';
+import usersService from 'service/users/service';
+
+import { NTRPOptions, ageOptions } from 'constants/filterOption';
+import Selector from 'components/contents/postMatching/selector';
+import SearchCourtDrawer from 'components/contents/postMatching/searchCourtDrawer';
+
+// const userInfoALT = {
+// 	userNickname: '왕자',
+// 	ageGroup: '30대',
+// 	gender: '남',
+// 	zipCode: '07546',
+// 	userAddress: '서울시 성동구 천호대로5길 51-4 405호',
+// 	ntrp: 'Pro (6.0 ~ 7.0)',
+// 	// winningRate: [1, 3],
+// 	mannerPoint: 85,
+// 	userName: '김개발',
+// 	// phoneNumber: '01011112222',
+// 	userEmail: 'princeofracket@gmail.com',
+// 	imageURL: '',
+// };
+
+// nickname: string; // 닉네임
+// 	password: string; // 비밀번호
+// 	email: string; // 이메일
+// 	phoneNumber: string; // 전화번호
+// 	address: string; // 주소
+// 	zipCode: string; // 우편번호
+// 	ntrp: string; // NTRP
+// 	gender: string; // 성별
+// 	ageGroup: string; // 연령대
 
 const schema = yup.object().shape({
-	// userName: yup.string().required('이름은 필수입니다.'),
-	phoneNumber: yup.string().required('휴대폰 번호는 필수입니다.'),
-	certifyNumber: yup.string().required('인증번호는 필수입니다.'),
+	// phoneNumber: yup.string().required('휴대폰 번호는 필수입니다.'),
+	// certifyNumber: yup.string().required('인증번호는 필수입니다.'),
+	selectedAge: yup.string().required('연령대를 선택해주세요.'),
+	ntrp: yup.string().required('NTRP를 선택해주세요.'),
 	email: yup
 		.string()
 		.required('이메일은 필수입니다.')
@@ -37,64 +58,97 @@ const schema = yup.object().shape({
 			/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
 			'이메일 형식이 올바르지 않습니다.'
 		),
-	password: yup
-		.string()
-		.required('비밀번호는 필수입니다.')
-		.matches(
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
-			'비밀번호는 8자 이상, 숫자/소문자/대문자/특수문자를 각 최소 하나씩 포함해야 합니다.'
-		),
-	rePassword: yup
-		.string()
-		.required('비밀번호확인은 필수입니다.')
-		.matches(
-			/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
-			'비밀번호는 8자 이상, 숫자/소문자/대문자/특수문자를 각 최소 하나씩 포함해야 합니다.'
-		),
-	nickName: yup.string().required('닉네임은 필수입니다.'),
-	address: yup.string().required('우편번호는 필수입니다.'),
-	detailAddress: yup.string().required('상세주소는 필수입니다.'),
+	// password: yup
+	// 	.string()
+	// 	.required('비밀번호는 필수입니다.')
+	// 	.matches(
+	// 		/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
+	// 		'비밀번호는 8자 이상, 숫자/소문자/대문자/특수문자를 각 최소 하나씩 포함해야 합니다.'
+	// 	),
+	// rePwd: yup
+	// 	.string()
+	// 	.required('비밀번호확인은 필수입니다.')
+	// 	.matches(
+	// 		/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
+	// 		'비밀번호는 8자 이상, 숫자/소문자/대문자/특수문자를 각 최소 하나씩 포함해야 합니다.'
+	// 	),
+	nickname: yup.string().required('닉네임은 필수입니다.'),
+	zipCode: yup.string().required('우편번호는 필수입니다.'),
+	address: yup.string().required('상세주소는 필수입니다.'),
+	imageURL: yup.string(),
 });
 
 export default function EditMyInfo() {
-	const userInfo = {
-		userNickName: '왕자',
-		age: 30,
-		gender: '남',
-		userAddress: ['서울시 성동구 천호대로5길 51-4', ' 405호', '07546'],
-		NTRP: 'Pro',
-		winningRate: [1, 3],
-		mannerPoint: 85,
-		userName: '김개발',
-		phoneNumber: '01011112222',
-		email: 'princeofracket@gmail.com',
-		imageURL: '',
-	};
+	const { getMyProfileInfo, postProfileImg } = usersService;
 
-	const [certifyNumVisible, setCertifyNumVisible] = useState(false);
-	const fileInputRef = useRef<HTMLInputElement | null>(null);
-
-	const [timer, setTimer] = useState(180);
-	const [intervalId, setIntervalId] = useState<number | null>(null);
-
-	const [addressDrawer, setAddressDrawer] = useState(false);
-
-	const {
-		register: signUpRegister,
-		handleSubmit: signupHandleSubmit,
-		setValue: signupSetValue,
-		watch: signupWatch,
-		formState: { errors: signErrors },
-	} = useForm({
-		resolver: yupResolver(schema),
+	const { checkLogin, getCookie } = useCookies();
+	const { setMessage } = useToast();
+	const { replace, movePage } = useRouterHook();
+	const [userId, setUserId] = useState('');
+	const [userInfo, setUserInfo] = useState({
+		id: '', // 회원 고유 id
+		siteusername: '', // 이름
+		nickname: '', // 닉네임
+		email: '', // 이메일
+		phoneNumber: '', // 전화번호
+		mannerScore: 0, // 매너점수
+		penaltyScore: 0, // 패널티 점수
+		gender: '', // 성별
+		ntrp: '', // NTRP
+		address: '', // 주소
+		zipCode: '', //				우편번호
+		ageGroup: '', // 연령대
+		profileImg: '', // 이미지 파일 url
 	});
 
+	// useEffect(() => {
+	// 	if (!checkLogin()) {
+	// 		setMessage('error', '로그인이 필요한 서비스입니다.');
+	// 		replace('/login');
+	// 	} else {
+	// 	setUserId(getCookie('id'));
+	// }
+	// }, []);
+	// const userId = '1';
+
+	useEffect(() => {
+		const getNSsetData = async () => {
+			try {
+				const res = await getMyProfileInfo(userId);
+				const data = res.data.response;
+				console.log(data);
+				// setUserInfo({
+				// 	userName: data.siteusername,
+				// 	ageGroup: ageOptions.filter((ele) => ele.value === data.ageGroup)[0].label,
+				// 	gender: data.gender === 'MALE' ? '남' : '여',
+				// });
+				// editMyInfoSetValue('nickname', data.nickname);
+				// editMyInfoSetValue('ntrp', ntrpName.filter((ele) => ele.value === data.ntrp)[0].label);
+				// editMyInfoSetValue('zipCode', data.zipCode);
+				// editMyInfoSetValue('address', data.address);
+				// editMyInfoSetValue('email', data.email);
+				// editMyInfoSetValue('imageURL', data.profileImg);
+				// editMyInfoSetValue('phoneNumber', data.phoneNumber);
+
+				setUserInfo(data);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+		getNSsetData();
+	}, []);
+
+	const fileInputRef = useRef<HTMLInputElement | null>(null);
+	const [fileData, setFileData] = useState(null);
+	const [virtualImgData, setVirtualImgData] = useState(null);
+
 	const {
-		register: addressRegister,
-		handleSubmit: addressHandleSubmit,
-		setValue: addressSetValue,
-		watch: addressWatch,
-		formState: { errors: addressErrors },
+		register: editMyInfoRegister,
+		handleSubmit: editMyInfoHandleSubmit,
+		getValues: editMyInfoGetValues,
+		setValue: editMyInfoSetValue,
+		watch: editMyInfoWatch,
+		formState: { errors: editMyInfoErrors },
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
@@ -106,64 +160,35 @@ export default function EditMyInfo() {
 	};
 
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-		const files = event.target.files;
-		if (files && files.length > 0) {
-			const selectedFile = files[0];
-		}
-	};
+		const files = event.target.files[0];
+		const fileReader = new FileReader();
 
-	const clickCertifyBtn = () => {
-		setCertifyNumVisible(true);
+		fileReader.onload = (event) => {
+			setVirtualImgData(event.target.result);
+		};
+		setFileData(files);
+		fileReader.readAsDataURL(files);
 	};
-
-	// 인증번호 타이머
-	const setCertTimer = () => {
-		if (intervalId) {
-			clearInterval(intervalId);
-		}
-		const newIntervalId = setInterval(() => {
-			setTimer((prevTimer) => {
-				if (prevTimer === 1) {
-					clearInterval(newIntervalId);
-					setCertifyNumVisible(false);
-					return 0;
-				} else {
-					return prevTimer - 1;
-				}
-			});
-		}, 1000);
-		setIntervalId(Number(newIntervalId));
-	};
-
-	// 인증번호 받기
-	const getVerification = () => {
-		try {
-			setCertifyNumVisible(true);
-			setTimer(180);
-			setCertTimer();
-		} catch (e) {
-			console.log(e);
-		}
-	};
-
-	const handleAddressDrawer = () => {
-		setAddressDrawer((prev) => !prev);
-	};
-
-	const searchAddress = () => {
-		console.log('주소 검색');
+	const profileImgStyle = {
+		backgroundImage: `url(${virtualImgData})`,
+		border: `1px solid ${InputBorderColor}`,
+		borderRadius: '50%',
+		height: '100%',
+		backgroundPosition: 'center',
+		backgroundRepeat: 'no-repeat',
+		backgroundSize: 'cover',
 	};
 
 	const checkValidation = () => {
 		if (
-			!signupWatch('phoneNumber') ||
-			!signupWatch('certifyNumber') ||
-			!signupWatch('email') ||
-			!signupWatch('password') ||
-			!signupWatch('rePassword') ||
-			!signupWatch('nickName') ||
-			!signupWatch('address') ||
-			!signupWatch('detailAddress')
+			// !editMyInfoWatch('phoneNumber') ||
+			// !editMyInfoWatch('certifyNumber') ||
+			!editMyInfoWatch('email') ||
+			// !editMyInfoWatch('password') ||
+			// !editMyInfoWatch('rePwd') ||
+			!editMyInfoWatch('nickname') ||
+			!editMyInfoWatch('zipCode') ||
+			!editMyInfoWatch('address')
 		) {
 			return true;
 		} else {
@@ -171,18 +196,52 @@ export default function EditMyInfo() {
 		}
 	};
 
-	const confirmMyInfoEdit = () => {
-		console.log('정보 수정 됨');
+	const onSubmitHandler = async () => {
+		const params = {
+			...userInfo,
+			email: editMyInfoGetValues('email'),
+			nickname: editMyInfoGetValues('nickname'),
+			address: editMyInfoGetValues('address'),
+			zipCode: editMyInfoGetValues('zipCode'),
+			ntrp: editMyInfoGetValues('ntrp'),
+		};
+
+		try {
+			const formData = new FormData();
+			formData.append('imageFile', fileData);
+			const fileUrl = await usersService.postProfileImg(userId, formData);
+			const res = await usersService.patchMyProfileInfo(userId, {
+				...params,
+				profileImg: fileUrl.data.response,
+			});
+			movePage('/my');
+		} catch (e) {
+			console.log(e);
+		}
 	};
+
+	// 주소 검색 모달 ---------------------------------------------------------------
+	const [isSearchDrawerOpen, setIsSearchDrawerOpen] = useState(false);
+	const toggleSearchDrawer = () => setIsSearchDrawerOpen((prev: boolean) => !prev);
 
 	return (
 		<>
-			<RegisterViewContainer>
+			<SearchCourtDrawer
+				isOpen={isSearchDrawerOpen}
+				toggleDrawer={toggleSearchDrawer}
+				setAddress={editMyInfoSetValue}
+			/>
+			<EditMyInfoForm onSubmit={onSubmitHandler}>
 				<PageMainTitle>내 정보 수정</PageMainTitle>
-
 				<ImageSection onClick={clickImgFile}>
 					<ImageBox width={'200px'} height={'200px'}>
-						<img src={`${prefix}/images/add-image.png`} alt='add-image' />
+						{virtualImgData ? (
+							<div className='img-align-box' style={profileImgStyle} />
+						) : (
+							<>
+								<img src={`${prefix}/images/add-image.png`} alt='add-image' />
+							</>
+						)}
 					</ImageBox>
 					<input
 						type='file'
@@ -195,234 +254,104 @@ export default function EditMyInfo() {
 
 				<InputContainer>
 					<InputBox>
-						<label htmlFor='registerUserName'>이름</label>
-						<input id='registerUserName' type={'text'} value={userInfo.userName} disabled />
+						<label htmlFor='editUserName'>이름</label>
+						<input id='editUserName' type={'text'} value={userInfo.siteusername} disabled />
 					</InputBox>
-
-					<InputButtonBox>
-						<InputBox>
-							<label htmlFor='registerPhoneNum'>휴대폰 번호</label>
-							<input
-								// ref={elPhoneNumInput}
-								id='registerPhoneNum'
-								type={'text'}
-								maxLength={11}
-								defaultValue={userInfo.phoneNumber}
-								{...signUpRegister('phoneNumber')}
-								onChange={(e) => {
-									signupSetValue('phoneNumber', onlyNumber(e.target.value));
-								}}
-							/>
-
-							{signErrors.phoneNumber?.message && (
-								<InputErrorText>{signErrors.phoneNumber.message}</InputErrorText>
-							)}
-						</InputBox>
-
-						<SquareButton
-							height={'50px'}
-							onClick={getVerification}
-							disabled={!signupWatch('phoneNumber')}>
-							인증번호 전송
-						</SquareButton>
-					</InputButtonBox>
-
-					{certifyNumVisible && (
-						<InputButtonBox>
-							<InputBox certify='true'>
-								<label htmlFor='registerCertifyNum'>인증 번호</label>
-								<input
-									id='registerCertifyNum'
-									type={'text'}
-									maxLength={6}
-									{...signUpRegister('certifyNumber')}
-									onChange={(e) => {
-										signupSetValue('certifyNumber', onlyNumber(e.target.value));
-									}}
-								/>
-								<span className={'limit-time'}>
-									{/* 타입변환 방법 리팩토링하기 */}
-									{String(Math.floor(timer / 60)).padStart(2, '0')}:
-									{String(timer % 60).padStart(2, '0')}
-								</span>
-								{signErrors.certifyNumber?.message && (
-									<InputErrorText>{signErrors.certifyNumber.message}</InputErrorText>
-								)}
-							</InputBox>
-							<SquareButton height={'50px'} disabled={!signupWatch('certifyNumber')}>
-								확인
-							</SquareButton>
-						</InputButtonBox>
-					)}
-
 					<SelectBox>
 						<InputBox>
-							<label htmlFor='registerGender'>성별</label>
-							<CustomSelect id='registerGender' value={userInfo.gender} disabled />
+							<label htmlFor='editGender'>성별</label>
+							<Selector idString='editGender' value={userInfo.gender} disabled />
 						</InputBox>
 						<InputBox>
-							<label htmlFor='registerAge'>연령대</label>
-							<CustomSelect id='registerAge' value={userInfo.age} disabled />
+							<label htmlFor='selectedAge'>연령대</label>
+							<Selector idString='selectedAge' value={userInfo.ageGroup} disabled />
 						</InputBox>
 					</SelectBox>
-
 					<InputBox>
-						<label htmlFor='registerNTRP'>NTRP</label>
-						<CustomSelect
-							id='registerNTRP'
-							options={[
-								{ value: 'NewBie', label: 'NewBie (1.0 ~ 2.0)' },
-								{ value: 'Beginner', label: 'Beginner (2.5 ~ 3.5)' },
-								{ value: 'Intermediate', label: 'Intermediate (4.0 ~ 4.5)' },
-								{ value: 'Intermediate', label: 'Advanced (5.0 ~ 5.5)' },
-								{ value: 'Pro', label: 'Pro (6.0 ~ 7.0)' },
-							]}
-							defaultValue={userInfo.NTRP}
+						<label htmlFor='editNTRP'>NTRP</label>
+						<Selector
+							idString='editNTRP'
+							options={NTRPOptions}
+							value={editMyInfoGetValues('ntrp')}
+							onChangeHandler={(e: string) => editMyInfoSetValue('ntrp', e)}
 						/>
 					</InputBox>
-
 					<InputBox>
-						<label htmlFor='registerEmail'>이메일</label>
-						<input id='registerEmail' {...signUpRegister('email')} defaultValue={userInfo.email} />
-						{signErrors.email?.message && (
-							<InputErrorText>{signErrors.email.message}</InputErrorText>
+						<label htmlFor='email'>이메일</label>
+						<input
+							id='email'
+							{...editMyInfoRegister('email')}
+							// defaultValue={editMyInfoGetValues('email')}
+						/>
+						{editMyInfoErrors.email?.message && (
+							<InputErrorText>{editMyInfoErrors.email.message}</InputErrorText>
 						)}
 					</InputBox>
-
-					<InputBox>
-						<label htmlFor='registerPassword'>비밀번호</label>
-						<input id='registerPassword' type={'password'} {...signUpRegister('password')} />
-						{signErrors.password?.message && (
-							<InputErrorText>{signErrors.password.message}</InputErrorText>
+					{/* <InputBox>
+						<label htmlFor='password'>비밀번호</label>
+						<input id='password' type={'password'} {...editMyInfoRegister('password')} />
+						{editMyInfoErrors.password?.message && (
+							<InputErrorText>{editMyInfoErrors.password.message}</InputErrorText>
 						)}
 					</InputBox>
-
 					<InputBox>
-						<label htmlFor='registerRePwd'>비밀번호 확인</label>
-						<input id='registerRePwd' type={'password'} {...signUpRegister('rePassword')} />
-						{signErrors.rePassword?.message && (
-							<InputErrorText>{signErrors.rePassword.message}</InputErrorText>
+						<label htmlFor='rePwd'>비밀번호 확인</label>
+						<input id='rePwd' type={'password'} {...editMyInfoRegister('rePwd')} />
+						{editMyInfoErrors.rePwd?.message && (
+							<InputErrorText>{editMyInfoErrors.rePwd.message}</InputErrorText>
 						)}
-					</InputBox>
-
+					</InputBox> */}
 					<InputButtonBox>
 						<InputBox>
-							<label htmlFor='registerNickNm'>닉네임</label>
+							<label htmlFor='nickname'>닉네임</label>
 							<input
-								id='registerNickNm'
+								id='nickname'
 								type={'text'}
-								{...signUpRegister('nickName')}
-								defaultValue={userInfo.userNickName}
+								{...editMyInfoRegister('nickname')}
+								// defaultValue={editMyInfoGetValues('nickname')}
+								placeholder={userInfo.nickname}
 							/>
 						</InputBox>
-						<SquareButton height={'50px'} disabled={!signupWatch('nickName')}>
+						<SquareButton height={'50px'} disabled={!editMyInfoWatch('nickname')}>
 							중복체크
 						</SquareButton>
 					</InputButtonBox>
-
 					<InputButtonBox>
 						<InputBox>
-							<label htmlFor='registerAddress'>주소</label>
+							<label htmlFor='zipCode'>주소</label>
 							<input
-								id='registerAddress'
-								placeholder={'우편번호'}
-								{...signUpRegister('address')}
-								defaultValue={userInfo.userAddress[2]}
+								id='zipCode'
+								placeholder={userInfo.zipCode}
+								{...editMyInfoRegister('zipCode')}
+								// defaultValue={editMyInfoGetValues('zipCode')}
 								readOnly
 							/>
 						</InputBox>
-						<SquareButton height={'50px'} onClick={handleAddressDrawer}>
+						<SquareButton height={'50px'} onClick={toggleSearchDrawer}>
 							주소 검색
 						</SquareButton>
 					</InputButtonBox>
 					<InputBox>
 						<input
-							id='registerDetailAddress'
+							id='address'
 							type={'text'}
-							placeholder={'상세주소'}
-							defaultValue={userInfo.userAddress[0] + ', ' + userInfo.userAddress[1]}
-							{...signUpRegister('detailAddress')}
+							placeholder={userInfo.address}
+							// defaultValue={editMyInfoGetValues('address')}
+							{...editMyInfoRegister('address')}
 						/>
 					</InputBox>
 				</InputContainer>
-
 				<ButtonBox>
-					<RoundButton
-						colorstyle={'is-green'}
-						disabled={checkValidation()}
-						onClick={signupHandleSubmit(confirmMyInfoEdit)}>
+					<RoundButton colorstyle={'is-green'} disabled={checkValidation()} type='submit'>
 						수정하기
 					</RoundButton>
 				</ButtonBox>
-			</RegisterViewContainer>
-
-			{/* 주소검색 모달 */}
-			<DrawerBox
-				title={'주소 검색'}
-				isOpen={addressDrawer}
-				placement={'bottom'}
-				height={'100%'}
-				toggleDrawer={handleAddressDrawer}>
-				<>
-					<InputButtonBox>
-						<InputBox>
-							<input
-								id='registerAddress'
-								placeholder={'우편번호'}
-								{...addressRegister('address')}
-							/>
-						</InputBox>
-						<SquareButton height={'50px'} onClick={addressHandleSubmit(searchAddress)}>
-							주소 검색
-						</SquareButton>
-					</InputButtonBox>
-
-					<DescTextBox>
-						<p>
-							찾으시려는 도로명주소, 동(읍/면/리) 또는 건물명을 입력해주세요.
-							<br />
-							(예 : 판교동, 판교원로 68, 판교실리콘파크)
-						</p>
-					</DescTextBox>
-
-					<GrayLine />
-
-					<AddressContainer>
-						<AddressBoxWrap>
-							<AddLeftWrap>
-								<AddressBox>
-									<CustomBadge color={PrimaryColor}>도로명</CustomBadge>
-									<p>경기도 성남시 분당구 판교공원4길 27(판교동)</p>
-								</AddressBox>
-								<AddressBox>
-									<CustomBadge>지번</CustomBadge>
-									<p>경기도 성남시 분당구 판교공원4길 27(판교동)</p>
-								</AddressBox>
-							</AddLeftWrap>
-							<AddRightWrap>13477</AddRightWrap>
-						</AddressBoxWrap>
-
-						<AddressBoxWrap>
-							<AddLeftWrap>
-								<AddressBox>
-									<CustomBadge color={PrimaryColor}>도로명</CustomBadge>
-									<p>경기도 성남시 분당구 판교공원4길 27(판교동)</p>
-								</AddressBox>
-								<AddressBox>
-									<CustomBadge>지번</CustomBadge>
-									<p>경기도 성남시 분당구 판교공원4길 27(판교동)</p>
-								</AddressBox>
-							</AddLeftWrap>
-							<AddRightWrap>13477</AddRightWrap>
-						</AddressBoxWrap>
-					</AddressContainer>
-				</>
-			</DrawerBox>
+			</EditMyInfoForm>
 		</>
 	);
 }
 
-const RegisterViewContainer = styled.div`
+const EditMyInfoForm = styled.form`
 	margin-top: 50px;
 `;
 
@@ -435,6 +364,10 @@ const ImageSection = styled.div`
 
 const InputContainer = styled.div`
 	margin-top: 30px;
+
+	* .select__CustomSelect-sc-10zdv74-0 {
+		margin-bottom: 0px;
+	}
 `;
 
 const SelectBox = styled.div`
@@ -469,58 +402,4 @@ const InputButtonBox = styled.div`
 const ButtonBox = styled.div`
 	margin-top: 30px;
 	margin-bottom: 50px;
-`;
-
-const DescTextBox = styled.div`
-	margin-bottom: 20px;
-
-	p {
-		font-size: ${rem(FontSizeSpSm)};
-		color: ${LightBlackColor};
-		font-family: Pretendard-Regular;
-		line-height: ${rem(FontSizeMdLg)};
-	}
-`;
-
-const AddressContainer = styled.div`
-	margin-top: 20px;
-`;
-
-const AddressBoxWrap = styled.div`
-	display: flex;
-	justify-content: space-between;
-	background-color: ${InputBoxColor};
-	border: 1px solid ${InputBorderColor};
-	border-radius: 5px;
-	padding: ${rem('15px')};
-	margin-bottom: 10px;
-`;
-
-const AddLeftWrap = styled.div`
-	margin-right: ${rem('20px')};
-`;
-
-const AddressBox = styled.div`
-	display: flex;
-	align-items: center;
-
-	&:first-child {
-		margin-bottom: 10px;
-	}
-
-	p {
-		margin-left: ${rem('10px')};
-		font-size: ${rem(FontSizeSpSm)};
-		font-family: Pretendard-Regular;
-		line-height: ${rem(FontSizeMd)};
-	}
-`;
-
-const AddRightWrap = styled.div`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-	font-size: ${rem(FontSizeMd)};
-	font-family: Pretendard-Regular;
-	color: ${BlackColor};
 `;
