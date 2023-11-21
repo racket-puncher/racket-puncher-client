@@ -25,8 +25,8 @@ const modifyMatchingList = (matching_id, data: reqModifyMatchingApiData) => {
 };
 
 // 매칭글 삭제(알림)
-const deleteMatchingList = (data: reqDeleteMatchingListApiData) => {
-	return http.delete(`/api/matches/${data}`);
+const deleteMatchingList = (matching_id: string) => {
+	return http.delete(`/api/matches/${matching_id}`);
 };
 
 // 매칭리스트 조회

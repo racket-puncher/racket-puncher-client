@@ -1,4 +1,5 @@
 import moment from 'moment';
+import { NTRPOptions, ageOptions } from 'constants/filterOption';
 
 // 날짜 포맷터
 export const dateFormatter = (date: Date) => {
@@ -52,4 +53,14 @@ export const formatDateTime = (inputDateStr) => {
 			date.format('YYYY년 MM월 DD일 ') + dayOfWeek + ' ' + amPm + ' ' + hour + '시 ' + minute + '분'
 		);
 	}
+};
+
+//  NTRP 포매터
+export const formatNtrpSelect = (valueName) => {
+	return NTRPOptions.filter((ele) => ele.value === valueName)[0].label.split(' (')[0];
+};
+
+// 연령대 포매터
+export const formatAgeSelect = (valueName) => {
+	return ageOptions.filter((ele) => ele.value === valueName)[0].label;
 };
