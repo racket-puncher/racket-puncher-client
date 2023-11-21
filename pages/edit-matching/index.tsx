@@ -272,7 +272,7 @@ export default function EditMatching(props: IEdtMatchingProps) {
 			<SearchCourtDrawer
 				isOpen={isSearchDrawerOpen}
 				toggleDrawer={toggleSearchDrawer}
-				setAddress={editMatchingSetValue}
+				setValue={editMatchingSetValue}
 				setCourtInfos={setCourtInfos}
 			/>
 			<PageTitleArea>

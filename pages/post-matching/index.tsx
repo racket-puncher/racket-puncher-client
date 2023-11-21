@@ -179,7 +179,7 @@ export default function PostMatching() {
 				isOpen={isSearchDrawerOpen}
 				toggleDrawer={toggleSearchDrawer}
 				setCourtInfos={setCourtInfos}
-				setAddress={postMatchingSetValue}
+				setValue={postMatchingSetValue}
 			/>
 			<PageTitleArea>
 				<PageMainTitle>매칭 글 등록</PageMainTitle>
