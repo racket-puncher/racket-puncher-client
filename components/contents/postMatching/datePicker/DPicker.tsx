@@ -23,7 +23,11 @@ export default function DPicker(props: IPickerProps) {
 			const yy = stringToDateFormatter(props.defaultValue)[0];
 			const mm = stringToDateFormatter(props.defaultValue)[1];
 			const dd = stringToDateFormatter(props.defaultValue)[2];
-			setDateState(new Date(yy, mm, dd, 0, 0, 0, 0));
+			setDateState(
+				[yy, mm, dd].filter((e) => Number.isNaN(e) || e!).length > 0
+					? new Date()
+					: new Date(yy, mm, dd, 0, 0, 0, 0)
+			);
 		}
 	}, [props.defaultValue]);
 

@@ -1,100 +1,153 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
-import { ImageBox } from '../../../../styles/ts/components/box';
+import { ImageBox } from 'styles/ts/components/box';
 import {
-	FontSizeMc,
+	FontSizeMd,
 	FontSizeSpSm,
 	FontFamilySemiBold,
 	FontFamilyRegular,
 	PrimaryColor,
 	BlackColor,
 	WhiteColor,
-} from '../../../../styles/ts/common';
+	ReportColor,
+} from 'styles/ts/common';
+import usersService from 'service/users/service';
+import { ageGroupName, ntrpName } from 'constants/userInfoOptions';
+
+// const userInfoALT = {
+// 	userNickName: '왕자',
+// 	age: 30,
+// 	gender: '남',
+// 	userAddress: '서울시 성동구',
+// 	ntrp: 'Pro',
+// 	winningRate: [1, 3],
+// 	mannerPoint: 85,
+// 	realName: '김개발',
+// 	email: 'princeofracket@gmail.com',
+// 	imageURL: '',
+// };
 
 interface IProfileProps {
-	userInfos: {
-		readonly userNickName: string;
-		readonly age: number;
-		readonly gender: string;
-		readonly ntrp: string;
-		readonly userAddress: string;
-		readonly winningRate: Array<number>;
-		readonly mannerPoint: number;
-		readonly realName: string;
-		readonly email: string;
-		readonly imageURL: string;
-	};
+	userId: string;
 }
 
 export default function MyProfile(props: IProfileProps) {
+	const { getMyProfileInfo } = usersService;
+	const { userId } = props;
+	const [userInfo, setUserInfo] = useState({
+		userName: '',
+		userNickname: '',
+		ageGroup: '',
+		gender: '',
+		ntrp: '',
+		userAddress: '',
+		mannerPoint: 0,
+		userEmail: '',
+		imageURL: '',
+	});
 	const {
-		userNickName,
-		age,
+		userName,
+		userNickname,
+		ageGroup,
 		gender,
 		ntrp,
 		userAddress,
-		winningRate,
 		mannerPoint,
-		realName,
-		email,
+		userEmail,
 		imageURL,
-	} = props.userInfos;
+	} = userInfo;
+	useEffect(() => {
+		const getNSsetData = async () => {
+			try {
+				const res = await getMyProfileInfo(userId);
+				const data = res.data.response;
+				console.log(data);
+				setUserInfo({
+					userName: data.userName,
+					userNickname: data.nickname,
+					ageGroup: ageGroupName.filter((ele) => ele.value === data.ageGroup)[0].label,
+					gender: data.gender === 'MALE' ? '남' : '여',
+					ntrp: ntrpName.filter((ele) => ele.value === data.ntrp)[0].label.split(' ')[0],
+					userAddress: data.address,
+					mannerPoint: parseInt(data.mannerScore) - parseInt(data.penaltyScore),
+					userEmail: data.email,
+					imageURL: data.profileImg,
+				});
+			} catch (err) {
+				console.log(err);
+			}
+		};
+		getNSsetData();
+	}, []);
 
 	return (
-		<>
-			<MyProfileContainer>
-				<ProfileImage width='280px' height='280px'>
-					<img src={imageURL || ''} alt='프로필 사진' />
-				</ProfileImage>
-				<ProfileInfoArea>
-					<ProfileInfoList id='Info01'>
-						<ProfileInfoItem>
-							<ItemName>닉네임 : </ItemName>
-							<ItemContent>{userNickName || '-'}</ItemContent>
-							<Badge> {ntrp || '-'} </Badge>
-						</ProfileInfoItem>
-						<ProfileInfoItem>
-							<ItemName>연령/성별 :</ItemName>
-							<ItemContent>
-								만 {age || '-'}세 / {gender || '-'}
-							</ItemContent>
-						</ProfileInfoItem>
-						<ProfileInfoItem>
-							<ItemName>주소 : </ItemName>
-							<ItemContent>{userAddress || '-'}</ItemContent>
-						</ProfileInfoItem>
-					</ProfileInfoList>
-
-					<ProfileInfoList id='Info02'>
-						<ProfileInfoItem>
-							<ItemName>NTRP : </ItemName>
-							<ItemContent>{ntrp || '-'}</ItemContent>
-						</ProfileInfoItem>
-						<ProfileInfoItem>
-							<ItemName>승률 : </ItemName>
-							<ItemContent>
-								{winningRate[0] || '-'}승 {winningRate[1] || '-'}패
-							</ItemContent>
-						</ProfileInfoItem>
-						<ProfileInfoItem>
-							<ItemName>매너점수 : </ItemName>
-							<ItemContent>{mannerPoint || '-'} 점</ItemContent>
-						</ProfileInfoItem>
-					</ProfileInfoList>
-					<ProfileInfoList id='Info03'>
-						<ProfileInfoItem>
-							<ItemName>실명 : </ItemName>
-							<ItemContent>{realName || '-'}</ItemContent>
-						</ProfileInfoItem>
-						<ProfileInfoItem>
-							<ItemName>이메일 : </ItemName>
-							<ItemContent>{email || '-'}</ItemContent>
-						</ProfileInfoItem>
-					</ProfileInfoList>
-				</ProfileInfoArea>
-			</MyProfileContainer>
-		</>
+		<MyProfileContainer>
+			<ProfileImage width='280px' height='280px'>
+				<img src={imageURL || ''} alt='프로필 사진' />
+			</ProfileImage>
+			<Table>
+				<thead>
+					<tr>
+						<th colSpan={2}>
+							<TitleArea>
+								<Title>{userNickname || '-'}</Title> <Badge> {ntrp || '-'} </Badge>
+							</TitleArea>
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr>
+						<td>
+							<Cell>
+								<ItemName>사용자 : </ItemName>
+								<ItemContent>{userName || '-'}</ItemContent>
+							</Cell>
+						</td>
+						<td>
+							<CellRight>
+								<ItemName>매너 : </ItemName>
+								<ItemContent>●●●●○</ItemContent>
+							</CellRight>
+						</td>
+					</tr>
+					<tr>
+						<td>
+							<Cell>
+								<ItemName>정보 : </ItemName>
+								<ItemContent>
+									{gender || '-'} / {ageGroup || '-'}
+								</ItemContent>
+							</Cell>
+						</td>
+						<td>
+							<CellRight>
+								<ItemName>승률 : </ItemName>
+								<ItemContent>-</ItemContent>
+							</CellRight>
+						</td>
+					</tr>
+					<tr>
+						<td colSpan={2}>
+							<Cell>
+								<ItemName>이메일 : </ItemName>
+								<ItemContent>{userEmail || '-'}</ItemContent>
+							</Cell>
+						</td>
+					</tr>
+					<tr>
+						<td colSpan={2}>
+							<CellBottom>
+								<ItemName>주소 : </ItemName>
+								<ItemContent>
+									{userAddress.includes('(') ? userAddress.split('(')[0] : userAddress}
+								</ItemContent>
+							</CellBottom>
+						</td>
+					</tr>
+				</tbody>
+			</Table>
+		</MyProfileContainer>
 	);
 }
 
@@ -103,7 +156,7 @@ const MyProfileContainer = styled.div`
 	flex-direction: column;
 	align-items: center;
 
-	gap: ${rem('20px')};
+	gap: ${rem('30px')};
 	width: 100%;
 	margin: ${rem('30px')} 0px;
 `;
@@ -113,34 +166,47 @@ const ProfileImage = styled(ImageBox)`
 	max-width: ${rem('150px')};
 	max-height: ${rem('150px')};
 `;
-const ProfileInfoArea = styled.div`
-	display: grid;
-	grid-template-columns: 3fr 2fr;
-	grid-template-rows: auto auto;
-	grid-template-areas:
-		'info01 info02'
-		'info03 info03';
-	min-width: 90%;
+const Table = styled.table`
+	min-width: 100%;
 `;
 
-const ProfileInfoList = styled.ul`
-	display: flex;
-	flex-direction: column;
-	justify-content: left top;
-	max-width: calc(100vw - ${rem('60px')});
-
-	& #info01 {
-		margin-right: ${rem('20px')};
-	}s
-`;
-
-const ProfileInfoItem = styled.li`
+const TitleArea = styled.div`
 	display: flex;
 	flex-direction: row;
+	justify-content: space-between;
 	align-items: center;
-	gap: ${rem('4px')};
-	width: fit-content;
-	margin-top: ${rem('15px')};
+	height: ${rem('56px')};
+	max-height: ${rem('56px')};
+	padding: ${rem('10px')} ${rem('20px')};
+	border: 1px solid ${ReportColor};
+	border-radius: 20px 20px 0px 0px;
+`;
+
+const Title = styled.div`
+	line-height: ${rem('30px')};
+	font-size: ${FontSizeMd};
+	font-family: Pretendard-SemiBold;
+`;
+
+const Cell = styled.div`
+	display: flex;
+	flex-direction: row;
+	justify-content: left;
+	align-items: center;
+	gap: ${rem('10px')};
+	height: ${rem('56px')};
+	max-height: ${rem('56px')};
+	padding: ${rem('10px')} ${rem('20px')};
+	border: 1px solid ${ReportColor};
+	border-top: none;
+	font-size: ${FontSizeMd};
+`;
+
+const CellRight = styled(Cell)`
+	border-left: none;
+`;
+const CellBottom = styled(Cell)`
+	border-radius: 0px 0px 20px 20px;
 `;
 
 const ItemName = styled.span`
@@ -158,14 +224,15 @@ const ItemContent = styled.span`
 
 const Badge = styled.div`
 	display: inline-block;
-	width: ${rem('41px')};
-	height: ${rem('20px')};
+	min-width: ${rem('40px')};
+	height: ${rem('30px')};
+	padding: 0px ${rem('7px')};
 	background-color: ${PrimaryColor};
-	border-radius: ${rem('10px')};
+	border-radius: ${rem('15px')};
 
 	text-align: center;
 	color: ${WhiteColor};
-	font-size: ${rem(`${FontSizeMc}`)};
-	line-height: ${rem('18px')};
-	font-familiy ${FontFamilySemiBold};
+	font-size: ${rem('15px')};
+	line-height: ${rem('29px')};
+	font-family: ${FontFamilySemiBold};
 `;

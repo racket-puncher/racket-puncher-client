@@ -11,33 +11,29 @@ import {
 } from 'styles/ts/common';
 
 import { ImageBox } from 'styles/ts/components/box';
+import Link from 'next/link';
 
 interface IAlarmListItemProps {
-	alarmTestData: {
-		alarmId: string;
-		alarmTitle: string;
-		alarmContent: string;
-		pageTitle: string;
-		pageURL: string;
+	alarmData: {
+		matchingId: string;
+		title: string;
+		content: string;
 	};
 }
 
 export default function AlarmListItem(props: IAlarmListItemProps) {
-	const { alarmTitle, alarmContent, pageURL, pageTitle } = props.alarmTestData;
+	const { matchingId, title, content } = props.alarmData;
 	return (
 		<AlarmListItemContainer>
 			<AlarmDataArea>
-				<AlarmItemTitle>{`${alarmTitle}`} </AlarmItemTitle>
-				<AlarmItemContent>
-					<span>
-						<a href={`${pageURL}`}>{`${pageTitle}`}</a>
-					</span>
-					{`${alarmContent}`}
-				</AlarmItemContent>
+				<Link href={`/matches/${matchingId}`}>
+					<AlarmItemTitle>{`${title}`}</AlarmItemTitle>
+					<AlarmItemContent>{`${content}`}</AlarmItemContent>
+				</Link>
 			</AlarmDataArea>
 			<IconArea>
 				<ImageBox width='40px' height='40px'>
-					<img src='./svg/bell-icon.svg' alt='종모양 아이콘' />
+					<img src='/svg/bell-icon.svg' alt='종모양 아이콘' />
 				</ImageBox>
 			</IconArea>
 		</AlarmListItemContainer>
