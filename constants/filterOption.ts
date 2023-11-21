@@ -15,11 +15,11 @@ export const ageOptions: OptionType[] = [
 	{ value: 'SENIOR', label: '50대이상' },
 ];
 export const NTRPOptions: OptionType[] = [
-	{ value: 'DEVELOPMENT', label: 'Development' },
-	{ value: 'BEGINNER', label: 'Beginner' },
-	{ value: 'INTERMEDIATE', label: 'Intermediate' },
-	{ value: 'ADVANCE', label: 'Advance' },
-	{ value: 'PRO', label: 'Pro' },
+	{ value: 'DEVELOPMENT', label: 'Development (1.0 ~ 2.0)' },
+	{ value: 'BEGINNER', label: 'Beginner (2.5 ~ 3.5)' },
+	{ value: 'INTERMEDIATE', label: 'Intermediate (4.0 ~ 4.5)' },
+	{ value: 'ADVANCED', label: 'Advanced (5.0 ~ 5.5)' },
+	{ value: 'PRO', label: 'Pro (6.0 ~ 7.0)' },
 ];
 
 export const matchingTypesOptions: OptionType[] = [
