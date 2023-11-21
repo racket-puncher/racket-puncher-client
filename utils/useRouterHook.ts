@@ -11,11 +11,14 @@ const useRouterHook = () => {
 	const reload = () => {
 		route.reload();
 	};
+	const replace = (url: string) => {
+		route.replace(url);
+	};
 	const pathNameStartsWith = (url: string) => {
 		return route.pathname.startsWith(url);
 	};
 
-	return { movePage, moveToBack, reload, pathNameStartsWith };
+	return { movePage, moveToBack, reload, replace, pathNameStartsWith };
 };
 
 export default useRouterHook;
