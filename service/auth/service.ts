@@ -1,7 +1,6 @@
 import http from '../../lib/http/httpInterceptor';
 import httpFile from '../../lib/http/httpFileInterceptor';
 import {
-	reqCheckIdApiData,
 	reqCheckNicknameApiData,
 	reqDeleteUserApiData,
 	reqFindIdApiData,
