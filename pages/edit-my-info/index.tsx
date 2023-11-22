@@ -112,22 +112,24 @@ export default function EditMyInfo() {
 	// const userId = '1';
 
 	useEffect(() => {
-		const getNSsetData = async () => {
+		const getNSsetData = async (aaa) => {
 			try {
-				const res = await getMyProfileInfo(userId);
+				// const res = await getMyProfileInfo(getCookie('id'));
+				const res = await getMyProfileInfo(aaa);
 				const data = res.data.response;
 				console.log(data);
-				// setUserInfo({
-				// 	userName: data.siteusername,
-				// 	ageGroup: ageOptions.filter((ele) => ele.value === data.ageGroup)[0].label,
-				// 	gender: data.gender === 'MALE' ? '남' : '여',
-				// });
-				// editMyInfoSetValue('nickname', data.nickname);
-				// editMyInfoSetValue('ntrp', ntrpName.filter((ele) => ele.value === data.ntrp)[0].label);
-				// editMyInfoSetValue('zipCode', data.zipCode);
-				// editMyInfoSetValue('address', data.address);
-				// editMyInfoSetValue('email', data.email);
-				// editMyInfoSetValue('imageURL', data.profileImg);
+				setUserInfo({
+					...userInfo,
+					siteusername: data.siteusername,
+					ageGroup: ageOptions.filter((ele) => ele.value === data.ageGroup)[0].label,
+					gender: data.gender === 'MALE' ? '남' : '여',
+				});
+				editMyInfoSetValue('nickname', data.nickname);
+				editMyInfoSetValue('ntrp', NTRPOptions.filter((ele) => ele.value === data.ntrp)[0].label);
+				editMyInfoSetValue('zipCode', data.zipCode);
+				editMyInfoSetValue('address', data.address);
+				editMyInfoSetValue('email', data.email);
+				editMyInfoSetValue('imageURL', data.profileImg);
 				// editMyInfoSetValue('phoneNumber', data.phoneNumber);
 
 				setUserInfo(data);
@@ -135,7 +137,7 @@ export default function EditMyInfo() {
 				console.log(err);
 			}
 		};
-		getNSsetData();
+		getCookie('id') && getNSsetData('1');
 	}, []);
 
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -220,7 +222,7 @@ export default function EditMyInfo() {
 		}
 	};
 
-	// 주소 검색 모달 ---------------------------------------------------------------
+	// 주소 검색 모달
 	const [isSearchDrawerOpen, setIsSearchDrawerOpen] = useState(false);
 	const toggleSearchDrawer = () => setIsSearchDrawerOpen((prev: boolean) => !prev);
 
