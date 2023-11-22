@@ -138,7 +138,7 @@ export default function register() {
 	// 닉네임 중복 체크 ---------------------------------------------------------------
 	const checkNickname = async () => {
 		const params = {
-			email: signupGetValue('nickName'),
+			nickname: signupGetValue('nickName'),
 		};
 		try {
 			const res = await AuthService.checkNickname(params);

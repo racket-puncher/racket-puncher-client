@@ -2,6 +2,7 @@ import http from '../../lib/http/httpInterceptor';
 import httpFile from '../../lib/http/httpFileInterceptor';
 import {
 	reqCheckIdApiData,
+	reqCheckNicknameApiData,
 	reqDeleteUserApiData,
 	reqFindIdApiData,
 	reqFindPwdApiData,
@@ -51,8 +52,8 @@ const logout = (data: reqLogoutApiData) => {
 // };
 
 // 닉네임 중복 체크
-const checkNickname = (data: reqCheckIdApiData) => {
-	return http.post('/api/auth/check-email', data);
+const checkNickname = (data: reqCheckNicknameApiData) => {
+	return http.post('/api/auth/check-nickname', data);
 };
 
 // 핸드폰 인증
