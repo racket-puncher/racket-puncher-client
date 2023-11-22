@@ -9,48 +9,52 @@ import MyProfile from 'components/contents/my/myProfile';
 import MyMatchingList from 'components/contents/my/myMatchingList';
 import useCookies from 'utils/useCookies';
 import useToast from 'utils/useToast';
-// import { useRouter } from 'next/router';
+import usersService from 'service/users/service';
 import useRouterHook from 'utils/useRouterHook';
 import Link from 'next/link';
 // import AuthService from 'service/auth/service';
 
 const MyPage = () => {
 	// 프로필 수정 페이지 라우팅
-
-	const { checkLogin, getCookie } = useCookies();
 	// const { getNewToken } = AuthService;
-	const { setMessage } = useToast();
+	const { checkLogin, getCookie } = useCookies();
+	const { getMyHostedMatchingList, getMyAppliedMatchingList } = usersService;
+	const { getMyProfileInfo } = usersService;
 	const { replace } = useRouterHook();
-	const [userId, setUserId] = useState('');
+	const { setMessage } = useToast();
+
 	useEffect(() => {
 		if (!checkLogin()) {
 			setMessage('error', '로그인이 필요한 서비스입니다.');
 			replace('/login');
-		} else {
-			// getNewToken({
-			// 	accessToken: getCookie('accessToken'),
-			// 	refreshToken: getCookie('refreshToken'),
-			// });
-			setUserId(getCookie('id'));
 		}
+
+		// else if (getCookie('id') !== '') {
+		// 	return;
+		// }
+
+		// getNewToken({
+		// 	accessToken: getCookie('accessToken'),
+		// 	refreshToken: getCookie('refreshToken'),
+		// });
 	}, []);
 
 	const items: TabsProps['items'] = [
 		{
 			key: 'hostedMatchingList',
 			label: '등록한 매칭',
-			children: <MyMatchingList listType='hosted' userId={userId} />,
+			children: <MyMatchingList listType='hosted' />,
 		},
 		{
 			key: 'appliedMatchingList',
 			label: '신청한 매칭',
-			children: <MyMatchingList listType='applied' userId={userId} />,
+			children: <MyMatchingList listType='applied' />,
 		},
 	];
 
 	return (
 		<>
-			<MyProfile userId={userId} />
+			<MyProfile />
 			<Link href={'/edit-my-info'} aria-label='프로필 수정페이지로 이동'>
 				<RoundButton colorstyle='is-black'>프로필 수정</RoundButton>
 			</Link>

@@ -19,6 +19,8 @@ import TPicker from 'components/contents/postMatching/timePicker/TPicker';
 import ButtonStyleRadio from 'components/common/buttonRadio';
 import SearchCourtDrawer from 'components/contents/postMatching/searchCourtDrawer';
 import useToast from 'utils/useToast';
+import AuthService from 'service/auth/service';
+import useCookies from 'utils/useCookies';
 
 const schema = yup.object().shape({
 	postTitle: yup.string().required('제목을 입력해주세요.'),
@@ -56,6 +58,7 @@ export default function PostMatching() {
 		resolver: yupResolver(schema),
 	});
 	const { setMessage } = useToast();
+	const { getCookie } = useCookies();
 	const [matchDate, setMatchDate] = useState(null);
 	const [matchStartTime, setMatchStartTime] = useState('');
 	const [matchEndTime, setMatchEndTime] = useState('');
@@ -140,7 +143,7 @@ export default function PostMatching() {
 			setMessage('error', '이미지를 추가해주세요.');
 			return;
 		}
-		const postedData = {
+		const params = {
 			title: postMatchingGetValues('postTitle'),
 			matchingType: postMatchingGetValues('matchType'),
 			recruitNum: postMatchingGetValues('numOfRecruited'),
@@ -158,14 +161,15 @@ export default function PostMatching() {
 			cost: postMatchingGetValues('courtFee'),
 			content: postMatchingGetValues('mainText'),
 		};
-		console.log(postedData);
+		console.log(params);
 
 		try {
+			await AuthService.getNewToken(getCookie('accessToken'), getCookie('refreshToken'));
 			const formData = new FormData();
 			formData.append('imageFile', fileData);
 			const fileUrl = await MatchesService.uploadMatchingImage('1', formData);
 			const res = await MatchesService.regMatchingData({
-				...postedData,
+				...params,
 				locationImg: fileUrl.data.response,
 			});
 		} catch (err) {

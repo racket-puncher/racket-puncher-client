@@ -30,15 +30,10 @@ import { ageGroupName, ntrpName } from 'constants/userInfoOptions';
 // 	imageURL: '',
 // };
 
-interface IProfileProps {
-	userId: string;
-}
-
-export default function MyProfile(props: IProfileProps) {
+export default function MyProfile() {
 	const { getCookie } = useCookies();
 	// const { getNewToken } = AuthService;
 	const { getMyProfileInfo } = usersService;
-	const { userId } = props;
 	const [userInfo, setUserInfo] = useState({
 		userName: '',
 		userNickname: '',
@@ -62,13 +57,14 @@ export default function MyProfile(props: IProfileProps) {
 		imageURL,
 	} = userInfo;
 	useEffect(() => {
-		const getNSsetData = async () => {
+		const getNSsetData = async (id: string) => {
 			try {
-				const res = await getMyProfileInfo(userId);
+				const res = await getMyProfileInfo(id);
 				const data = res.data.response;
 				console.log(data);
 				setUserInfo({
-					userName: data.userName,
+					...userInfo,
+					userName: data.siteusername,
 					userNickname: data.nickname,
 					ageGroup: ageGroupName.filter((ele) => ele.value === data.ageGroup)[0].label,
 					gender: data.gender === 'MALE' ? '남' : '여',
@@ -82,7 +78,7 @@ export default function MyProfile(props: IProfileProps) {
 				console.log(err);
 			}
 		};
-		getCookie('id') && getNSsetData();
+		getCookie('id') && getNSsetData(getCookie('id'));
 	}, []);
 
 	return (

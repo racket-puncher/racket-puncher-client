@@ -5,7 +5,11 @@ import { Progress } from 'antd';
 import { ImageBox } from '../../../styles/ts/components/box';
 import {
 	BlackColor,
+	FontFamilyRegular,
+	FontFamilySemiBold,
 	FontSizeLg,
+	FontSizeMd,
+	FontSizeMdLg,
 	FontSizeSpSm,
 	InputBorderColor,
 	InputBoxColor,
@@ -18,6 +22,11 @@ import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
 import { RoundButton } from '../../../styles/ts/components/buttons';
 import ModalBox from '../../../components/common/modal';
 import { prefix } from '../../../constants/prefix';
+import MatchesService from 'service/matches/service';
+import useCookies from 'utils/useCookies';
+import useRouterHook from 'utils/useRouterHook';
+import { formatDateTime } from 'utils/formatter';
+import { ageGroupName, matchTypeName, ntrpName } from 'constants/userInfoOptions';
 
 const testItems = [
 	{ id: '0', title: '타이틀 1', index: 1 },
@@ -32,11 +41,74 @@ interface DetailMatchContentProps {
 }
 
 export default function DetailMatching() {
+	const { getPathName } = useRouterHook();
 	const [recruitStatusModalVisible, setRecruitStatusModalVisible] = useState(false);
+	const [MatchingInfo, setMatchingInfo] = useState({
+		id: 1,
+		creatorUserId: 2,
+		title: '퇴근 후 같이 테니스 치실분!',
+		content: '초보자 환영합니다.',
+
+		location: '서울특별시 강남구 삼성동 삼성로 566 위드 테니스아카데미',
+		lat: 37.5121584863211,
+		lon: 127.054408208511,
+		locationImg: '',
+
+		date: '2023-11-30',
+		startTime: '20:00',
+		endTime: '22:00',
+		recruitDueDateTime: '2023-11-27T17:00',
+
+		recruitNum: 2,
+		cost: 50000,
+		isReserved: false,
+
+		ntrp: 'BEGINNER',
+		ageGroup: 'TWENTIES',
+		recruitStatus: 'OPEN',
+		matchingType: 'SINGLE',
+		confirmedNum: 1,
+		createTime: '2023-11-17T07:18:44',
+	});
 	const [recruitList, setRecruitList] = useState({
 		beforeList: [],
 		afterList: [],
 	});
+
+	useEffect(() => {
+		const matchId = getPathName().split('detailMatch/')[0].split('/')[0];
+		const getNSsetMatchDetail = async (id) => {
+			try {
+				const res = await MatchesService.getDetailMatchingList(id);
+				const data = res.data.response;
+				console.log(data);
+				setMatchingInfo(data);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+		const getNSsetWriter = async (id: string) => {
+			try {
+				const res = await MatchesService.getMatchingApplyState(id);
+				const data = res.data.response;
+				console.log(data);
+				// setRecruitList(data);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+		const getNSsetRecruitList = async (id: string) => {
+			try {
+				const res = await MatchesService.getMatchingApplyState(id);
+				const data = res.data.response;
+				console.log(data);
+				// setRecruitList(data);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+		// getNSsetRecruitList();
+	}, []);
 
 	const toggleModal = () => {
 		setRecruitStatusModalVisible((prev) => !prev);
@@ -101,7 +173,12 @@ export default function DetailMatching() {
 
 				<ProgressBarContainer>
 					<p>
-						“모집 기간이 <span>2</span>일 <span>7</span>시간 남았습니다.“
+						{/* “모집 기간이 <span>2</span>일 <span>7</span>시간 남았습니다.“ */}
+						<br />{' '}
+						<span style={{ color: `${PrimaryColor}` }}>
+							{formatDateTime(MatchingInfo.recruitDueDateTime).split('년')[1]}{' '}
+						</span>
+						모집 마감!
 					</p>
 					<Progress
 						strokeLinecap='round'
@@ -114,28 +191,47 @@ export default function DetailMatching() {
 				<ContentContainer>
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchTitle'>제목</label>
-						<DetailMatchContent></DetailMatchContent>
+						<DetailMatchContent>
+							<p>{MatchingInfo.title}</p>
+						</DetailMatchContent>
 					</DetailMatchItemBox>
 
 					<FlexBox>
 						<DetailMatchItemBox>
 							<label htmlFor='detailMatchAge'>연령대</label>
-							<DetailMatchContent></DetailMatchContent>
+							<DetailMatchContent>
+								<p>{ageGroupName.filter((ele) => ele.value === MatchingInfo.ageGroup)[0].label}</p>
+							</DetailMatchContent>
 						</DetailMatchItemBox>
 						<DetailMatchItemBox>
 							<label htmlFor='detailMatchNTRP'>NTRP</label>
-							<DetailMatchContent></DetailMatchContent>
+							<DetailMatchContent>
+								<p>
+									{
+										ntrpName
+											.filter((ele) => ele.value === MatchingInfo.ntrp)[0]
+											.label.split(' (')[0]
+									}
+								</p>
+							</DetailMatchContent>
 						</DetailMatchItemBox>
 					</FlexBox>
 
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchItem'>매칭 항목</label>
-						<DetailMatchContent></DetailMatchContent>
+						<DetailMatchContent>
+							<p>
+								{matchTypeName.filter((ele) => ele.value === MatchingInfo.matchingType)[0].label} /{' '}
+								{MatchingInfo.date} / {MatchingInfo.startTime} ~ {MatchingInfo.endTime}
+							</p>
+						</DetailMatchContent>
 					</DetailMatchItemBox>
 
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchAddree'>주소</label>
-						<DetailMatchContent></DetailMatchContent>
+						<DetailMatchContent>
+							<p>{MatchingInfo.location}</p>
+						</DetailMatchContent>
 					</DetailMatchItemBox>
 
 					<DetailMatchItemBox>
@@ -147,12 +243,16 @@ export default function DetailMatching() {
 
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchInfo'>구장 이미지</label>
-						<DetailMatchContent height={'300px'}></DetailMatchContent>
+						<DetailMatchContent height={'300px'}>
+							<img src={`${MatchingInfo.location}`} id='detailMatchInfo' />
+						</DetailMatchContent>
 					</DetailMatchItemBox>
 
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchInfo'>본문 내용</label>
-						<DetailMatchContent height={'300px'}></DetailMatchContent>
+						<DetailMatchContent height={'300px'}>
+							<p>{MatchingInfo.content}</p>
+						</DetailMatchContent>
 					</DetailMatchItemBox>
 				</ContentContainer>
 
@@ -275,6 +375,7 @@ const MapBox = styled.div``;
 const DetailMatchItemBox = styled.div`
 	display: flex;
 	flex-direction: column;
+	width: 100%;
 	padding-bottom: 20px;
 	label {
 		display: block;
@@ -285,6 +386,11 @@ const DetailMatchItemBox = styled.div`
 	}
 `;
 const DetailMatchContent = styled.div<DetailMatchContentProps>`
+	display: flex;
+	justify-content: center;
+	align-items: center;
+
+	width: 100%;
 	height: ${(props) => (props.height ? props.height : '50px')};
 	border: 1px solid ${InputBorderColor};
 	background: ${InputBoxColor};
@@ -294,12 +400,21 @@ const DetailMatchContent = styled.div<DetailMatchContentProps>`
 	&:focus {
 		border: 1px solid ${PrimaryColor};
 	}
+
+	p {
+		font-family: ${FontFamilyRegular};
+		font-size: ${FontSizeMd};
+		color: ${BlackColor};
+	}
 `;
 
 const FlexBox = styled.div`
 	display: flex;
 	justify-content: space-between;
+	gap: ${rem('20px')};
+
 	div.detailMatch__DetailMatchItemBox-sc-iu375m-8 {
+		width: 100%;
 		flex-basis: 280px;
 		&:first-child {
 			margin-right: ${rem('20px')};

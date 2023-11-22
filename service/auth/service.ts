@@ -75,8 +75,11 @@ const findPwd = (data: reqFindPwdApiData) => {
 };
 
 // 새 토큰 받기
-const getNewToken = (data) => {
-	return http.post('/api/auth/reissue', data);
+const getNewToken = (a, b) => {
+	return http.post('/api/auth/reissue', {
+		accessToken: a,
+		refreshToken: b,
+	});
 };
 
 const AuthService = {

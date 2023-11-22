@@ -1,5 +1,6 @@
 import moment from 'moment';
 import { NTRPOptions, ageOptions } from 'constants/filterOption';
+import { ageGroupName, ntrpName } from 'constants/userInfoOptions';
 
 // 날짜 포맷터
 export const dateFormatter = (date: Date) => {
@@ -56,11 +57,11 @@ export const formatDateTime = (inputDateStr) => {
 };
 
 //  NTRP 포매터
-export const formatNtrpSelect = (valueName) => {
-	return NTRPOptions.filter((ele) => ele.value === valueName)[0].label.split(' (')[0];
+export const formatNtrpSelect = (valueName: string) => {
+	return ntrpName.filter((ele) => ele.value === valueName)[0].label.split(' (')[0];
 };
 
 // 연령대 포매터
-export const formatAgeSelect = (valueName) => {
-	return ageOptions.filter((ele) => ele.value === valueName)[0].label;
+export const formatAgeSelect = (valueName): string => {
+	return ageGroupName.filter((ele) => ele.value === valueName)[0].label;
 };

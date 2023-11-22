@@ -40,7 +40,7 @@ const schema = yup.object().shape({
 });
 export default function Login() {
 	const { movePage } = useRouterHook();
-	const { setCookie } = useCookies();
+	const { setCookie, getCookie } = useCookies();
 	const { setMessage } = useToast();
 
 	const {
@@ -69,16 +69,17 @@ export default function Login() {
 		try {
 			const res = await AuthService.login(data);
 			setCookie('accessToken', res.data.accessToken, { expires: 7 });
-			setCookie('refreshToken', res.data.refreshToken);
-			setCookie('id', res.data.id);
+			setCookie('refreshToken', res.data.refreshToken, { expires: 7 });
+			setCookie('id', res.data.id, { expires: 7 });
 			movePage('/main');
+			console.log(getCookie('accessToken'));
 		} catch (e) {
 			console.log(e);
 			setMessage('error', e.response.data.message);
 		}
 	};
 
-	// 소셜로그인 --------------------------------------
+	// 소셜로그인
 	const postSocialLogin = (res) => {
 		console.log(res);
 		const accessToken = res.response.accessToken;

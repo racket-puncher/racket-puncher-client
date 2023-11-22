@@ -16,6 +16,7 @@ import useToast from 'utils/useToast';
 import useCookies from 'utils/useCookies';
 import useRouterHook from 'utils/useRouterHook';
 import usersService from 'service/users/service';
+import AuthService from 'service/auth/service';
 
 import { NTRPOptions, ageOptions } from 'constants/filterOption';
 import Selector from 'components/contents/postMatching/selector';
@@ -49,11 +50,11 @@ import SearchCourtDrawer from 'components/contents/postMatching/searchCourtDrawe
 const schema = yup.object().shape({
 	// phoneNumber: yup.string().required('휴대폰 번호는 필수입니다.'),
 	// certifyNumber: yup.string().required('인증번호는 필수입니다.'),
-	selectedAge: yup.string().required('연령대를 선택해주세요.'),
-	ntrp: yup.string().required('NTRP를 선택해주세요.'),
+	selectedAge: yup.string(),
+	ntrp: yup.string(),
 	email: yup
 		.string()
-		.required('이메일은 필수입니다.')
+		// .required('이메일은 필수입니다.')
 		.matches(
 			/^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
 			'이메일 형식이 올바르지 않습니다.'
@@ -72,9 +73,9 @@ const schema = yup.object().shape({
 	// 		/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
 	// 		'비밀번호는 8자 이상, 숫자/소문자/대문자/특수문자를 각 최소 하나씩 포함해야 합니다.'
 	// 	),
-	nickname: yup.string().required('닉네임은 필수입니다.'),
-	zipCode: yup.string().required('우편번호는 필수입니다.'),
-	address: yup.string().required('상세주소는 필수입니다.'),
+	nickname: yup.string(),
+	zipCode: yup.string(),
+	address: yup.string(),
 	imageURL: yup.string(),
 });
 
@@ -101,21 +102,11 @@ export default function EditMyInfo() {
 		profileImg: '', // 이미지 파일 url
 	});
 
-	// useEffect(() => {
-	// 	if (!checkLogin()) {
-	// 		setMessage('error', '로그인이 필요한 서비스입니다.');
-	// 		replace('/login');
-	// 	} else {
-	// 	setUserId(getCookie('id'));
-	// }
-	// }, []);
-	// const userId = '1';
-
 	useEffect(() => {
-		const getNSsetData = async (aaa) => {
+		const getNSsetData = async (id: string) => {
 			try {
 				// const res = await getMyProfileInfo(getCookie('id'));
-				const res = await getMyProfileInfo(aaa);
+				const res = await getMyProfileInfo(id);
 				const data = res.data.response;
 				console.log(data);
 				setUserInfo({
@@ -123,21 +114,32 @@ export default function EditMyInfo() {
 					siteusername: data.siteusername,
 					ageGroup: ageOptions.filter((ele) => ele.value === data.ageGroup)[0].label,
 					gender: data.gender === 'MALE' ? '남' : '여',
-				});
-				editMyInfoSetValue('nickname', data.nickname);
-				editMyInfoSetValue('ntrp', NTRPOptions.filter((ele) => ele.value === data.ntrp)[0].label);
-				editMyInfoSetValue('zipCode', data.zipCode);
-				editMyInfoSetValue('address', data.address);
-				editMyInfoSetValue('email', data.email);
-				editMyInfoSetValue('imageURL', data.profileImg);
-				// editMyInfoSetValue('phoneNumber', data.phoneNumber);
+					nickname: data.nickname,
+					ntrp: NTRPOptions.filter((ele) => ele.value === data.ntrp)[0].label,
+					zipCode: data.zipCode,
+					address: data.address,
+					email: data.email,
 
-				setUserInfo(data);
+					profileImg: data.profileImg,
+				});
+
+				// editMyInfoSetValue('nickname', data.nickname);
+				// editMyInfoSetValue('ntrp', NTRPOptions.filter((ele) => ele.value === data.ntrp)[0].label);
+				// editMyInfoSetValue('zipCode', data.zipCode);
+				// editMyInfoSetValue('address', data.address);
+				editMyInfoSetValue('email', data.email);
+				// editMyInfoSetValue('imageURL', data.profileImg);
+				// // editMyInfoSetValue('phoneNumber', data.phoneNumber);
 			} catch (err) {
 				console.log(err);
 			}
 		};
-		getCookie('id') && getNSsetData('1');
+		if (!checkLogin()) {
+			setMessage('error', '로그인이 필요한 서비스입니다.');
+			replace('/login');
+		} else {
+			getCookie('id') && getNSsetData(getCookie('id'));
+		}
 	}, []);
 
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -180,6 +182,19 @@ export default function EditMyInfo() {
 		backgroundRepeat: 'no-repeat',
 		backgroundSize: 'cover',
 	};
+	// 닉네임 중복 체크 ---------------------------------------------------------------
+	const checkNickname = async () => {
+		const params = {
+			nickname: editMyInfoGetValues('nickname'),
+		};
+		try {
+			const res = await AuthService.checkNickname(params);
+			setMessage('success', res.data.response);
+			console.log(res);
+		} catch (e) {
+			console.log(e);
+		}
+	};
 
 	const checkValidation = () => {
 		if (
@@ -198,7 +213,8 @@ export default function EditMyInfo() {
 		}
 	};
 
-	const onSubmitHandler = async () => {
+	const onSubmitHandler = async (e) => {
+		e.preventDefault();
 		const params = {
 			...userInfo,
 			email: editMyInfoGetValues('email'),
@@ -207,8 +223,8 @@ export default function EditMyInfo() {
 			zipCode: editMyInfoGetValues('zipCode'),
 			ntrp: editMyInfoGetValues('ntrp'),
 		};
-
 		try {
+			await AuthService.getNewToken(getCookie('accessToken'), getCookie('refreshToken'));
 			const formData = new FormData();
 			formData.append('imageFile', fileData);
 			const fileUrl = await usersService.postProfileImg(userId, formData);
@@ -216,6 +232,7 @@ export default function EditMyInfo() {
 				...params,
 				profileImg: fileUrl.data.response,
 			});
+			setMessage('success', '수정되었습니다.');
 			movePage('/my');
 		} catch (e) {
 			console.log(e);
@@ -236,13 +253,15 @@ export default function EditMyInfo() {
 			<EditMyInfoForm onSubmit={onSubmitHandler}>
 				<PageMainTitle>내 정보 수정</PageMainTitle>
 				<ImageSection onClick={clickImgFile}>
-					<ImageBox width={'200px'} height={'200px'}>
+					<ImageBox
+						width={'200px'}
+						height={'200px'}
+						style={{ borderRadius: '50%', overflow: 'hidden' }}>
+						{!virtualImgData && <img src={`${userInfo.profileImg}`} alt='프로필 사진' />}
 						{virtualImgData ? (
 							<div className='img-align-box' style={profileImgStyle} />
 						) : (
-							<>
-								<img src={`${prefix}/images/add-image.png`} alt='add-image' />
-							</>
+							<img src={`${prefix}/images/add-image.png`} alt='add-image' />
 						)}
 					</ImageBox>
 					<input
@@ -274,7 +293,7 @@ export default function EditMyInfo() {
 						<Selector
 							idString='editNTRP'
 							options={NTRPOptions}
-							value={editMyInfoGetValues('ntrp')}
+							defaultValue={userInfo.ntrp}
 							onChangeHandler={(e: string) => editMyInfoSetValue('ntrp', e)}
 						/>
 					</InputBox>
@@ -282,6 +301,7 @@ export default function EditMyInfo() {
 						<label htmlFor='email'>이메일</label>
 						<input
 							id='email'
+							defaultValue={userInfo.email}
 							{...editMyInfoRegister('email')}
 							// defaultValue={editMyInfoGetValues('email')}
 						/>
@@ -310,11 +330,14 @@ export default function EditMyInfo() {
 								id='nickname'
 								type={'text'}
 								{...editMyInfoRegister('nickname')}
-								// defaultValue={editMyInfoGetValues('nickname')}
-								placeholder={userInfo.nickname}
+								defaultValue={userInfo.nickname}
 							/>
 						</InputBox>
-						<SquareButton height={'50px'} disabled={!editMyInfoWatch('nickname')}>
+						<SquareButton
+							height={'50px'}
+							disabled={!editMyInfoWatch('nickname')}
+							onClick={checkNickname}
+							type='button'>
 							중복체크
 						</SquareButton>
 					</InputButtonBox>
@@ -323,13 +346,13 @@ export default function EditMyInfo() {
 							<label htmlFor='zipCode'>주소</label>
 							<input
 								id='zipCode'
-								placeholder={userInfo.zipCode}
+								defaultValue={userInfo.zipCode}
 								{...editMyInfoRegister('zipCode')}
 								// defaultValue={editMyInfoGetValues('zipCode')}
 								readOnly
 							/>
 						</InputBox>
-						<SquareButton height={'50px'} onClick={toggleSearchDrawer}>
+						<SquareButton height={'50px'} onClick={toggleSearchDrawer} type='button'>
 							주소 검색
 						</SquareButton>
 					</InputButtonBox>
@@ -337,14 +360,17 @@ export default function EditMyInfo() {
 						<input
 							id='address'
 							type={'text'}
-							placeholder={userInfo.address}
+							defaultValue={userInfo.address}
 							// defaultValue={editMyInfoGetValues('address')}
 							{...editMyInfoRegister('address')}
 						/>
 					</InputBox>
 				</InputContainer>
 				<ButtonBox>
-					<RoundButton colorstyle={'is-green'} disabled={checkValidation()} type='submit'>
+					<RoundButton
+						colorstyle={'is-green'}
+						// disabled={checkValidation()}
+						type='submit'>
 						수정하기
 					</RoundButton>
 				</ButtonBox>

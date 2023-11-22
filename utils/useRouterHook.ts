@@ -18,7 +18,10 @@ const useRouterHook = () => {
 		return route.pathname.startsWith(url);
 	};
 
-	return { movePage, moveToBack, reload, replace, pathNameStartsWith };
+	const getPathName = () => {
+		return route.pathname;
+	};
+	return { movePage, moveToBack, reload, replace, pathNameStartsWith, getPathName };
 };
 
 export default useRouterHook;
