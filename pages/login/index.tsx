@@ -68,11 +68,10 @@ export default function Login() {
 	const clickLoginBtn = async (data: FormData) => {
 		try {
 			const res = await AuthService.login(data);
-			setCookie('accessToken', res.data.accessToken, { expires: 7 });
-			setCookie('refreshToken', res.data.refreshToken, { expires: 7 });
-			setCookie('id', res.data.id, { expires: 7 });
+			setCookie('accessToken', res.data.accessToken);
+			setCookie('refreshToken', res.data.refreshToken);
+			setCookie('id', res.data.id);
 			movePage('/main');
-			console.log(getCookie('accessToken'));
 		} catch (e) {
 			console.log(e);
 			setMessage('error', e.response.data.message);

@@ -74,13 +74,13 @@ const findPwd = (data: reqFindPwdApiData) => {
 	return http.post('/api/auth/password-reset', data);
 };
 
-// 새 토큰 받기
-const getNewToken = (a, b) => {
-	return http.post('/api/auth/reissue', {
-		accessToken: a,
-		refreshToken: b,
-	});
-};
+// // 새 토큰 받기
+// const getNewToken = (a, b) => {
+// 	return http.post('/api/auth/reissue', {
+// 		accessToken: a,
+// 		refreshToken: b,
+// 	});
+// };
 
 const AuthService = {
 	signup,
@@ -95,7 +95,7 @@ const AuthService = {
 	emailVerify,
 	findId,
 	findPwd,
-	getNewToken,
+	// getNewToken,
 };
 
 export default AuthService;

@@ -12,10 +12,10 @@ import {
 	FontSizeMd,
 } from 'styles/ts/common';
 import usersService from 'service/users/service';
-import { ntrpName } from 'constants/userInfoOptions';
+import { ageGroupName, ntrpName } from 'constants/userInfoOptions';
 
 interface IUserInfoModalProps {
-	readonly userId: string;
+	readonly userId: any;
 	readonly isOpen: boolean;
 	readonly toggleModal: () => void;
 	readonly onCancel: () => void;
@@ -52,9 +52,9 @@ export default function UserInfoModal(props: IUserInfoModalProps) {
 	});
 
 	useEffect(() => {
-		const getNSsetData = async () => {
+		const getNSsetData = async (id) => {
 			try {
-				const res = await getUserInfo(userId);
+				const res = await getUserInfo(id);
 				const data = res.data.response;
 				console.log(data);
 				setUserInfo(data);
@@ -62,21 +62,25 @@ export default function UserInfoModal(props: IUserInfoModalProps) {
 				console.log(err);
 			}
 		};
-		// getNSsetData();
-	}, []);
+		getNSsetData(userId);
+	}, [userId]);
 	const { nickname, address, profileImg, gender, ntrp, winningRate, mannerPoint, ageGroup } =
 		userInfo;
 	return (
 		<>
-			<ModalBox isOpen={isOpen} toggleModal={toggleModal} onCancel={onCancel}>
+			<ModalBox
+				isOpen={isOpen}
+				toggleModal={toggleModal}
+				onCancel={onCancel}
+				title={nickname || '닉네임'}>
 				<UserInfoContainer>
 					<ProfilePicArea>
 						<ImageBox width='200px' height='200px'>
 							{profileImg ? (
 								<IMG
-									src={
-										profileImg ||
-										'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1697976551262_750.jpeg'
+									srcset={
+										(`${profileImg}`,
+										'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1697976551262_750.jpeg')
 									}
 									alt='프로필 이미지'
 								/>
@@ -87,20 +91,23 @@ export default function UserInfoModal(props: IUserInfoModalProps) {
 					</ProfilePicArea>
 					<UserInfoList>
 						<NickNameArea>
-							<span>{nickname || '닉네임'}</span>
-							<Badge>
-								{ntrpName.filter((ele) => ele.value === ntrp)[0]?.label.split(' (')[0] || 'NTRP'}
-							</Badge>
+							<span></span>
+							<Badge>{ntrpName.filter((ele) => ele.value === ntrp)[0]?.label.split(' (')[0]}</Badge>
 						</NickNameArea>
 						<UserInfoItem>
 							<ItemName>정보: </ItemName>
 							<ItemContent>
-								{ageGroup} / {gender}
+								{ageGroupName.filter((ele) => ele.value === ageGroup)[0]?.label}/{' '}
+								{gender === '남' ? '남' : '여'}
 							</ItemContent>
 						</UserInfoItem>
 						<UserInfoItem>
 							<ItemName>지역: </ItemName>
-							<ItemContent>{address}</ItemContent>
+							<ItemContent>
+								{address.split(' ').length > 2
+									? address.split(' ')[0].slice(0, 2) + ' ' + address.split(' ')[1]
+									: address}
+							</ItemContent>
 						</UserInfoItem>
 						{/* <UserInfoItem>
 							<ItemName>승률: </ItemName>

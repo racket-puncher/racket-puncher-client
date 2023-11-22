@@ -230,7 +230,7 @@ export default function register() {
 			formData.append('imageFile', fileData);
 			const fileUrl = await AuthService.uploadImg(formData);
 			const res = await AuthService.signup({ ...params, profileImg: fileUrl.data.response });
-			movePage('/login');
+			// movePage('/login');
 		} catch (e) {
 			console.log(e);
 		}

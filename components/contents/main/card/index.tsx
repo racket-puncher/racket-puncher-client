@@ -14,6 +14,7 @@ import {
 	YellowBgColor,
 } from '../../../../styles/ts/common';
 import { prefix } from '../../../../constants/prefix';
+import useCookies from 'utils/useCookies';
 
 interface IMatchingCardProps {
 	readonly matchingStartDateTime?: string;
@@ -21,10 +22,12 @@ interface IMatchingCardProps {
 	readonly ntrp?: string;
 	readonly reserved?: boolean;
 	readonly title?: string;
+	readonly idString?: string;
 	readonly onClick?: () => void;
 }
 
 export default function MatchingCard(props: IMatchingCardProps) {
+	const { setCookie } = useCookies();
 	return (
 		<>
 			<CardContainer onClick={props.onClick}>

@@ -153,6 +153,7 @@ export default function MatchingList() {
 									ntrp={item.ntrp}
 									reserved={item.reserved}
 									title={item.title}
+									idString={item.id}
 									onClick={() => moveDetailMatching(item.id)}
 								/>
 							</>

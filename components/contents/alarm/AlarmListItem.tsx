@@ -26,7 +26,7 @@ export default function AlarmListItem(props: IAlarmListItemProps) {
 	return (
 		<AlarmListItemContainer>
 			<AlarmDataArea>
-				<Link href={`/matches/${matchingId}`}>
+				<Link href={`/main/detailMatch/${matchingId}`}>
 					<AlarmItemTitle>{`${title}`}</AlarmItemTitle>
 					<AlarmItemContent>{`${content}`}</AlarmItemContent>
 				</Link>

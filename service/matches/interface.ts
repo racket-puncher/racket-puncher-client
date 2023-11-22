@@ -11,9 +11,9 @@ export interface reqRegMatchingApiData {
 	lat: string; // 위도
 	len: string; // 경도
 
-	matchingDate: string; // 경기 날짜
-	matchingStartTime: string; // 경기 시작 시간
-	matchingEndTime: string; // 경기 종료 시간
+	date: string; // 경기 날짜
+	startTime: string; // 경기 시작 시간
+	endTime: string; // 경기 종료 시간
 	recruitDueDate: string; // 모집 종료 일(yyyy-mm-dd)
 	recruitDueTime: string; // 모집 종료 시간(hh)
 	recruitNum: number; // 모집 인원

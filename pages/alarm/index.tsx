@@ -10,17 +10,17 @@ import usersService from 'service/users/service';
 // 오프라인용 데이터
 const gottenAlarms = [
 	{
-		matchingId: '',
+		matchingId: '1',
 		title: '매칭 취소',
 		content: '매칭이 취소 되었습니다.',
 	},
 	{
-		matchingId: '',
+		matchingId: '2',
 		title: '경기 디데이!',
 		content: '오늘은 즐거운 테니스 경기가 있는 날입니다!',
 	},
 	{
-		matchingId: '',
+		matchingId: '3',
 		title: '날씨 알림',
 		content: '최저기온 12˚, 최고기온 22˚, 맑음',
 	},

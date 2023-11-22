@@ -80,11 +80,11 @@ const schema = yup.object().shape({
 });
 
 export default function EditMyInfo() {
-	const { getMyProfileInfo, postProfileImg } = usersService;
+	const { getMyProfileInfo, postProfileImg, patchMyProfileInfo } = usersService;
 
-	const { checkLogin, getCookie } = useCookies();
+	const { checkLogin, getCookie, setCookie } = useCookies();
 	const { setMessage } = useToast();
-	const { replace, movePage } = useRouterHook();
+	const { replace, movePage, reload } = useRouterHook();
 	const [userId, setUserId] = useState('');
 	const [userInfo, setUserInfo] = useState({
 		id: '', // 회원 고유 id
@@ -213,8 +213,44 @@ export default function EditMyInfo() {
 		}
 	};
 
-	const onSubmitHandler = async (e) => {
-		e.preventDefault();
+	// const uploadPhoto = async () => {
+	// 	const params = {
+	// 		...userInfo,
+	// 		email: editMyInfoGetValues('email'),
+	// 		nickname: editMyInfoGetValues('nickname'),
+	// 		address: editMyInfoGetValues('address'),
+	// 		zipCode: editMyInfoGetValues('zipCode'),
+	// 		ntrp: editMyInfoGetValues('ntrp'),
+	// 	};
+	// 	try {
+	// 		const formData = new FormData();
+	// 		formData.append('imageFile', fileData);
+	// 		const fileUrl = await usersService.postProfileImg(userId, formData);
+	// 		await usersService.patchMyProfileInfo(userId, {
+	// 			...params,
+	// 			profileImg: fileUrl.data.response,
+	// 		});
+	// 	} catch (e) {
+	// 		console.log(e);
+	// 	}
+	// };
+
+	// const getNSetToken = async () => {
+	// 	try {
+	// 		const newTo = await AuthService.getNewToken(
+	// 			getCookie('accessToken'),
+	// 			getCookie('refreshToken')
+	// 		);
+	// 		console.log(getCookie('accessToken'));
+	// 		setCookie('accessToken', newTo.data.accessToken);
+	// 		console.log(newTo.data.accessToken);
+	// 	} catch (e) {
+	// 		console.log(e);
+	// 	}
+	// };
+	const onSubmitHandler = async () => {
+		// e.preventDefault();
+
 		const params = {
 			...userInfo,
 			email: editMyInfoGetValues('email'),
@@ -224,16 +260,16 @@ export default function EditMyInfo() {
 			ntrp: editMyInfoGetValues('ntrp'),
 		};
 		try {
-			await AuthService.getNewToken(getCookie('accessToken'), getCookie('refreshToken'));
-			const formData = new FormData();
-			formData.append('imageFile', fileData);
-			const fileUrl = await usersService.postProfileImg(userId, formData);
-			const res = await usersService.patchMyProfileInfo(userId, {
-				...params,
-				profileImg: fileUrl.data.response,
-			});
+			// const formData = new FormData();
+			// formData.append('imageFile', fileData);
+			// const fileUrl = await usersService.postProfileImg(userId, formData);
+			// await usersService.patchMyProfileInfo(userId, {
+			// 	...params,
+			// 	profileImg: fileUrl.data.response,
+			// });
 			setMessage('success', '수정되었습니다.');
-			movePage('/my');
+			await replace('/my');
+			// movePage('/my');
 		} catch (e) {
 			console.log(e);
 		}
@@ -250,7 +286,7 @@ export default function EditMyInfo() {
 				toggleDrawer={toggleSearchDrawer}
 				setValue={editMyInfoSetValue}
 			/>
-			<EditMyInfoForm onSubmit={onSubmitHandler}>
+			<EditMyInfoForm onSubmit={editMyInfoHandleSubmit(onSubmitHandler)}>
 				<PageMainTitle>내 정보 수정</PageMainTitle>
 				<ImageSection onClick={clickImgFile}>
 					<ImageBox

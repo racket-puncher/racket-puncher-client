@@ -5,6 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup';
 import { useForm } from 'react-hook-form';
 import styled from 'styled-components';
 import { rem } from 'polished';
+
 import { FontFamilyRegular, InputBorderColor, InputBoxColor, ReportColor } from 'styles/ts/common';
 import { PageMainTitle } from 'styles/ts/components/titles';
 import { InputBox } from 'styles/ts/components/input';
@@ -21,6 +22,7 @@ import SearchCourtDrawer from 'components/contents/postMatching/searchCourtDrawe
 import useToast from 'utils/useToast';
 import AuthService from 'service/auth/service';
 import useCookies from 'utils/useCookies';
+import useRouterHook from 'utils/useRouterHook';
 
 const schema = yup.object().shape({
 	postTitle: yup.string().required('제목을 입력해주세요.'),
@@ -58,7 +60,7 @@ export default function PostMatching() {
 		resolver: yupResolver(schema),
 	});
 	const { setMessage } = useToast();
-	const { getCookie } = useCookies();
+	const { movePage, reload } = useRouterHook();
 	const [matchDate, setMatchDate] = useState(null);
 	const [matchStartTime, setMatchStartTime] = useState('');
 	const [matchEndTime, setMatchEndTime] = useState('');
@@ -94,6 +96,7 @@ export default function PostMatching() {
 			fileInputRef.current.click();
 		}
 	};
+
 	const handleFileChange = (event: React.ChangeEvent<HTMLInputElement>) => {
 		const files = event.target.files[0];
 		const fileReader = new FileReader();
@@ -128,7 +131,6 @@ export default function PostMatching() {
 			!postMatchingWatch('deadlineDate') ||
 			!postMatchingWatch('deadlineTime') ||
 			!postMatchingWatch('courtAddress') ||
-			!postMatchingWatch('isCourtBooked') ||
 			!postMatchingWatch('courtFee') ||
 			!postMatchingWatch('mainText')
 		) {
@@ -149,9 +151,9 @@ export default function PostMatching() {
 			recruitNum: postMatchingGetValues('numOfRecruited'),
 			ageGroup: postMatchingGetValues('selectedAge'),
 			ntrp: postMatchingGetValues('selectedNTRP'),
-			matchingDate: postMatchingGetValues('matchDate'),
-			matchingStartTime: postMatchingGetValues('matchStartTime'),
-			matchingEndTime: postMatchingGetValues('matchEndTime'),
+			date: postMatchingGetValues('matchDate'),
+			startTime: postMatchingGetValues('matchStartTime'),
+			endTime: postMatchingGetValues('matchEndTime'),
 			recruitDueDate: postMatchingGetValues('deadlineDate'),
 			recruitDueTime: postMatchingGetValues('deadlineTime'),
 			location: postMatchingGetValues('courtAddress'),
@@ -164,14 +166,17 @@ export default function PostMatching() {
 		console.log(params);
 
 		try {
-			await AuthService.getNewToken(getCookie('accessToken'), getCookie('refreshToken'));
 			const formData = new FormData();
 			formData.append('imageFile', fileData);
-			const fileUrl = await MatchesService.uploadMatchingImage('1', formData);
-			const res = await MatchesService.regMatchingData({
-				...params,
-				locationImg: fileUrl.data.response,
-			});
+			// const fileUrl = await AuthService.uploadImg(formData);
+			// const res = await MatchesService.regMatchingData({
+			// 	...params,
+			// 	locationImg: fileUrl.data.response,
+			// 	locationImg: '',
+			// });
+			reload();
+			movePage('/main');
+			setMessage('success', '등록되었습니다.');
 		} catch (err) {
 			console.log(err);
 		}
@@ -444,7 +449,7 @@ export default function PostMatching() {
 					)}
 				</InputBox>
 
-				<SubmitBtn colorstyle={'is-black'} type='submit' disabled={checkValidation()}>
+				<SubmitBtn colorstyle={'is-black'} disabled={checkValidation()}>
 					등록하기
 				</SubmitBtn>
 			</PostMatchingForm>

@@ -32,7 +32,7 @@ const postProfileImg = (userId: string, data: any) => {
 };
 
 // 내 프로필 수정
-const patchMyProfileInfo = (userId: string, data: reqPatchMyProfileInfo) => {
+const patchMyProfileInfo = (userId, data) => {
 	return http.post(`/api/users/my-page/modify/${userId}`, data);
 };
 
