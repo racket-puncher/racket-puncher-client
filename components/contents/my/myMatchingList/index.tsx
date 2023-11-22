@@ -4,10 +4,10 @@ import { rem } from 'polished';
 import { v4 as uuidv4 } from 'uuid';
 import MyListItem from '../collapse';
 import usersService from 'service/users/service';
+import useCookies from 'utils/useCookies';
 
 interface IMyMatchingListProps {
 	listType: 'hosted' | 'applied';
-	userId: string;
 }
 
 export default function MyMatchingList(props: IMyMatchingListProps) {
@@ -15,23 +15,24 @@ export default function MyMatchingList(props: IMyMatchingListProps) {
 	// 리스트 없을 경우 나올 화면 연결
 
 	const { getMyHostedMatchingList, getMyAppliedMatchingList } = usersService;
-	const { listType, userId } = props;
+	const { listType } = props;
+	const { getCookie } = useCookies();
 	const [listData, setListData] = useState([]);
 
 	useEffect(() => {
-		const getNSsetData = async () => {
+		const getNSetData = async (id: string) => {
 			try {
 				const res =
 					listType === 'hosted'
-						? await getMyHostedMatchingList(userId)
-						: await getMyAppliedMatchingList(userId);
+						? await getMyHostedMatchingList(id)
+						: await getMyAppliedMatchingList(id);
 				console.log(res.data.response);
-				setListData(res.data.response);
+				setListData({ ...res.data.response });
 			} catch (err) {
 				console.log(err);
 			}
 		};
-		getNSsetData();
+		getCookie('id') && getNSetData(getCookie('id'));
 	}, []);
 
 	return (
