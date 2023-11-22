@@ -14,7 +14,7 @@ import {
 } from 'styles/ts/common';
 import usersService from 'service/users/service';
 // import AuthService from 'service/auth/service';
-// import useCookies from 'utils/useCookies';
+import useCookies from 'utils/useCookies';
 import { ageGroupName, ntrpName } from 'constants/userInfoOptions';
 
 // const userInfoALT = {
