@@ -47,9 +47,9 @@ export interface reqDeleteUserApiData {
 	password: string;
 }
 
-// 아이디 중복 체크
-export interface reqCheckIdApiData {
-	email: string;
+// 닉네임 중복 체크
+export interface reqCheckNicknameApiData {
+	nickname: string;
 }
 
 // 핸드폰 인증
