@@ -7,6 +7,7 @@ import usersService from 'service/users/service';
 
 interface IMyMatchingListProps {
 	listType: 'hosted' | 'applied';
+	userId: string;
 }
 
 export default function MyMatchingList(props: IMyMatchingListProps) {
@@ -14,23 +15,23 @@ export default function MyMatchingList(props: IMyMatchingListProps) {
 	// 리스트 없을 경우 나올 화면 연결
 
 	const { getMyHostedMatchingList, getMyAppliedMatchingList } = usersService;
-	const { listType } = props;
+	const { listType, userId } = props;
 	const [listData, setListData] = useState([]);
 
 	useEffect(() => {
-		const getNSsetData = async (userId: string) => {
+		const getNSsetData = async () => {
 			try {
 				const res =
 					listType === 'hosted'
-						? await getMyHostedMatchingList(`${userId}`)
-						: await getMyAppliedMatchingList(`${userId}`);
+						? await getMyHostedMatchingList(userId)
+						: await getMyAppliedMatchingList(userId);
 				console.log(res.data.response);
 				setListData(res.data.response);
 			} catch (err) {
 				console.log(err);
 			}
 		};
-		getNSsetData('5');
+		getNSsetData();
 	}, []);
 
 	return (

@@ -13,6 +13,7 @@ class MyDocument extends Document {
 							`${process.env.KAKAO_MAPS_APP_KEY}` +
 							'&libraries=services'
 						}></script>
+					<meta httpEquiv='Content-Security-Policy' content='upgrade-insecure-requests' />
 				</Head>
 				<body>
 					<Main />

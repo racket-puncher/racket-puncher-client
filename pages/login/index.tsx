@@ -6,21 +6,18 @@ import * as yup from 'yup';
 import { yupResolver } from '@hookform/resolvers/yup';
 import KakaoLogin from 'react-kakao-login';
 
-import { RoundButton } from '../../styles/ts/components/buttons';
-import { ImageBox } from '../../styles/ts/components/box';
-import { PrimaryColor } from '../../styles/ts/common';
-import useRouterHook from '../../utils/useRouterHook';
-import { PageMainTitle } from '../../styles/ts/components/titles';
-import ModalBox from '../../components/common/modal';
-import { InputBox } from '../../styles/ts/components/input';
-import { InputErrorText } from '../../styles/ts/components/text';
-import { prefix } from '../../constants/prefix';
-import AuthService from '../../service/auth/service';
-import useCookies from '../../utils/useCookies';
-import useToast from '../../utils/useToast';
-
-import PlayerCard from 'components/common/playerCard';
-import UserInfoModal from 'components/common/playerCard/userInfoModal';
+import { RoundButton } from 'styles/ts/components/buttons';
+import { ImageBox } from 'styles/ts/components/box';
+import { PrimaryColor } from 'styles/ts/common';
+import useRouterHook from 'utils/useRouterHook';
+import { PageMainTitle } from 'styles/ts/components/titles';
+import ModalBox from 'components/common/modal';
+import { InputBox } from 'styles/ts/components/input';
+import { InputErrorText } from 'styles/ts/components/text';
+import { prefix } from 'constants/prefix';
+import AuthService from 'service/auth/service';
+import useCookies from 'utils/useCookies';
+import useToast from 'utils/useToast';
 
 interface FormData {
 	readonly email: string;

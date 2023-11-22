@@ -13,6 +13,8 @@ import {
 	ReportColor,
 } from 'styles/ts/common';
 import usersService from 'service/users/service';
+// import AuthService from 'service/auth/service';
+// import useCookies from 'utils/useCookies';
 import { ageGroupName, ntrpName } from 'constants/userInfoOptions';
 
 // const userInfoALT = {
@@ -33,6 +35,8 @@ interface IProfileProps {
 }
 
 export default function MyProfile(props: IProfileProps) {
+	const { getCookie } = useCookies();
+	// const { getNewToken } = AuthService;
 	const { getMyProfileInfo } = usersService;
 	const { userId } = props;
 	const [userInfo, setUserInfo] = useState({
@@ -78,7 +82,7 @@ export default function MyProfile(props: IProfileProps) {
 				console.log(err);
 			}
 		};
-		getNSsetData();
+		getCookie('id') && getNSsetData();
 	}, []);
 
 	return (
