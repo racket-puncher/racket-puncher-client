@@ -44,8 +44,8 @@ const getMatchingList = (data: reqGetMatchingListApiData) => {
 // };
 
 // 매칭별 신청 현황 조회
-const getMatchingApplyState = (data: reqMatchingApplyStateApiData) => {
-	return http.get(`/api/matches/${data}/apply`);
+const getMatchingApplyState = (matching_id: string) => {
+	return http.get(`/api/matches/${matching_id}/apply`);
 };
 
 // 주소 검색

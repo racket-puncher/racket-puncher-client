@@ -19,6 +19,9 @@ import AuthService from '../../service/auth/service';
 import useCookies from '../../utils/useCookies';
 import useToast from '../../utils/useToast';
 
+import PlayerCard from 'components/common/playerCard';
+import UserInfoModal from 'components/common/playerCard/userInfoModal';
+
 interface FormData {
 	readonly email: string;
 	readonly password: string;
@@ -68,7 +71,9 @@ export default function Login() {
 	const clickLoginBtn = async (data: FormData) => {
 		try {
 			const res = await AuthService.login(data);
-			setCookie('accessToken', res.data, { expires: 7 });
+			setCookie('accessToken', res.data.accessToken, { expires: 7 });
+			setCookie('refreshToken', res.data.refreshToken);
+			setCookie('id', res.data.id);
 			movePage('/main');
 		} catch (e) {
 			console.log(e);
@@ -157,6 +162,7 @@ export default function Login() {
 					<p>모달 테스트</p>
 				</ModalBox>
 			</LoginViewContainer>
+			<PlayerCard userNickname='뉴뉴' siteUserId='2'></PlayerCard>
 		</>
 	);
 }
