@@ -162,7 +162,6 @@ const MyProfileContainer = styled.div`
 `;
 const ProfileImage = styled(ImageBox)`
 	border-radius: ${rem('20px')};
-	background-color: lightblue;
 	max-width: ${rem('150px')};
 	max-height: ${rem('150px')};
 `;
