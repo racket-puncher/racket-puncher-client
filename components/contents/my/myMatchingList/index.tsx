@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
+import { v4 as uuidv4 } from 'uuid';
 import MyListItem from '../collapse';
 import usersService from 'service/users/service';
 
@@ -36,7 +37,7 @@ export default function MyMatchingList(props: IMyMatchingListProps) {
 		<>
 			<MyListContainer>
 				{listData.map((_, i) => {
-					return <MyListItem key={i + 1} postInfo={listData[i]} />;
+					return <MyListItem key={uuidv4()} postInfo={listData[i]} />;
 				})}
 			</MyListContainer>
 		</>
