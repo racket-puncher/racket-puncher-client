@@ -30,9 +30,9 @@ export default function PlayerCard(props: IPlayerCardProps) {
 		const getNSsetData = async () => {
 			try {
 				const res = await getUserInfo(siteUserId);
-				const data = res.data.response.profileImg;
+				const data = res.data.response;
 				console.log(data);
-				setImgURL(data);
+				setImgURL(data.profileImg);
 			} catch (err) {
 				console.log(err);
 			}
@@ -50,7 +50,11 @@ export default function PlayerCard(props: IPlayerCardProps) {
 			<PlayerCardContainer>
 				<PlayerPicture>
 					<ImageBox width='80px' height='80px'>
-						<img src={imgURL || '-'} alt='프로필 이미지' />
+						{imgURL ? (
+							<img src={imgURL} alt='프로필 이미지' />
+						) : (
+							<div style={{ width: '100%', height: '100%', backgroundColor: 'lightgray' }}></div>
+						)}
 					</ImageBox>
 				</PlayerPicture>
 				<PlayerName>{userNickname || '라켓왕자'}</PlayerName>

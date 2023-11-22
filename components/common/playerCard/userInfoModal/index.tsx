@@ -63,7 +63,7 @@ export default function UserInfoModal(props: IUserInfoModalProps) {
 			}
 		};
 		// getNSsetData();
-	});
+	}, []);
 	const { nickname, address, profileImg, gender, ntrp, winningRate, mannerPoint, ageGroup } =
 		userInfo;
 	return (
@@ -72,13 +72,17 @@ export default function UserInfoModal(props: IUserInfoModalProps) {
 				<UserInfoContainer>
 					<ProfilePicArea>
 						<ImageBox width='200px' height='200px'>
-							<IMG
-								src={
-									profileImg ||
-									'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1697976551262_750.jpeg'
-								}
-								alt='프로필 이미지'
-							/>
+							{profileImg ? (
+								<IMG
+									src={
+										profileImg ||
+										'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1697976551262_750.jpeg'
+									}
+									alt='프로필 이미지'
+								/>
+							) : (
+								<div style={{ width: '100%', height: '100%', backgroundColor: 'lightgray' }}></div>
+							)}
 						</ImageBox>
 					</ProfilePicArea>
 					<UserInfoList>
@@ -107,7 +111,7 @@ export default function UserInfoModal(props: IUserInfoModalProps) {
 						<UserInfoItem>
 							<ItemName>매너: </ItemName>
 							<ItemContent>
-								<ImageBox width='15px' height='15px'>
+								<ImageBox width='20px' height='20px'>
 									<img src='/images/tennis-ball.png' alt='테니스공' />
 								</ImageBox>
 							</ItemContent>
@@ -169,7 +173,7 @@ const ItemContent = styled.span`
 	color: ${BlackColor};
 	div {
 		display: inline-block;
-		transform: translateY(${rem('2px')});
+		transform: translateY(${rem('5px')});
 	}
 `;
 
@@ -177,8 +181,8 @@ const NickNameArea = styled(UserInfoItem)`
 	display: flex;
 	flex-direction: row;
 	align-items: center;
-	&::first-child {
-		margin-right: 5px;
+	& :first-child {
+		margin-right: ${rem('5px')};
 	}
 `;
 
