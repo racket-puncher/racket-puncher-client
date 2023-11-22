@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import React, { useEffect, useRef, useState } from 'react';
 import { rem } from 'polished';
 import { Progress } from 'antd';
-import { ImageBox } from '../../../styles/ts/components/box';
+import { ImageBox } from 'styles/ts/components/box';
 import {
 	BlackColor,
 	FontFamilyRegular,
@@ -16,17 +16,19 @@ import {
 	InputLabelColor,
 	PlayerListBGColor,
 	PrimaryColor,
-} from '../../../styles/ts/common';
+} from 'styles/ts/common';
 import { DragDropContext, Draggable, Droppable } from 'react-beautiful-dnd';
+import UserInfoModal from 'components/common/playerCard/userInfoModal';
 
-import { RoundButton } from '../../../styles/ts/components/buttons';
-import ModalBox from '../../../components/common/modal';
-import { prefix } from '../../../constants/prefix';
+import { RoundButton } from 'styles/ts/components/buttons';
+import ModalBox from 'components/common/modal';
+import { prefix } from 'constants/prefix';
 import MatchesService from 'service/matches/service';
 import useCookies from 'utils/useCookies';
 import useRouterHook from 'utils/useRouterHook';
 import { formatDateTime } from 'utils/formatter';
 import { ageGroupName, matchTypeName, ntrpName } from 'constants/userInfoOptions';
+import usersService from 'service/users/service';
 
 const testItems = [
 	{ id: '0', title: '타이틀 1', index: 1 },
@@ -36,79 +38,55 @@ const testItems = [
 	{ id: '4', title: '타이틀 5', index: 5 },
 ];
 
+// const testData = {
+// 	id: 1,
+// 	creatorUserId: 2,
+// 	title: '퇴근 후 같이 테니스 치실분!',
+// 	content: '초보자 환영합니다.',
+
+// 	location: '서울특별시 강남구 삼성동 삼성로 566 위드 테니스아카데미',
+// 	lat: 37.5121584863211,
+// 	lon: 127.054408208511,
+// 	locationImg: '',
+
+// 	date: '2023-11-30',
+// 	startTime: '20:00',
+// 	endTime: '22:00',
+// 	recruitDueDateTime: '2023-11-27T17:00',
+
+// 	recruitNum: 2,
+// 	cost: 50000,
+// 	isReserved: false,
+
+// 	ntrp: 'BEGINNER',
+// 	ageGroup: 'TWENTIES',
+// 	recruitStatus: 'OPEN',
+// 	matchingType: 'SINGLE',
+// 	confirmedNum: 1,
+// 	createTime: '2023-11-17T07:18:44',
+// };
+
 interface DetailMatchContentProps {
 	height?: string;
 }
 
 export default function DetailMatching() {
-	const { getPathName } = useRouterHook();
+	const { getQueryPathName } = useRouterHook();
 	const [recruitStatusModalVisible, setRecruitStatusModalVisible] = useState(false);
-	const [MatchingInfo, setMatchingInfo] = useState({
-		id: 1,
-		creatorUserId: 2,
-		title: '퇴근 후 같이 테니스 치실분!',
-		content: '초보자 환영합니다.',
-
-		location: '서울특별시 강남구 삼성동 삼성로 566 위드 테니스아카데미',
-		lat: 37.5121584863211,
-		lon: 127.054408208511,
-		locationImg: '',
-
-		date: '2023-11-30',
-		startTime: '20:00',
-		endTime: '22:00',
-		recruitDueDateTime: '2023-11-27T17:00',
-
-		recruitNum: 2,
-		cost: 50000,
-		isReserved: false,
-
-		ntrp: 'BEGINNER',
-		ageGroup: 'TWENTIES',
-		recruitStatus: 'OPEN',
-		matchingType: 'SINGLE',
-		confirmedNum: 1,
-		createTime: '2023-11-17T07:18:44',
-	});
+	const [matchingInfo, setMatchingInfo] = useState(undefined);
+	const [writerId, setWriterId] = useState('');
+	const [writerInfo, setWriterInfo] = useState(undefined);
+	const [applyList, setApplyList] = useState({});
 	const [recruitList, setRecruitList] = useState({
 		beforeList: [],
 		afterList: [],
 	});
+	const matchId = getQueryPathName().id;
+	// const matchId = getQueryPathName().split('detailMatch/')[1].slice(1, 3);
+	console.log(matchId);
 
-	useEffect(() => {
-		const matchId = getPathName().split('detailMatch/')[0].split('/')[0];
-		const getNSsetMatchDetail = async (id) => {
-			try {
-				const res = await MatchesService.getDetailMatchingList(id);
-				const data = res.data.response;
-				console.log(data);
-				setMatchingInfo(data);
-			} catch (err) {
-				console.log(err);
-			}
-		};
-		const getNSsetWriter = async (id: string) => {
-			try {
-				const res = await MatchesService.getMatchingApplyState(id);
-				const data = res.data.response;
-				console.log(data);
-				// setRecruitList(data);
-			} catch (err) {
-				console.log(err);
-			}
-		};
-		const getNSsetRecruitList = async (id: string) => {
-			try {
-				const res = await MatchesService.getMatchingApplyState(id);
-				const data = res.data.response;
-				console.log(data);
-				// setRecruitList(data);
-			} catch (err) {
-				console.log(err);
-			}
-		};
-		// getNSsetRecruitList();
-	}, []);
+	const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState(false);
+	const toggleUserInfoModal = () => setIsUserInfoModalOpen(!isUserInfoModalOpen);
 
 	const toggleModal = () => {
 		setRecruitStatusModalVisible((prev) => !prev);
@@ -129,6 +107,49 @@ export default function DetailMatching() {
 		processArr[destinationKey].splice(destination.index, 0, targetItem);
 		setRecruitList(processArr);
 	};
+
+	useEffect(() => {
+		if (!matchingInfo) {
+			const getNSsetMatchDetail = async (id) => {
+				try {
+					const res = await MatchesService.getDetailMatchingList(id);
+					const data = res.data.response;
+					console.log(data);
+					setMatchingInfo(data);
+					setWriterId(data.creatorUserId);
+				} catch (err) {
+					console.log(err);
+				}
+			};
+			const getNSsetWriter = async (id) => {
+				try {
+					const res = await usersService.getMyProfileInfo(id);
+					const data = res.data.response;
+					console.log(data);
+					setWriterInfo(data);
+				} catch (err) {
+					console.log(err);
+				}
+			};
+			getNSsetWriter(matchingInfo?.creatorUserId);
+			getNSsetMatchDetail(matchId);
+		}
+		// getNSsetRecruitList();
+	}, [matchId, writerId]);
+
+	useEffect(() => {
+		const getNSsetApplyList = async (id) => {
+			try {
+				const res = await MatchesService.getMatchingApplyState(id);
+				const data = res.data.response;
+				console.log(data);
+				setApplyList(data);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+		getNSsetApplyList(matchId);
+	}, [matchId]);
 
 	useEffect(() => {
 		const exampleData = {
@@ -160,13 +181,34 @@ export default function DetailMatching() {
 					<ProfileBox>
 						<ImageWrap>
 							<ImageBox width={'140px'} height={'140px'}>
-								<img src={`${prefix}/images/profile-img.png`} alt='profile-image' />
-							</ImageBox>
-							<p>고숭이</p>
-						</ImageWrap>
+								{/* <img src={`${prefix}/images/profile-img.png`} alt='profile-image' /> */}
 
+								{writerInfo && writerInfo.profileImg ? (
+									<IMG
+										src={
+											writerInfo.profileImg ||
+											'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1697976551262_750.jpeg'
+										}
+										alt='프로필 이미지'
+									/>
+								) : (
+									<div
+										style={{ width: '100%', height: '100%', backgroundColor: 'lightgray' }}></div>
+								)}
+							</ImageBox>
+							<p>{writerInfo && writerInfo.nickname}</p>
+						</ImageWrap>
+						<UserInfoModal
+							userId={writerId}
+							// userId={matchingInfo?.creatorUserId}
+							isOpen={isUserInfoModalOpen}
+							toggleModal={toggleUserInfoModal}
+							onCancel={() => setIsUserInfoModalOpen(false)}
+						/>
 						<ButtonBox>
-							<RoundButton colorstyle={'is-green'}>등록자 정보</RoundButton>
+							<RoundButton colorstyle={'is-green'} onClick={toggleUserInfoModal}>
+								등록자 정보
+							</RoundButton>
 						</ButtonBox>
 					</ProfileBox>
 				</ProfileContainer>
@@ -176,7 +218,7 @@ export default function DetailMatching() {
 						{/* “모집 기간이 <span>2</span>일 <span>7</span>시간 남았습니다.“ */}
 						<br />{' '}
 						<span style={{ color: `${PrimaryColor}` }}>
-							{formatDateTime(MatchingInfo.recruitDueDateTime).split('년')[1]}{' '}
+							{matchingInfo && formatDateTime(matchingInfo.recruitDueDateTime).split('년')[1]}{' '}
 						</span>
 						모집 마감!
 					</p>
@@ -192,7 +234,7 @@ export default function DetailMatching() {
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchTitle'>제목</label>
 						<DetailMatchContent>
-							<p>{MatchingInfo.title}</p>
+							<p>{matchingInfo && matchingInfo.title}</p>
 						</DetailMatchContent>
 					</DetailMatchItemBox>
 
@@ -200,18 +242,20 @@ export default function DetailMatching() {
 						<DetailMatchItemBox>
 							<label htmlFor='detailMatchAge'>연령대</label>
 							<DetailMatchContent>
-								<p>{ageGroupName.filter((ele) => ele.value === MatchingInfo.ageGroup)[0].label}</p>
+								<p>
+									{matchingInfo &&
+										ageGroupName.filter((ele) => ele.value === matchingInfo.ageGroup)[0].label}
+								</p>
 							</DetailMatchContent>
 						</DetailMatchItemBox>
 						<DetailMatchItemBox>
 							<label htmlFor='detailMatchNTRP'>NTRP</label>
 							<DetailMatchContent>
 								<p>
-									{
+									{matchingInfo &&
 										ntrpName
-											.filter((ele) => ele.value === MatchingInfo.ntrp)[0]
-											.label.split(' (')[0]
-									}
+											.filter((ele) => ele.value === matchingInfo.ntrp)[0]
+											.label.split(' (')[0]}
 								</p>
 							</DetailMatchContent>
 						</DetailMatchItemBox>
@@ -221,8 +265,11 @@ export default function DetailMatching() {
 						<label htmlFor='detailMatchItem'>매칭 항목</label>
 						<DetailMatchContent>
 							<p>
-								{matchTypeName.filter((ele) => ele.value === MatchingInfo.matchingType)[0].label} /{' '}
-								{MatchingInfo.date} / {MatchingInfo.startTime} ~ {MatchingInfo.endTime}
+								{matchingInfo &&
+									matchTypeName.filter((ele) => ele.value === matchingInfo.matchingType)[0]
+										.label}{' '}
+								/ {matchingInfo && matchingInfo.date} / {matchingInfo && matchingInfo.startTime} ~{' '}
+								{matchingInfo && matchingInfo.endTime}
 							</p>
 						</DetailMatchContent>
 					</DetailMatchItemBox>
@@ -230,7 +277,7 @@ export default function DetailMatching() {
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchAddree'>주소</label>
 						<DetailMatchContent>
-							<p>{MatchingInfo.location}</p>
+							<p>{matchingInfo && matchingInfo.location}</p>
 						</DetailMatchContent>
 					</DetailMatchItemBox>
 
@@ -244,14 +291,14 @@ export default function DetailMatching() {
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchInfo'>구장 이미지</label>
 						<DetailMatchContent height={'300px'}>
-							<img src={`${MatchingInfo.location}`} id='detailMatchInfo' />
+							<img src={`${matchingInfo && matchingInfo.location}`} id='detailMatchInfo' />
 						</DetailMatchContent>
 					</DetailMatchItemBox>
 
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchInfo'>본문 내용</label>
 						<DetailMatchContent height={'300px'}>
-							<p>{MatchingInfo.content}</p>
+							<p>{matchingInfo && matchingInfo.content}</p>
 						</DetailMatchContent>
 					</DetailMatchItemBox>
 				</ContentContainer>
@@ -515,4 +562,11 @@ const ModalAlignContainer = styled.div`
 	display: flex;
 	justify-content: space-between;
 	flex-direction: column;
+`;
+const IMG = styled.img`
+	width: 100%;
+	height: 100%;
+	object-fit: cover;
+	object-position: 50% 50%;
+	border-radius: 20px;
 `;
