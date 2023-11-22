@@ -35,10 +35,9 @@ export default function AlarmPage() {
 	const [notifications, setNotifications] = useState([]);
 
 	useEffect(() => {
-		const userId = getCookie('id');
-		const getNSsetData = async () => {
+		const getNSsetData = async (id: string) => {
 			try {
-				const res = await getAlarmList(userId);
+				const res = await getAlarmList(id);
 				const data = res.data.response;
 				console.log(data);
 				setNotifications(data);
@@ -46,7 +45,7 @@ export default function AlarmPage() {
 				console.log(err);
 			}
 		};
-		// getNSsetData();
+		getCookie('id') && getNSsetData(getCookie('id'));
 	}, []);
 
 	return (
