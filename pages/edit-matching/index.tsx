@@ -153,7 +153,7 @@ export default function EditMatching(props: IEdtMatchingProps) {
 				console.log(err);
 			}
 		};
-		// getNSsetData();
+		getNSsetData();
 		console.log(postData);
 	}, []);
 
@@ -223,7 +223,8 @@ export default function EditMatching(props: IEdtMatchingProps) {
 		}
 	};
 
-	const onSubmit = async () => {
+	const onSubmit = async (e) => {
+		e.preventDefault();
 		if (!virtualImgData) {
 			setMessage('error', '이미지를 추가해주세요.');
 			return;
@@ -249,22 +250,27 @@ export default function EditMatching(props: IEdtMatchingProps) {
 			content: editMatchingGetValues('mainText'),
 		};
 		console.log(editedData);
-		// MatchesService.modifyMatchingList(props.matching_id, editedData)
-		MatchesService.modifyMatchingList('1', editedData)
-			.then(() => console.log('수정됨'))
-			.catch((e) => console.log(e));
 
 		try {
 			const formData = new FormData();
 			formData.append('imageFile', fileData);
 			const fileUrl = await MatchesService.uploadMatchingImage('1', formData);
-			const res = await MatchesService.modifyMatchingList(props.matching_id, {
+			// const res = await MatchesService.modifyMatchingList(props.matching_id, {
+			// 	...editedData,
+			// 	locationImg: fileUrl.data.response,
+			// });
+			MatchesService.modifyMatchingList('1', {
 				...editedData,
 				locationImg: fileUrl.data.response,
 			});
 		} catch (err) {
 			console.log(err);
 		}
+
+		// MatchesService.modifyMatchingList(props.matching_id, editedData)
+		MatchesService.modifyMatchingList('1', editedData)
+			.then(() => console.log('수정됨'))
+			.catch((e) => console.log(e));
 	};
 
 	return (
@@ -278,7 +284,7 @@ export default function EditMatching(props: IEdtMatchingProps) {
 			<PageTitleArea>
 				<PageMainTitle>매칭 글 수정</PageMainTitle>
 			</PageTitleArea>
-			<PostMatchingForm onSubmit={editMatchingHandleSubmit(onSubmit)}>
+			<PostMatchingForm onSubmit={onSubmit}>
 				<InputBox>
 					<label htmlFor='postTitle'>제목</label>
 					<input
@@ -538,7 +544,11 @@ export default function EditMatching(props: IEdtMatchingProps) {
 					)}
 				</InputBox>
 				<HalfContainer>
-					<Buttons colorstyle={'is-black'} type='submit'>
+					<Buttons
+						colorstyle={'is-black'}
+						type='submit'
+						// onClick={editMatchingHandleSubmit(onSubmit)}
+					>
 						{/* <Buttons colorstyle={'is-black'} type='submit' disabled={checkValidation()}> */}
 						수정하기
 					</Buttons>

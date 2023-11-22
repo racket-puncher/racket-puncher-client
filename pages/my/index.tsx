@@ -9,7 +9,7 @@ import MyProfile from '../../components/contents/my/myProfile';
 import MyMatchingList from '../../components/contents/my/myMatchingList';
 import useCookies from '../../utils/useCookies';
 import useToast from '../../utils/useToast';
-import { useRouter } from 'next/router';
+// import { useRouter } from 'next/router';
 import useRouterHook from 'utils/useRouterHook';
 
 const items: TabsProps['items'] = [
@@ -25,22 +25,25 @@ const items: TabsProps['items'] = [
 	},
 ];
 
-const MyPage = (userId: string) => {
+const MyPage = () => {
 	// 프로필 수정 페이지 라우팅
 
 	const { checkLogin, getCookie } = useCookies();
 	const { setMessage } = useToast();
 	const { replace } = useRouterHook();
-	// useEffect(() => {
-	// 	if (!checkLogin()) {
-	// 		setMessage('error', '로그인이 필요한 서비스입니다.');
-	// 		replace('/login');
-	// 	}
-	// }, []);
+	const [userId, setUserId] = useState('');
+	useEffect(() => {
+		if (!checkLogin()) {
+			setMessage('error', '로그인이 필요한 서비스입니다.');
+			replace('/login');
+		} else {
+			setUserId(getCookie('id'));
+		}
+	}, []);
 
 	return (
 		<>
-			<MyProfile userId={'5'} />
+			<MyProfile userId={userId} />
 			<RoundButton colorstyle='is-black' aria-label='프로필 수정페이지로 이동'>
 				프로필 수정
 			</RoundButton>
