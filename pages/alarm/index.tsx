@@ -24,6 +24,16 @@ const gottenAlarms = [
 		title: '날씨 알림',
 		content: '최저기온 12˚, 최고기온 22˚, 맑음',
 	},
+	{
+		matchingId: '4',
+		title: '매칭 확정',
+		content: '신청하신 매칭이 확정되었습니다!',
+	},
+	{
+		matchingId: '5',
+		title: '매칭 신청',
+		content: '새로운 매칭 신청이 들어왔습니다.',
+	},
 ];
 
 export default function AlarmPage() {

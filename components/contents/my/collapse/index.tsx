@@ -33,20 +33,22 @@ interface IMyListItemProps {
 		// readonly playerList?: { userNickName: string; userEmail: string; profilePicURL: string }[];
 	};
 }
-// const playerList = [
-// 	{
-// 		userNickName: '뿡뿡이',
-// 		userEmail: 'bboongbboong2@gmail.com',
-// 		profilePicURL:
-// 			'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1694838481851_1000.jpeg',
-// 	},
-// 	{
-// 		userNickName: '텐텐2',
-// 		userEmail: 'tenistenis@naver.com',
-// 		profilePicURL:
-// 			'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1691813820762_750.jpeg',
-// 	},
-// ];
+const playerList = [
+	{
+		userNickName: '뿡뿡이',
+		siteUserId:'1'
+		userEmail: 'bboongbboong2@gmail.com',
+		profilePicURL:
+			'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1694838481851_1000.jpeg',
+	},
+	{
+	u	serNickName: '텐텐2',
+		siteUserId:'2'
+		userEmail: 'tenistenis@naver.com',
+		profilePicURL:
+			'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1691813820762_750.jpeg',
+	},
+];
 
 export default function MyListItem(props: IMyListItemProps) {
 	// To do
@@ -55,7 +57,7 @@ export default function MyListItem(props: IMyListItemProps) {
 	const { checkLogin, getCookie } = useCookies();
 	const { replace } = useRouterHook();
 	const { setMessage } = useToast();
-	const [playerList, setPlayersList] = useState([]);
+	// const [playerList, setPlayersList] = useState([]);
 
 	useEffect(() => {
 		const getNSetData = async () => {
@@ -63,7 +65,7 @@ export default function MyListItem(props: IMyListItemProps) {
 				const res = await getMatchingApplyState(matchingId);
 				const data = res.data.response;
 				console.log(data);
-				setPlayersList(data.confirmedMembers);
+				// setPlayersList(data.confirmedMembers);
 			} catch (err) {
 				console.log(err);
 			}

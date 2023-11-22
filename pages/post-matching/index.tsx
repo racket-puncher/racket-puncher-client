@@ -60,7 +60,7 @@ export default function PostMatching() {
 		resolver: yupResolver(schema),
 	});
 	const { setMessage } = useToast();
-	const { movePage, reload } = useRouterHook();
+	const { movePage, replace } = useRouterHook();
 	const [matchDate, setMatchDate] = useState(null);
 	const [matchStartTime, setMatchStartTime] = useState('');
 	const [matchEndTime, setMatchEndTime] = useState('');
@@ -174,8 +174,8 @@ export default function PostMatching() {
 			// 	locationImg: fileUrl.data.response,
 			// 	locationImg: '',
 			// });
-			reload();
-			movePage('/main');
+
+			replace('/main');
 			setMessage('success', '등록되었습니다.');
 		} catch (err) {
 			console.log(err);

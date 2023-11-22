@@ -107,7 +107,11 @@ export default function MyProfile() {
 						<td>
 							<CellRight>
 								<ItemName>매너 : </ItemName>
-								<ItemContent>●●●●○</ItemContent>
+								<ItemContent>
+									<ImageBox width='20px' height='20px'>
+										<img src='/images/tennis-ball.png' alt='테니스공' />
+									</ImageBox>
+								</ItemContent>
 							</CellRight>
 						</td>
 					</tr>
@@ -162,9 +166,9 @@ const MyProfileContainer = styled.div`
 `;
 const ProfileImage = styled(ImageBox)`
 	border-radius: ${rem('20px')};
-	background-color: lightblue;
 	max-width: ${rem('150px')};
 	max-height: ${rem('150px')};
+	overflow: hidden;
 `;
 const Table = styled.table`
 	min-width: 100%;
