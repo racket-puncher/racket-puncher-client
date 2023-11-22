@@ -162,7 +162,6 @@ export default function Login() {
 					<p>모달 테스트</p>
 				</ModalBox>
 			</LoginViewContainer>
-			<PlayerCard userNickname='뉴뉴' siteUserId='2'></PlayerCard>
 		</>
 	);
 }
