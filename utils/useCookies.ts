@@ -1,7 +1,5 @@
 import { useState } from 'react';
 import Cookies from 'js-cookie';
-import { useRouter } from 'next/router';
-import useToast from './useToast';
 
 // 쿠키의 값이 문자열일 경우
 type CookieValue = string;
