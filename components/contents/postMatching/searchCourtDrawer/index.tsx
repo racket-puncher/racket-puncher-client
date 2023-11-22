@@ -18,35 +18,69 @@ import {
 } from 'styles/ts/common';
 import { CustomBadge } from 'styles/ts/components/badge';
 
+// const resultData = [
+// 	{
+// 		road_address_name: '테스트 도로명 주소',
+// 		address_name: '테스트 지번 주소',
+// 		place_url: 'https://www.naver.com',
+// 		place_name: '테스트 장소명',
+// 		zip_code: '00000',
+// 	},
+// ];
+
 interface ISearchDrawerProps {
 	readonly isOpen: boolean;
 	readonly toggleDrawer: () => void;
 	readonly setCourtInfos?: Dispatch<SetStateAction<{ address: string; lat: string; lon: string }>>;
-	readonly setAddress: (name: string, address: string) => void;
+	readonly setValue: (name: string, data: string) => void;
 }
 
 export default function SearchCourtDrawer(props: ISearchDrawerProps) {
-	const { isOpen, toggleDrawer, setCourtInfos, setAddress } = props;
+	const { isOpen, toggleDrawer, setCourtInfos, setValue } = props;
 	const [keyword, setKeyword] = useState('');
 	const [resultData, setResultData] = useState([]);
+	const displayPagination = (pagination) => {
+		const paginationEl = document.getElementById('pagination');
+		const fragment = document.createDocumentFragment();
+		let i = null;
+		// 기존에 추가된 페이지번호를 삭제합니다
+		while (paginationEl.hasChildNodes()) {
+			paginationEl.removeChild(paginationEl.lastChild);
+		}
+		for (i = 1; i <= pagination.last; i++) {
+			const el = document.createElement('a');
+			el.href = '#';
+			el.innerHTML = i;
+			if (i === pagination.current) {
+				el.className = 'on';
+			} else {
+				el.onclick = (function (i) {
+					return function () {
+						pagination.gotoPage(i);
+					};
+				})(i);
+			}
+			fragment.appendChild(el);
+		}
+		paginationEl.appendChild(fragment);
+	};
 	const getResult = (typedKeyword: string) => {
 		const places = new kakao.maps.services.Places();
-		places.keywordSearch(typedKeyword, (result, status, _pagination) => {
+		places.keywordSearch(typedKeyword, (result, status, pagination) => {
 			if (status === kakao.maps.services.Status.OK) {
 				console.log(result);
 				setResultData(result);
+				displayPagination(pagination);
 			} else {
 				console.log(status);
 			}
 		});
 	};
 
-	// const data = { place_name: '샘플', x: 33.5563, y: 126.7958 };
-
 	return (
 		<>
 			<DrawerBox
-				title='경기장 검색'
+				title='주소 검색'
 				isOpen={isOpen}
 				placement='bottom'
 				height='100%'
@@ -76,44 +110,47 @@ export default function SearchCourtDrawer(props: ISearchDrawerProps) {
 				</DescTextBox>
 				<GrayLine />
 				<AddressContainer>
-					{resultData.map((_, i) => {
+					{resultData.map((ele) => {
 						return (
-							<AddressBoxWrap key={uuidv4()}>
+							<AddressBoxWrap
+								key={uuidv4()}
+								onClick={() => {
+									setValue(
+										'address',
+										(ele.road_address_name || ele.address_name) +
+											(ele.place_name && ' (' + ele.place_name + ')')
+									);
+									setValue('zipCode', ele.ZipCode);
+									setCourtInfos &&
+										setCourtInfos({
+											address:
+												(ele.road_address_name || ele.address_name) +
+												(ele.place_name && ' (' + ele.place_name + ')'),
+											lat: ele.x,
+											lon: ele.y,
+										});
+									toggleDrawer();
+								}}>
 								<AddLeftWrap>
-									<LocationName href={resultData[i].place_url} target='_blank'>
-										{resultData[i].place_name}
+									<LocationName href={ele.place_url} target='_blank'>
+										{ele.place_name}
 									</LocationName>
-
 									<AddressBox>
 										<CustomBadge color={PrimaryColor}>도로명</CustomBadge>
-										<p>{resultData[i].road_address_name}</p>
+										<p>{ele.road_address_name}</p>
 									</AddressBox>
 									<AddressBox>
 										<CustomBadge>지번</CustomBadge>
-										<p>{resultData[i].address_name}</p>
+										<p>{ele.address_name}</p>
 									</AddressBox>
 								</AddLeftWrap>
-								<AddRightWrap
-									onClick={() => {
-										setCourtInfos({
-											address:
-												(resultData[i].road_address_name || resultData[i].address_name) +
-												('(' + resultData[i].place_name + ')'),
-											lat: resultData[i].x,
-											lon: resultData[i].y,
-										});
-										setAddress(
-											'courtAddress',
-											(resultData[i].road_address_name || resultData[i].address_name) +
-												('(' + resultData[i].place_name + ')')
-										);
-										toggleDrawer();
-									}}>
-									선택
-								</AddRightWrap>
+								<AddRightWrap>{ele.zip_code}</AddRightWrap>
 							</AddressBoxWrap>
 						);
 					})}
+					<PaginationArea>
+						<div id={'pagination'}></div>
+					</PaginationArea>
 				</AddressContainer>
 			</DrawerBox>
 		</>
@@ -197,4 +234,13 @@ const AddRightWrap = styled.div`
 	font-size: ${rem(FontSizeMd)};
 	font-family: Pretendard-Regular;
 	color: ${BlackColor};
+`;
+
+const PaginationArea = styled.div`
+	min-width: 100%;
+	font-family: Pretendard-Regular;
+
+	div {
+		min-width: fit-content;
+	}
 `;

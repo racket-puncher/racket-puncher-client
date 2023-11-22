@@ -1,4 +1,4 @@
-export const AgeGroupName = [
+export const ageGroupName = [
 	{
 		label: '10대',
 		value: 'TEENAGER',
@@ -25,25 +25,17 @@ export const AgeGroupName = [
 	},
 ];
 
-export const NTRPName = [
-	{
-		label: 'NewBie',
-		value: 'DEVELOPMENT',
-	},
-	{
-		label: 'Beginner',
-		value: 'BEGINNER',
-	},
-	{
-		label: 'Intermediate',
-		value: 'INTERMEDIATE',
-	},
-	{
-		label: 'Advanced',
-		value: 'ADVANCED',
-	},
-	{
-		label: 'Pro',
-		value: 'PRO',
-	},
+export const ntrpName = [
+	{ value: 'DEVELOPMENT', label: 'NewBie (1.0 ~ 2.0)' },
+	{ value: 'BEGINNER', label: 'Beginner (2.5 ~ 3.5)' },
+	{ value: 'INTERMEDIATE', label: 'Intermediate (4.0 ~ 4.5)' },
+	{ value: 'ADVANCED', label: 'Advanced (5.0 ~ 5.5)' },
+	{ value: 'PRO', label: 'Pro (6.0 ~ 7.0)' },
+];
+
+export const matchTypeName = [
+	{ value: 'SINGLE', label: '단식' },
+	{ value: 'DOUBLE', label: '복식' },
+	{ value: 'MIXED_DOUBLE', label: '혼성 복식' },
+	{ value: 'OTHER', label: '기타' },
 ];

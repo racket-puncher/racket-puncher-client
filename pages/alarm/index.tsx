@@ -1,32 +1,53 @@
-// import { useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
+import { v4 as uuidv4 } from 'uuid';
 import { PageMainTitle } from '../../styles/ts/components/titles';
 import AlarmListItem from 'components/contents/alarm/AlarmListItem';
+import useCookies from 'utils/useCookies';
+import usersService from 'service/users/service';
+
+// 오프라인용 데이터
+const gottenAlarms = [
+	{
+		matchingId: '',
+		title: '매칭 취소',
+		content: '매칭이 취소 되었습니다.',
+	},
+	{
+		matchingId: '',
+		title: '경기 디데이!',
+		content: '오늘은 즐거운 테니스 경기가 있는 날입니다!',
+	},
+	{
+		matchingId: '',
+		title: '날씨 알림',
+		content: '최저기온 12˚, 최고기온 22˚, 맑음',
+	},
+];
 
 export default function AlarmPage() {
 	// // 서버에서 현재 로그인한 유저의 알림 데이터 가져오기
 	// const gottenAlarms = 현재 로그인한 유저의 알림 데이터
-	// useEffect(() => {
 
-	// }, [gottenAlarms]);
+	const { getCookie } = useCookies();
+	const { getAlarmList } = usersService;
+	const [notifications, setNotifications] = useState([]);
 
-	const gottenAlarms = [
-		{
-			alarmId: '',
-			alarmTitle: '매칭 취소',
-			alarmContent: '의 매칭이 취소 되었습니다.',
-			pageTitle: '글제목1',
-			pageURL: '',
-		},
-		{
-			alarmId: '',
-			alarmTitle: '경기 디데이!',
-			alarmContent: '의 경기날입니다!',
-			pageTitle: '글제목2',
-			pageURL: '',
-		},
-	];
+	useEffect(() => {
+		const userId = getCookie('id');
+		const getNSsetData = async () => {
+			try {
+				const res = await getAlarmList(userId);
+				const data = res.data.response;
+				console.log(data);
+				setNotifications(data);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+		// getNSsetData();
+	}, []);
 
 	return (
 		<>
@@ -34,8 +55,8 @@ export default function AlarmPage() {
 				<PageMainTitle>알림</PageMainTitle>
 			</PageTitleArea>
 			<AlarmList>
-				{gottenAlarms.map((_, i) => {
-					return <AlarmListItem key={gottenAlarms[i].alarmId} alarmTestData={gottenAlarms[i]} />;
+				{gottenAlarms.map((ele) => {
+					return <AlarmListItem key={uuidv4()} alarmData={ele} />;
 				})}
 			</AlarmList>
 		</>
@@ -48,5 +69,5 @@ const PageTitleArea = styled.div`
 
 const AlarmList = styled.ul`
 	width: 100%;
-	min-height: rem(calc(100vh - ${rem('80px')}));
+	min-height: calc(100vh - ${rem('240px')});
 `;

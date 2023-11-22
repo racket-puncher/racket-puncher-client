@@ -229,7 +229,7 @@ export default function EditMyInfo() {
 			<SearchCourtDrawer
 				isOpen={isSearchDrawerOpen}
 				toggleDrawer={toggleSearchDrawer}
-				setAddress={editMyInfoSetValue}
+				setValue={editMyInfoSetValue}
 			/>
 			<EditMyInfoForm onSubmit={onSubmitHandler}>
 				<PageMainTitle>내 정보 수정</PageMainTitle>

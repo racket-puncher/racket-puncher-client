@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import { rem } from 'polished';
+import { v4 as uuidv4 } from 'uuid';
 import { Collapse as AntdCollapse, ConfigProvider } from 'antd';
 import type { CollapseProps as IAntdCollapseProps } from 'antd';
 
@@ -10,39 +11,74 @@ import {
 	PlayerListBGColor,
 	FontSizeSm,
 	FontFamilyMedium,
-} from '../../../../styles/ts/common';
-import { ImageBox } from '../../../../styles/ts/components/box';
+	LightGrayColor,
+} from 'styles/ts/common';
+import { ImageBox } from 'styles/ts/components/box';
 import PlayerCard from '../../../common/playerCard';
+import MatchesService from 'service/matches/service';
+import { matchTypeName } from 'constants/userInfoOptions';
 
 interface IMyListItemProps {
 	postInfo: {
-		readonly postNum?: number;
-		readonly date?: string;
-		readonly day?: string;
-		readonly postTitle?: string;
-		readonly userAddress?: string;
-		readonly matchType?: string;
-		readonly playerList?: { userNickName: string; userEmail: string; profilePicURL: string }[];
+		readonly matchingId: string;
+		readonly key: string;
+		readonly date: string;
+		readonly title: string;
+		readonly location: string;
+		readonly matchingType: string;
+		readonly isActive?: boolean;
+		// readonly playerList?: { userNickName: string; userEmail: string; profilePicURL: string }[];
 	};
 }
+// const playerListOff = [
+// 	{
+// 		userNickName: '뿡뿡이',
+// 		userEmail: 'bboongbboong2@gmail.com',
+// 		profilePicURL:
+// 			'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1694838481851_1000.jpeg',
+// 	},
+// 	{
+// 		userNickName: '텐텐2',
+// 		userEmail: 'tenistenis@naver.com',
+// 		profilePicURL:
+// 			'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1691813820762_750.jpeg',
+// 	},
+// ];
 
 export default function MyListItem(props: IMyListItemProps) {
 	// To do
-	// key값 어떻게 지정할지
+	const { getMatchingApplyState } = MatchesService;
+	const { matchingId, key, date, title, location, matchingType } = props.postInfo;
+	const [playerList, setPlayersList] = useState([]);
 
-	const { postNum, date, day, postTitle, userAddress, matchType, playerList } = props.postInfo;
+	useEffect(() => {
+		const getNSsetData = async () => {
+			try {
+				const res = await getMatchingApplyState({ matching_id: matchingId });
+				const playersData = res.data.response.confirmedMembers;
+				console.log(playersData);
+				setPlayersList(playersData);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+		getNSsetData();
+	}, []);
 
+	const mt = matchTypeName.filter((ele) => ele.value === matchingType)[0];
 	const items: IAntdCollapseProps['items'] = [
 		{
-			key: postNum + '',
+			key: key,
 			label: (
 				<Header>
-					<DateNDay id='dataNDay'>
-						{date || '-'}/{day || '-'}
-					</DateNDay>
-					<TitleLink id='title'>
-						{postTitle || '-'} / {userAddress || '-'} / {matchType || '-'}
-					</TitleLink>
+					<DateNDay id='dataNDay'>{date.split('-')[1] + '/' + date.split('-')[2] || '-'}</DateNDay>
+					<TitleArea>
+						<TitleLink id='title' href={`/main/detailMatch/${matchingId}`} target={'_blank'}>
+							{title.length < 20 ? title : title.slice(0, 19) + '...' || '-'}
+						</TitleLink>{' '}
+						/ {location.split(' ')[0] + ' ' + location.split(' ')[1] || '-'} /{' '}
+						{(mt && mt.label) || '-'}
+					</TitleArea>
 					<IconImageBox id='collapseIcon' width='24px' height='24px'>
 						<img src='/svg/arrow.svg' />
 					</IconImageBox>
@@ -50,15 +86,10 @@ export default function MyListItem(props: IMyListItemProps) {
 			),
 			children: (
 				<PlayerCardContainer>
-					{playerList.map((_, i) => {
-						const { userNickName, profilePicURL, userEmail } = props.postInfo.playerList[i];
+					{playerList.map((ele) => {
+						const { userNickName, siteUserId } = ele;
 						return (
-							<PlayerCard
-								key={i}
-								userNickName={userNickName}
-								profilePicURL={profilePicURL}
-								userEmail={userEmail}
-							/>
+							<PlayerCard key={uuidv4()} userNickname={userNickName} siteUserId={siteUserId} />
 						);
 					})}
 				</PlayerCardContainer>
@@ -102,9 +133,9 @@ const MyListItemContainer = styled(AntdCollapse)`
 
 const Header = styled.div`
 	display: grid;
-	grid-template-columns: ${rem('75px')} auto ${rem('25px')};
+	grid-template-columns: ${rem('50px')} auto ${rem('25px')};
 	grid-template-areas: 'dateNDay title collapseIcon';
-	gap: ${rem('15px')};
+	gap: ${rem('10px')};
 
 	height: ${rem('30px')};
 	font-size: ${rem(`${FontSizeSm}`)};
@@ -115,16 +146,21 @@ const DateNDay = styled.span`
 	text-align: left;
 `;
 
-const TitleLink = styled.a`
+const TitleArea = styled.div`
 	grid-area: 'title';
 	text-align: left;
 	color: ${WhiteColor};
 	white-space: nowrap;
 	overflow: hidden;
+`;
+
+const TitleLink = styled.a`
+	color: ${WhiteColor};
 
 	&:hover,
 	&:visited {
-		color: ${WhiteColor};
+		color: ${LightGrayColor};
+		text-decoration: underline;
 	}
 `;
 
