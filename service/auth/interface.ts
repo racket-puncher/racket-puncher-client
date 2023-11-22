@@ -2,15 +2,16 @@
 export interface reqSignupApiData {
 	email: string;
 	password: string;
+	siteusername: string;
+	phoneNumber: string;
 	nickname: string;
-	roles: object;
-	ageGroup: string;
 	gender: string;
+	ntrp: string;
 	address: string;
 	zipCode: string;
-	ntrp: string;
-	phoneNumber: string;
 	profileImg: string;
+	ageGroup: string;
+	roles: object;
 }
 
 // 로그인
