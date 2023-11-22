@@ -17,6 +17,7 @@ import {
 	FontSizeMdLg,
 } from 'styles/ts/common';
 import { CustomBadge } from 'styles/ts/components/badge';
+import MatchesService from 'service/matches/service';
 
 // const resultData = [
 // 	{
@@ -39,43 +40,54 @@ export default function SearchCourtDrawer(props: ISearchDrawerProps) {
 	const { isOpen, toggleDrawer, setCourtInfos, setValue } = props;
 	const [keyword, setKeyword] = useState('');
 	const [resultData, setResultData] = useState([]);
-	const displayPagination = (pagination) => {
-		const paginationEl = document.getElementById('pagination');
-		const fragment = document.createDocumentFragment();
-		let i = null;
-		// 기존에 추가된 페이지번호를 삭제합니다
-		while (paginationEl.hasChildNodes()) {
-			paginationEl.removeChild(paginationEl.lastChild);
-		}
-		for (i = 1; i <= pagination.last; i++) {
-			const el = document.createElement('a');
-			el.href = '#';
-			el.innerHTML = i;
-			if (i === pagination.current) {
-				el.className = 'on';
-			} else {
-				el.onclick = (function (i) {
-					return function () {
-						pagination.gotoPage(i);
-					};
-				})(i);
-			}
-			fragment.appendChild(el);
-		}
-		paginationEl.appendChild(fragment);
-	};
+	const { searchAddress } = MatchesService;
+	// const displayPagination = (pagination) => {
+	// 	const paginationEl = document.getElementById('pagination');
+	// 	const fragment = document.createDocumentFragment();
+	// 	let i = null;
+	// 	// 기존에 추가된 페이지번호를 삭제합니다
+	// 	while (paginationEl.hasChildNodes()) {
+	// 		paginationEl.removeChild(paginationEl.lastChild);
+	// 	}
+	// 	for (i = 1; i <= pagination.last; i++) {
+	// 		const el = document.createElement('a');
+	// 		el.href = '#';
+	// 		el.innerHTML = i;
+	// 		if (i === pagination.current) {
+	// 			el.className = 'on';
+	// 		} else {
+	// 			el.onclick = (function (i) {
+	// 				return function () {
+	// 					pagination.gotoPage(i);
+	// 				};
+	// 			})(i);
+	// 		}
+	// 		fragment.appendChild(el);
+	// 	}
+	// 	paginationEl.appendChild(fragment);
+	// };
 	const getResult = (typedKeyword: string) => {
 		const places = new kakao.maps.services.Places();
 		places.keywordSearch(typedKeyword, (result, status, pagination) => {
 			if (status === kakao.maps.services.Status.OK) {
 				console.log(result);
 				setResultData(result);
-				displayPagination(pagination);
+				// displayPagination(pagination);
 			} else {
 				console.log(status);
 			}
 		});
 	};
+
+	// const getResult = async (keyword) => {
+	// 	try {
+	// 		const res = await searchAddress(keyword);
+	// 		console.log(res.data.response);
+	// 		setResultData(res.data.response);
+	// 	} catch (err) {
+	// 		console.log(err);
+	// 	}
+	// };
 
 	return (
 		<>

@@ -17,6 +17,9 @@ import { ImageBox } from 'styles/ts/components/box';
 import PlayerCard from '../../../common/playerCard';
 import MatchesService from 'service/matches/service';
 import { matchTypeName } from 'constants/userInfoOptions';
+import useToast from 'utils/useToast';
+import useRouterHook from 'utils/useRouterHook';
+import useCookies from 'utils/useCookies';
 
 interface IMyListItemProps {
 	postInfo: {
@@ -49,13 +52,15 @@ export default function MyListItem(props: IMyListItemProps) {
 	// To do
 	const { getMatchingApplyState } = MatchesService;
 	const { matchingId, key, date, title, location, matchingType } = props.postInfo;
+	const { checkLogin, getCookie } = useCookies();
+	const { replace } = useRouterHook();
+	const { setMessage } = useToast();
 	const [playerList, setPlayersList] = useState([]);
 
 	useEffect(() => {
 		const getNSetData = async () => {
 			try {
 				const res = await getMatchingApplyState(matchingId);
-				// const res = await getMatchingApplyState('1');
 				const data = res.data.response;
 				console.log(data);
 				setPlayersList(data.confirmedMembers);
@@ -63,7 +68,12 @@ export default function MyListItem(props: IMyListItemProps) {
 				console.log(err);
 			}
 		};
-		getNSetData();
+		if (!checkLogin()) {
+			setMessage('error', '로그인이 필요한 서비스입니다.');
+			replace('/login');
+		} else if (getCookie('id') !== '') {
+			getNSetData();
+		}
 	}, []);
 
 	const mt = matchTypeName.filter((ele) => ele.value === matchingType)[0];
@@ -105,10 +115,10 @@ export default function MyListItem(props: IMyListItemProps) {
 				components: {
 					Collapse: {
 						borderRadiusLG: 20,
-						headerBg: `${PrimaryColor}`,
+						headerBg: PrimaryColor,
 						headerPadding: '10px 20px',
-						colorTextHeading: `${WhiteColor}`,
-						fontFamily: `${FontFamilyMedium}`,
+						colorTextHeading: WhiteColor,
+						fontFamily: FontFamilyMedium,
 					},
 				},
 			}}>

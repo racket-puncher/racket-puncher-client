@@ -6,6 +6,7 @@ import { RoundButton } from '../../styles/ts/components/buttons';
 import DrawerBox from '../common/drawer';
 import useCookies from '../../utils/useCookies';
 import Link from 'next/link';
+import useToast from 'utils/useToast';
 
 interface MenuDrawerProps {
 	readonly isOpen: boolean;
@@ -13,6 +14,7 @@ interface MenuDrawerProps {
 }
 
 export default function MenuDrawer(props: MenuDrawerProps) {
+	const { setMessage } = useToast();
 	const { checkLogin, removeCookie } = useCookies();
 	const { isOpen, toggleDrawer } = props;
 	const { movePage, reload } = useRouterHook();
@@ -68,8 +70,13 @@ export default function MenuDrawer(props: MenuDrawerProps) {
 								aria-label='로그아웃'
 								onClick={() => {
 									removeCookie('accessToken');
+									removeCookie('refreshToken');
+									removeCookie('id');
 									toggleDrawer(isOpen);
+
+									movePage('/main');
 									reload();
+									setMessage('success', '로그아웃되었습니다.');
 								}}>
 								로그아웃
 							</RoundButton>
