@@ -30,7 +30,7 @@ interface IMyListItemProps {
 		// readonly playerList?: { userNickName: string; userEmail: string; profilePicURL: string }[];
 	};
 }
-// const playerListOff = [
+// const playerList = [
 // 	{
 // 		userNickName: '뿡뿡이',
 // 		userEmail: 'bboongbboong2@gmail.com',
@@ -52,17 +52,18 @@ export default function MyListItem(props: IMyListItemProps) {
 	const [playerList, setPlayersList] = useState([]);
 
 	useEffect(() => {
-		const getNSsetData = async () => {
+		const getNSetData = async () => {
 			try {
-				const res = await getMatchingApplyState({ matching_id: matchingId });
-				const playersData = res.data.response.confirmedMembers;
-				console.log(playersData);
-				setPlayersList(playersData);
+				const res = await getMatchingApplyState(matchingId);
+				// const res = await getMatchingApplyState('1');
+				const data = res.data.response;
+				console.log(data);
+				setPlayersList(data.confirmedMembers);
 			} catch (err) {
 				console.log(err);
 			}
 		};
-		getNSsetData();
+		getNSetData();
 	}, []);
 
 	const mt = matchTypeName.filter((ele) => ele.value === matchingType)[0];
