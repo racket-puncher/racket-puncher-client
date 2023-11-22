@@ -11,7 +11,6 @@ import {
 	reqLogoutApiData,
 	reqPhoneVerifyApiData,
 	reqSignupApiData,
-	reqUploadImgSignupApiData,
 } from './interface';
 
 // 회원가입
@@ -24,10 +23,10 @@ const login = (data: reqLoginApiData) => {
 	return http.post('/api/auth/signin', data);
 };
 
-// 회원가입 프로필 이미지
-const uploadImgSignup = (data: any) => {
+// 이미지 업로드
+const uploadImg = (data: any) => {
 	console.log(data);
-	return httpFile.post('/api/auth/upload-image', data);
+	return httpFile.post('/api/aws/upload-image', data);
 };
 
 // 카카오톡 회원가입
@@ -78,7 +77,7 @@ const findPwd = (data: reqFindPwdApiData) => {
 const AuthService = {
 	signup,
 	login,
-	uploadImgSignup,
+	uploadImg,
 	kakaoSignup,
 	kakaoLogin,
 	logout,

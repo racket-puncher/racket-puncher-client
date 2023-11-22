@@ -212,7 +212,8 @@ export default function register() {
 		}
 
 		const params = {
-			email: signupGetValue('userName'),
+			siteusername: signupGetValue('userName'),
+			email: signupGetValue('email'),
 			password: signupGetValue('password'),
 			nickname: signupGetValue('nickName'),
 			roles: ['ROLE_USER'],
@@ -227,7 +228,7 @@ export default function register() {
 		try {
 			const formData = new FormData();
 			formData.append('imageFile', fileData);
-			const fileUrl = await AuthService.uploadImgSignup(formData);
+			const fileUrl = await AuthService.uploadImg(formData);
 			const res = await AuthService.signup({ ...params, profileImg: fileUrl.data.response });
 			movePage('/login');
 		} catch (e) {
