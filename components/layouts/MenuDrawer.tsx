@@ -7,6 +7,7 @@ import DrawerBox from '../common/drawer';
 import useCookies from '../../utils/useCookies';
 import Link from 'next/link';
 import useToast from 'utils/useToast';
+import AuthService from 'service/auth/service';
 
 interface MenuDrawerProps {
 	readonly isOpen: boolean;
@@ -17,8 +18,8 @@ export default function MenuDrawer(props: MenuDrawerProps) {
 	const { setMessage } = useToast();
 	const { checkLogin, removeCookie } = useCookies();
 	const { isOpen, toggleDrawer } = props;
-	const { movePage, reload } = useRouterHook();
-
+	const { movePage, replace } = useRouterHook();
+	const { getCookie } = useCookies();
 	return (
 		<DrawerBox
 			placement='right'
@@ -69,13 +70,15 @@ export default function MenuDrawer(props: MenuDrawerProps) {
 								colorstyle={'is-black'}
 								aria-label='로그아웃'
 								onClick={() => {
+									toggleDrawer(isOpen);
+									// AuthService.logout({
+									// 	accessToken: getCookie('accessToken'),
+									// 	refreshToken: getCookie('refreshToken'),
+									// });
 									removeCookie('accessToken');
 									removeCookie('refreshToken');
 									removeCookie('id');
-									toggleDrawer(isOpen);
-
-									movePage('/main');
-									reload();
+									replace('/main');
 									setMessage('success', '로그아웃되었습니다.');
 								}}>
 								로그아웃

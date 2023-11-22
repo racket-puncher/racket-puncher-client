@@ -38,8 +38,8 @@ export interface reqKakaoLoginApiData {
 
 // 로그아웃
 export interface reqLogoutApiData {
-	email: string;
 	accessToken: string;
+	refreshToken: string;
 }
 
 // 회원탈퇴

@@ -21,7 +21,19 @@ const useRouterHook = () => {
 	const getPathName = () => {
 		return route.pathname;
 	};
-	return { movePage, moveToBack, reload, replace, pathNameStartsWith, getPathName };
+
+	const getQueryPathName = () => {
+		return route.query;
+	};
+	return {
+		movePage,
+		moveToBack,
+		reload,
+		replace,
+		pathNameStartsWith,
+		getPathName,
+		getQueryPathName,
+	};
 };
 
 export default useRouterHook;
