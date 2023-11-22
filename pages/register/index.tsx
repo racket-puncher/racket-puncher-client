@@ -34,8 +34,8 @@ import useToast from '../../utils/useToast';
 
 const schema = yup.object().shape({
 	userName: yup.string().required('이름은 필수입니다.'),
-	phoneNumber: yup.string().required('휴대폰 번호는 필수입니다.'),
-	certifyNumber: yup.string().required('인증번호는 필수입니다.'),
+	// phoneNumber: yup.string().required('휴대폰 번호는 필수입니다.'),
+	// certifyNumber: yup.string().required('인증번호는 필수입니다.'),
 	email: yup
 		.string()
 		.required('이메일은 필수입니다.')
@@ -222,7 +222,7 @@ export default function register() {
 			address: signupGetValue('detailAddress'),
 			zipCode: signupGetValue('address'),
 			ntrp: signupGetValue('NTRP'),
-			phoneNumber: signupGetValue('phoneNumber'),
+			phoneNumber: '01012345678',
 			profileImg: '',
 		};
 		try {
@@ -265,55 +265,55 @@ export default function register() {
 						<label htmlFor='registerUserName'>이름</label>
 						<input id='registerUserName' type={'text'} {...signUpRegister('userName')} />
 					</InputBox>
-					<InputButtonBox>
-						<InputBox>
-							<label htmlFor='registerPhoneNum'>휴대폰 번호</label>
-							<input
-								id='registerPhoneNum'
-								type={'text'}
-								maxLength={11}
-								{...signUpRegister('phoneNumber')}
-								onChange={(e) => {
-									signupSetValue('phoneNumber', onlyNumber(e.target.value));
-								}}
-							/>
-							{signErrors.phoneNumber?.message && (
-								<InputErrorText>{signErrors.phoneNumber.message}</InputErrorText>
-							)}
-						</InputBox>
-						<SquareButton
-							height={'50px'}
-							onClick={getVerification}
-							disabled={!signupWatch('phoneNumber')}>
-							인증번호 전송
-						</SquareButton>
-					</InputButtonBox>
-					{certifyNumVisible && (
-						<InputButtonBox>
-							<InputBox certify='true'>
-								<label htmlFor='registerCertifyNum'>인증 번호</label>
-								<input
-									id='registerCertifyNum'
-									type={'text'}
-									maxLength={6}
-									{...signUpRegister('certifyNumber')}
-									onChange={(e) => {
-										signupSetValue('certifyNumber', onlyNumber(e.target.value));
-									}}
-								/>
-								<span className={'limit-time'}>
-									{String(Math.floor(timer / 60)).padStart(2, '0')}:
-									{String(timer % 60).padStart(2, '0')}
-								</span>
-								{signErrors.certifyNumber?.message && (
-									<InputErrorText>{signErrors.certifyNumber.message}</InputErrorText>
-								)}
-							</InputBox>
-							<SquareButton height={'50px'} disabled={!signupWatch('certifyNumber')}>
-								확인
-							</SquareButton>
-						</InputButtonBox>
-					)}
+					{/* <InputButtonBox> */}
+					{/*	<InputBox> */}
+					{/*		<label htmlFor='registerPhoneNum'>휴대폰 번호</label> */}
+					{/*		<input */}
+					{/*			id='registerPhoneNum' */}
+					{/*			type={'text'} */}
+					{/*			maxLength={11} */}
+					{/*			{...signUpRegister('phoneNumber')} */}
+					{/*			onChange={(e) => { */}
+					{/*				signupSetValue('phoneNumber', onlyNumber(e.target.value)); */}
+					{/*			}} */}
+					{/*		/> */}
+					{/*		{signErrors.phoneNumber?.message && ( */}
+					{/*			<InputErrorText>{signErrors.phoneNumber.message}</InputErrorText> */}
+					{/*		)} */}
+					{/*	</InputBox> */}
+					{/*	<SquareButton */}
+					{/*		height={'50px'} */}
+					{/*		onClick={getVerification} */}
+					{/*		disabled={!signupWatch('phoneNumber')}> */}
+					{/*		인증번호 전송 */}
+					{/*	</SquareButton> */}
+					{/* </InputButtonBox> */}
+					{/* {certifyNumVisible && ( */}
+					{/*	<InputButtonBox> */}
+					{/*		<InputBox certify='true'> */}
+					{/*			<label htmlFor='registerCertifyNum'>인증 번호</label> */}
+					{/*			<input */}
+					{/*				id='registerCertifyNum' */}
+					{/*				type={'text'} */}
+					{/*				maxLength={6} */}
+					{/*				{...signUpRegister('certifyNumber')} */}
+					{/*				onChange={(e) => { */}
+					{/*					signupSetValue('certifyNumber', onlyNumber(e.target.value)); */}
+					{/*				}} */}
+					{/*			/> */}
+					{/*			<span className={'limit-time'}> */}
+					{/*				{String(Math.floor(timer / 60)).padStart(2, '0')}: */}
+					{/*				{String(timer % 60).padStart(2, '0')} */}
+					{/*			</span> */}
+					{/*			{signErrors.certifyNumber?.message && ( */}
+					{/*				<InputErrorText>{signErrors.certifyNumber.message}</InputErrorText> */}
+					{/*			)} */}
+					{/*		</InputBox> */}
+					{/*		<SquareButton height={'50px'} disabled={!signupWatch('certifyNumber')}> */}
+					{/*			확인 */}
+					{/*		</SquareButton> */}
+					{/*	</InputButtonBox> */}
+					{/* )} */}
 					<SelectBox>
 						<InputBox>
 							<label htmlFor='registerGender'>성별</label>
