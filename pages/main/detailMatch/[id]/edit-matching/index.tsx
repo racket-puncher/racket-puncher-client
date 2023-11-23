@@ -142,7 +142,7 @@ export default function EditMatching() {
 				editMatchingSetValue('address', db.location);
 				editMatchingSetValue('isCourtBooked', db.isReserved);
 				editMatchingSetValue('courtFee', db.cost);
-				editMatchingSetValue('locationImg', db.locationImg);
+				// editMatchingSetValue('locationImg', db.locationImg);
 				editMatchingSetValue('mainText', db.content);
 				console.log(db);
 				setCourtInfos({ ...courtInfos, lat: db.lat, lon: db.lon });
@@ -153,7 +153,7 @@ export default function EditMatching() {
 		};
 		getNSsetData();
 		console.log(postData);
-	}, []);
+	}, [matchId]);
 
 	const selectHandler = (option: string) => {
 		option === 'SINGLE'
@@ -500,9 +500,10 @@ export default function EditMatching() {
 							{virtualImgData ? (
 								<div className='img-align-box' style={courtImgStyle} />
 							) : (
-								<>
-									<img src={`${prefix}/images/add-image-rectangle-00.png`} alt='add-image' />
-								</>
+								<img src={`${prefix}/images/add-image-rectangle-00.png`} alt='add-image' />
+							)}
+							{!virtualImgData && (
+								<img src={`${editMatchingGetValues('locationImg')}`} alt='경기장 이미지' />
 							)}
 						</ImageBox>
 						<input
@@ -521,7 +522,7 @@ export default function EditMatching() {
 					<MainTextArea
 						id={'mainText'}
 						onChange={(e) => editMatchingSetValue('mainText', e.target.value)}
-						placeholder='내용을 입력하세요.'
+						// defaultValue={editMatchingGetValues('content')}
 						{...editMatchingResister('mainText')}
 					/>{' '}
 					{editMatchingErrors.mainText?.message && (

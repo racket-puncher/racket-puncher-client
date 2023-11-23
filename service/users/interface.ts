@@ -21,7 +21,7 @@ export interface reqPatchMyProfileInfo {
 		ntrp?: string; // NTRP
 		gender?: string; // 성별
 		ageGroup?: string; // 연령대
-		// profileImg: string;}
+		// profileImg?: string;
 	};
 }
 
