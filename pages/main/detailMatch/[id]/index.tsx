@@ -71,7 +71,7 @@ interface DetailMatchContentProps {
 }
 
 export default function DetailMatching() {
-	const { getQueryPathName } = useRouterHook();
+	const { getQueryPathName, movePage } = useRouterHook();
 	const [recruitStatusModalVisible, setRecruitStatusModalVisible] = useState(false);
 	const [matchingInfo, setMatchingInfo] = useState(undefined);
 	const [writerId, setWriterId] = useState('');
@@ -304,8 +304,13 @@ export default function DetailMatching() {
 				</ContentContainer>
 
 				<FloatBox>
-					<RoundButton onClick={() => setRecruitStatusModalVisible(true)}>모집 현황</RoundButton>
+					<RoundButton onClick={() => movePage(`/main/detailMatch/${matchId}/edit-matching`)}>
+						수정하기
+					</RoundButton>
 				</FloatBox>
+				{/* <FloatBox>
+					<RoundButton onClick={() => setRecruitStatusModalVisible(true)}>모집 현황</RoundButton>
+				</FloatBox> */}
 
 				{/* 모집현황 modal --------------------------------- */}
 				<ModalBox

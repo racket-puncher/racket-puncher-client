@@ -18,14 +18,12 @@ import Selector from 'components/contents/postMatching/selector';
 import SearchCourtDrawer from 'components/contents/postMatching/searchCourtDrawer';
 import useRouterHook from 'utils/useRouterHook';
 import axios from 'axios';
+import AuthService from 'service/auth/service';
 import useToast from 'utils/useToast';
 import { ageOptions, matchingTypesOptions } from 'constants/filterOption';
 import { InputErrorText } from 'styles/ts/components/text';
-import { prefix } from '../../constants/prefix';
-
-interface IEdtMatchingProps {
-	matching_id: string;
-}
+import { prefix } from '../../../../../constants/prefix';
+import useCookies from 'utils/useCookies';
 
 const schema = yup.object().shape({
 	postTitle: yup.string().required('제목을 입력해주세요.'),
@@ -48,7 +46,7 @@ const schema = yup.object().shape({
 	mainText: yup.string().required('본문 내용을 입력해주세요.'),
 });
 
-export default function EditMatching(props: IEdtMatchingProps) {
+export default function EditMatching() {
 	// To-do
 	// 프론트에서 모집 마감일 받을 때 등록일 이후~경기시작 시간 이전으로 모집 마감일 선택하도록 설정
 	// 이미지 api 붙이기
@@ -65,8 +63,8 @@ export default function EditMatching(props: IEdtMatchingProps) {
 	});
 
 	const { setMessage } = useToast();
-	const { moveToBack } = useRouterHook();
-
+	const { moveToBack, getQueryPathName } = useRouterHook();
+	const { getCookie } = useCookies();
 	const [postData, setPostData] = useState(null);
 	const [courtInfos, setCourtInfos] = useState({ address: '', lat: '', lon: '' });
 	const [numOfAllPlayers, setNumOfAllPlayers] = useState(1);
@@ -77,7 +75,7 @@ export default function EditMatching(props: IEdtMatchingProps) {
 			label: '-' || `${editMatchingGetValues('numOfRecruited')}` + '명',
 		},
 	]);
-
+	const matchId = getQueryPathName().id;
 	// 오프라인 테스트용
 	// const db = {
 	// 	title: '테스트 제목',
@@ -127,8 +125,8 @@ export default function EditMatching(props: IEdtMatchingProps) {
 		// )
 		const getNSsetData = async () => {
 			try {
-				// const res = await axios.get(`http://3.38.50.101:8080/api/matches/${props.matching_id}`)
-				const res = await axios.get('http://3.38.50.101:8080/api/matches/1');
+				const res = await axios.get(`http://3.38.50.101:8080/api/matches/${matchId}`);
+				// const res = await axios.get('http://3.38.50.101:8080/api/matches/1');
 				const db = res.data.response;
 				setPostData(db);
 				editMatchingSetValue('postTitle', db.title);
@@ -158,13 +156,9 @@ export default function EditMatching(props: IEdtMatchingProps) {
 	}, []);
 
 	const selectHandler = (option: string) => {
-		option.includes('SINGLE')
-			? setOptionsForNOR([{ value: 1, label: '1 명' }])
-			: setOptionsForNOR([
-					{ value: 1, label: '1 명' },
-					{ value: 2, label: '2 명' },
-					{ value: 3, label: '3 명' },
-			  ]);
+		option === 'SINGLE'
+			? setOptionsForNOR([{ value: 2, label: '2 명' }])
+			: setOptionsForNOR([{ value: 4, label: '4 명' }]);
 	};
 
 	const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -213,7 +207,7 @@ export default function EditMatching(props: IEdtMatchingProps) {
 			!editMatchingWatch('deadlineDate') ||
 			!editMatchingWatch('deadlineTime') ||
 			!editMatchingWatch('address') ||
-			!editMatchingWatch('isCourtBooked') ||
+			// !editMatchingWatch('isCourtBooked') ||
 			!editMatchingWatch('courtFee') ||
 			!editMatchingWatch('mainText')
 		) {
@@ -236,9 +230,9 @@ export default function EditMatching(props: IEdtMatchingProps) {
 			recruitNum: editMatchingGetValues('numOfRecruited'),
 			ageGroup: editMatchingGetValues('selectedAge'),
 			ntrp: editMatchingGetValues('selectedNTRP'),
-			matchingDate: editMatchingGetValues('matchDate'),
-			matchingStartTime: editMatchingGetValues('matchStartTime'),
-			matchingEndTime: editMatchingGetValues('matchEndTime'),
+			date: editMatchingGetValues('matchDate'),
+			startTime: editMatchingGetValues('matchStartTime'),
+			endTime: editMatchingGetValues('matchEndTime'),
 			recruitDueDate: editMatchingGetValues('deadlineDate'),
 			recruitDueTime: editMatchingGetValues('deadlineTime'),
 			location: editMatchingGetValues('address'),
@@ -250,27 +244,20 @@ export default function EditMatching(props: IEdtMatchingProps) {
 			content: editMatchingGetValues('mainText'),
 		};
 		console.log(editedData);
-
 		try {
 			const formData = new FormData();
 			formData.append('imageFile', fileData);
-			const fileUrl = await MatchesService.uploadMatchingImage('1', formData);
-			// const res = await MatchesService.modifyMatchingList(props.matching_id, {
-			// 	...editedData,
-			// 	locationImg: fileUrl.data.response,
-			// });
-			MatchesService.modifyMatchingList('1', {
-				...editedData,
-				locationImg: fileUrl.data.response,
+			const fileUrl = await AuthService.uploadImg(formData);
+			const res = await MatchesService.modifyMatchingList(getCookie('id'), {
+				params: formData,
+				body: {
+					...editedData,
+					locationImg: fileUrl.data.response,
+				},
 			});
 		} catch (err) {
 			console.log(err);
 		}
-
-		// MatchesService.modifyMatchingList(props.matching_id, editedData)
-		MatchesService.modifyMatchingList('1', editedData)
-			.then(() => console.log('수정됨'))
-			.catch((e) => console.log(e));
 	};
 
 	return (
@@ -433,9 +420,7 @@ export default function EditMatching(props: IEdtMatchingProps) {
 								console.log(editMatchingGetValues('deadlineDate'));
 							}}
 						/>
-						{editMatchingErrors.deadlineDate?.message && (
-							<InputErrorText>{editMatchingErrors.deadlineDate.message}</InputErrorText>
-						)}
+
 						<TPicker
 							name='deadlineTime'
 							setState={editMatchingSetValue}
@@ -443,10 +428,10 @@ export default function EditMatching(props: IEdtMatchingProps) {
 							defaultValue={editMatchingGetValues('deadlineTime')}
 						/>
 						<HiddenInput id='deadlineTime' {...editMatchingResister('deadlineTime')} />
-						{editMatchingErrors.deadlineTime?.message && (
-							<InputErrorText>{editMatchingErrors.deadlineTime.message}</InputErrorText>
-						)}
 					</HalfContainer>
+					{editMatchingErrors.deadlineTime?.message && (
+						<InputErrorText>{editMatchingErrors.deadlineTime.message}</InputErrorText>
+					)}
 				</InputBox>
 
 				<InputBox>
@@ -544,15 +529,11 @@ export default function EditMatching(props: IEdtMatchingProps) {
 					)}
 				</InputBox>
 				<HalfContainer>
-					<Buttons
-						colorstyle={'is-black'}
-						type='submit'
-						// onClick={editMatchingHandleSubmit(onSubmit)}
-					>
+					<Buttons colorstyle={'is-black'} type='submit'>
 						{/* <Buttons colorstyle={'is-black'} type='submit' disabled={checkValidation()}> */}
 						수정하기
 					</Buttons>
-					<Buttons colorstyle={'is-black'} onClick={moveToBack}>
+					<Buttons colorstyle={'is-black'} onClick={moveToBack} type='button'>
 						취소
 					</Buttons>
 				</HalfContainer>
