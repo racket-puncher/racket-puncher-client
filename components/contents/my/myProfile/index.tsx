@@ -27,7 +27,7 @@ import { ageGroupName, ntrpName } from 'constants/userInfoOptions';
 // 	mannerPoint: 85,
 // 	realName: '김개발',
 // 	email: 'princeofracket@gmail.com',
-// 	imageURL: '',
+// 	imageURL: 'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1694838481851_1000.jpeg',
 // };
 
 export default function MyProfile() {
@@ -84,7 +84,14 @@ export default function MyProfile() {
 	return (
 		<MyProfileContainer>
 			<ProfileImage width='280px' height='280px'>
-				<img src={imageURL || ''} alt='프로필 사진' />
+				<img
+					src={
+						imageURL === 'test.url'
+							? 'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1694838481851_1000.jpeg'
+							: imageURL
+					}
+					alt='프로필 사진'
+				/>
 			</ProfileImage>
 			<Table>
 				<thead>
@@ -107,7 +114,11 @@ export default function MyProfile() {
 						<td>
 							<CellRight>
 								<ItemName>매너 : </ItemName>
-								<ItemContent>●●●●○</ItemContent>
+								<ItemContent>
+									<ImageBox width='20px' height='20px'>
+										<img src='/images/tennis-ball.png' alt='테니스공' />
+									</ImageBox>
+								</ItemContent>
 							</CellRight>
 						</td>
 					</tr>
@@ -164,6 +175,7 @@ const ProfileImage = styled(ImageBox)`
 	border-radius: ${rem('20px')};
 	max-width: ${rem('150px')};
 	max-height: ${rem('150px')};
+	overflow: hidden;
 `;
 const Table = styled.table`
 	min-width: 100%;

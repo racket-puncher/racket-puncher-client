@@ -6,6 +6,8 @@ import MyListItem from '../collapse';
 import usersService from 'service/users/service';
 import useCookies from 'utils/useCookies';
 
+const listData = {};
+
 interface IMyMatchingListProps {
 	listType: 'hosted' | 'applied';
 }

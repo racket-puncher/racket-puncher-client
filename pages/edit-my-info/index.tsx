@@ -17,6 +17,7 @@ import useCookies from 'utils/useCookies';
 import useRouterHook from 'utils/useRouterHook';
 import usersService from 'service/users/service';
 import AuthService from 'service/auth/service';
+import axios from 'axios';
 
 import { NTRPOptions, ageOptions } from 'constants/filterOption';
 import Selector from 'components/contents/postMatching/selector';
@@ -60,8 +61,8 @@ const schema = yup.object().shape({
 			'이메일 형식이 올바르지 않습니다.'
 		),
 	// password: yup
-	// 	.string()
-	// 	.required('비밀번호는 필수입니다.')
+	// .string()
+	// .required('비밀번호는 필수입니다.')
 	// 	.matches(
 	// 		/^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&#])[A-Za-z\d@$!%*?&#]{8,}$/,
 	// 		'비밀번호는 8자 이상, 숫자/소문자/대문자/특수문자를 각 최소 하나씩 포함해야 합니다.'
@@ -88,6 +89,7 @@ export default function EditMyInfo() {
 	const [userId, setUserId] = useState('');
 	const [userInfo, setUserInfo] = useState({
 		id: '', // 회원 고유 id
+		password: '',
 		siteusername: '', // 이름
 		nickname: '', // 닉네임
 		email: '', // 이메일
@@ -184,15 +186,16 @@ export default function EditMyInfo() {
 	};
 	// 닉네임 중복 체크 ---------------------------------------------------------------
 	const checkNickname = async () => {
-		const params = {
+		const data = {
 			nickname: editMyInfoGetValues('nickname'),
 		};
 		try {
-			const res = await AuthService.checkNickname(params);
+			const res = await AuthService.checkNickname(data);
 			setMessage('success', res.data.response);
 			console.log(res);
-		} catch (e) {
-			console.log(e);
+		} catch (err) {
+			setMessage('error', '다른 닉네임을 사용해주세요.');
+			console.log(err);
 		}
 	};
 
@@ -213,25 +216,37 @@ export default function EditMyInfo() {
 		}
 	};
 
+	const setCK = (name, value, exp) => {
+		const date = new Date();
+		date.setTime(date.getTime() + exp * 24 * 60 * 60 * 1000);
+		document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
+	};
+
 	const onSubmitHandler = async (e) => {
 		e.preventDefault();
-		const params = {
-			...userInfo,
-			email: editMyInfoGetValues('email'),
-			nickname: editMyInfoGetValues('nickname'),
-			address: editMyInfoGetValues('address'),
-			zipCode: editMyInfoGetValues('zipCode'),
-			ntrp: editMyInfoGetValues('ntrp'),
+		const data = {
+			email: editMyInfoGetValues('email') === '' ? userInfo.email : editMyInfoGetValues('email'),
+			nickname:
+				editMyInfoGetValues('nickname') === ''
+					? userInfo.nickname
+					: editMyInfoGetValues('nickname'),
+			address:
+				editMyInfoGetValues('address') === '' ? userInfo.address : editMyInfoGetValues('address'),
+			zipCode:
+				editMyInfoGetValues('zipCode') === '' ? userInfo.zipCode : editMyInfoGetValues('zipCode'),
+			ntrp: editMyInfoGetValues('ntrp') === '' ? userInfo.ntrp : editMyInfoGetValues('ntrp'),
 		};
 		try {
-			await AuthService.getNewToken(getCookie('accessToken'), getCookie('refreshToken'));
+			// await AuthService.getNewToken(getCookie('accessToken'), getCookie('refreshToken'));
+			// setCK('accessToken', getCookie('accessToken'), 7);
 			const formData = new FormData();
 			formData.append('imageFile', fileData);
-			const fileUrl = await usersService.postProfileImg(userId, formData);
-			const res = await usersService.patchMyProfileInfo(userId, {
-				...params,
-				profileImg: fileUrl.data.response,
+			const fileUrl = await AuthService.uploadImg(formData);
+			const res = await usersService.patchMyProfileInfo({
+				params: { userId: getCookie('id') },
+				body: data,
 			});
+
 			setMessage('success', '수정되었습니다.');
 			movePage('/my');
 		} catch (e) {
