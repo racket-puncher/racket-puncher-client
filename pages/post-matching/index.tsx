@@ -20,7 +20,9 @@ import ButtonStyleRadio from 'components/common/buttonRadio';
 import SearchCourtDrawer from 'components/contents/postMatching/searchCourtDrawer';
 import useToast from 'utils/useToast';
 import AuthService from 'service/auth/service';
-import useCookies from 'utils/useCookies';
+import useRouterHook from 'utils/useRouterHook';
+// import useCookies from 'utils/useCookies';
+import { NTRPOptions, ageOptions, matchingTypesOptions } from 'constants/filterOption';
 
 const schema = yup.object().shape({
 	postTitle: yup.string().required('제목을 입력해주세요.'),
@@ -45,7 +47,6 @@ const schema = yup.object().shape({
 export default function PostMatching() {
 	// To-do
 	// 프론트에서 모집 마감일 받을 때 등록일 이후~경기시작 시간 이전으로 모집 마감일 선택하도록 설정
-	// 이미지 api 붙이기
 
 	const {
 		register: postMatchingResister,
@@ -57,8 +58,9 @@ export default function PostMatching() {
 	} = useForm({
 		resolver: yupResolver(schema),
 	});
+	const { replace } = useRouterHook();
 	const { setMessage } = useToast();
-	const { getCookie } = useCookies();
+	// const { getCookie } = useCookies();
 	const [matchDate, setMatchDate] = useState(null);
 	const [matchStartTime, setMatchStartTime] = useState('');
 	const [matchEndTime, setMatchEndTime] = useState('');
@@ -66,7 +68,6 @@ export default function PostMatching() {
 	const [deadlineTime, setDeadlineTime] = useState('');
 	const [courtInfos, setCourtInfos] = useState({ address: '', lat: '', lon: '' });
 	const [numOfAllPlayers, setNumOfAllPlayers] = useState(0);
-	const [selectedImage, setSelectedImage] = useState(null);
 	const [optionsForNOR, setOptionsForNOR] = useState([
 		{ value: null, label: '경기 유형을 먼저 선택해주세요.' },
 	]);
@@ -133,27 +134,32 @@ export default function PostMatching() {
 		}
 	};
 
-	const onSubmit = async () => {
+	const onSubmit = async (e) => {
+		e.preventDefault();
 		if (!virtualImgData) {
 			setMessage('error', '이미지를 추가해주세요.');
 			return;
 		}
 		const posted = {
 			title: postMatchingGetValues('postTitle'),
-			matchingType: postMatchingGetValues('matchType'),
-			recruitNum: postMatchingGetValues('numOfRecruited'),
 			ageGroup: postMatchingGetValues('selectedAge'),
+			matchingType: postMatchingGetValues('matchType'),
 			ntrp: postMatchingGetValues('selectedNTRP'),
-			matchingDate: postMatchingGetValues('matchDate'),
-			matchingStartTime: postMatchingGetValues('matchStartTime'),
-			matchingEndTime: postMatchingGetValues('matchEndTime'),
-			recruitDueDate: postMatchingGetValues('deadlineDate'),
-			recruitDueTime: postMatchingGetValues('deadlineTime'),
+
 			location: postMatchingGetValues('courtAddress'),
 			lat: `${courtInfos.lat}`,
 			lon: `${courtInfos.lon}`,
-			isReserved: postMatchingGetValues('isCourtBooked'),
+
+			date: postMatchingGetValues('matchDate'),
+			startTime: postMatchingGetValues('matchStartTime'),
+			endTime: postMatchingGetValues('matchEndTime'),
+			recruitDueDate: postMatchingGetValues('deadlineDate'),
+			recruitDueTime: postMatchingGetValues('deadlineTime'),
+			recruitNum: postMatchingGetValues('numOfRecruited'),
+
 			cost: postMatchingGetValues('courtFee'),
+			isReserved: postMatchingGetValues('isCourtBooked'),
+
 			content: postMatchingGetValues('mainText'),
 		};
 		console.log(posted);
@@ -163,12 +169,14 @@ export default function PostMatching() {
 			formData.append('imageFile', fileData);
 			const fileUrl = await AuthService.uploadImg(formData);
 			const res = await MatchesService.regMatchingData({
-				params: formData,
+				// params: { file: fileUrl },
 				body: {
 					...posted,
 					locationImg: fileUrl.data.response,
 				},
 			});
+			replace('/main');
+			setMessage('success', '등록되었습니다!');
 		} catch (err) {
 			console.log(err);
 		}
@@ -185,7 +193,7 @@ export default function PostMatching() {
 			<PageTitleArea>
 				<PageMainTitle>매칭 글 등록</PageMainTitle>
 			</PageTitleArea>
-			<PostMatchingForm onSubmit={postMatchingHandleSubmit(onSubmit)}>
+			<PostMatchingForm onSubmit={onSubmit}>
 				<InputBox>
 					<label htmlFor='postTitle'>제목</label>
 					<input
@@ -203,11 +211,7 @@ export default function PostMatching() {
 						<label htmlFor='matchType'>경기 유형</label>
 						<CustomSelect
 							id='matchType'
-							options={[
-								{ value: 'SINGLE', label: '단식' },
-								{ value: 'DOUBLE', label: '복식' },
-								{ value: 'MIXED_DOUBLE', label: '혼성 복식' },
-							]}
+							options={matchingTypesOptions}
 							{...postMatchingResister('matchType')}
 							onChange={(e: ChangeEvent<HTMLInputElement>) => {
 								const selected = e + '';
@@ -232,14 +236,7 @@ export default function PostMatching() {
 						<label htmlFor='selectedAge'>모집 연령대</label>
 						<CustomSelect
 							id='selectedAge'
-							options={[
-								{ value: 'TEENAGER', label: '10대' },
-								{ value: 'TWENTIES', label: '20대' },
-								{ value: 'THIRTIES', label: '30대' },
-								{ value: 'FORTIES', label: '40대' },
-								{ value: 'FIFTIES', label: '50대' },
-								{ value: 'SIXTIES', label: '60대' },
-							]}
+							options={ageOptions}
 							onChange={(e: string) => postMatchingSetValue('selectedAge', e)}
 						/>
 					</InputBox>
@@ -247,13 +244,7 @@ export default function PostMatching() {
 						<label htmlFor='selectedNTRP'>모집 NTRP</label>
 						<CustomSelect
 							id='selectedNTRP'
-							options={[
-								{ value: 'DEVELOPMENT', label: 'NewBie (1.0 ~ 2.0)' },
-								{ value: 'BEGINNER', label: 'Beginner (2.5 ~ 3.5)' },
-								{ value: 'INTERMEDIATE', label: 'Intermediate (4.0 ~ 4.5)' },
-								{ value: 'ADVANCED', label: 'Advanced (5.0 ~ 5.5)' },
-								{ value: 'PRO', label: 'Pro (6.0 ~ 7.0)' },
-							]}
+							options={NTRPOptions}
 							{...postMatchingResister('selectedNTRP')}
 							onChange={(e: string) => {
 								postMatchingSetValue('selectedNTRP', e);

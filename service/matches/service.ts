@@ -13,7 +13,7 @@ import {
 
 // 매칭글 게시
 const regMatchingData = (data: reqRegMatchingApiData) => {
-	return http.post('/api/matches', data.body, { params: data.params });
+	return http.post('/api/matches', data.body);
 };
 
 // 매칭글 상세 보기
@@ -23,7 +23,7 @@ const getDetailMatchingList = (data: reqGetDetailMatchingListApiData) => {
 
 // 매칭글 수정(알림)
 const modifyMatchingList = (matching_id, data: reqModifyMatchingApiData) => {
-	return http.patch('/api/matches/' + `${matching_id}`, data.body, { params: data.params });
+	return http.patch('/api/matches/' + `${matching_id}`, data.body);
 };
 
 // 매칭글 삭제(알림)
