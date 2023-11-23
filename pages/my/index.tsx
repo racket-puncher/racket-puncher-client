@@ -29,10 +29,6 @@ const MyPage = () => {
 			replace('/login');
 		}
 
-		// else if (getCookie('id') !== '') {
-		// 	return;
-		// }
-
 		// getNewToken({
 		// 	accessToken: getCookie('accessToken'),
 		// 	refreshToken: getCookie('refreshToken'),
@@ -43,12 +39,12 @@ const MyPage = () => {
 		{
 			key: 'hostedMatchingList',
 			label: '등록한 매칭',
-			children: <MyMatchingList listType='hosted' />,
+			children: <MyMatchingList listType='hosted' userId={getCookie('id')} />,
 		},
 		{
 			key: 'appliedMatchingList',
 			label: '신청한 매칭',
-			children: <MyMatchingList listType='applied' />,
+			children: <MyMatchingList listType='applied' userId={getCookie('id')} />,
 		},
 	];
 

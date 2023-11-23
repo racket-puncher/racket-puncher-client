@@ -4,16 +4,23 @@ import { ageGroupName, ntrpName } from 'constants/userInfoOptions';
 
 // 날짜 포맷터
 export const dateFormatter = (date: Date) => {
-	return moment(date).format('YYYY/MM/DD');
+	return moment(date).format('YYYY-MM-DD');
 };
 
 // 시간 포매터
-export const timeFormatter = (time: Date) => {
+export const timeFormatter = (time: Date, onlyHour?: boolean) => {
 	const hour = time.getHours() > 9 ? time.getHours() + '' : '0' + time.getHours() + '';
 	const minute = time.getMinutes() > 9 ? time.getMinutes() + '' : '0' + time.getMinutes() + '';
-	return hour + ':' + minute;
+	return onlyHour ? hour : hour + ':' + minute;
 };
 
+export const dddFormatter = (date: Date) => {
+	const yyyy = date.getFullYear() + '';
+	const hh = date.getMonth() > 9 ? date.getMonth() + 1 + '' : '0' + date.getMonth() + 1 + '';
+	const dd = date.getDate() > 9 ? date.getDate() + '' : '0' + date.getDate() + '';
+	console.log(yyyy + '-' + hh + '-' + dd);
+	return yyyy + '-' + hh + '-' + dd;
+};
 // 날짜 역 포매터 (DPicker)
 export const stringToDateFormatter = (dateString: string) => {
 	console.log(dateString.split('-').map((ele, i) => (i < 2 ? parseInt(ele) - 1 : parseInt(ele))));

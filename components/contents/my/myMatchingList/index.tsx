@@ -10,6 +10,7 @@ import useCookies from 'utils/useCookies';
 
 interface IMyMatchingListProps {
 	listType: 'hosted' | 'applied';
+	userId: string;
 }
 
 export default function MyMatchingList(props: IMyMatchingListProps) {
@@ -34,7 +35,7 @@ export default function MyMatchingList(props: IMyMatchingListProps) {
 				console.log(err);
 			}
 		};
-		getCookie('id') && getNSetData(getCookie('id'));
+		getNSetData(props.userId);
 	}, []);
 
 	return (
