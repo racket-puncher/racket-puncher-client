@@ -3,6 +3,8 @@ import httpFile from 'lib/http/httpFileInterceptor';
 
 import {
 	reqGetUserInfoApiData,
+	reqGetMyHostedList,
+	reqGetMyAppliedList,
 	reqPostUserProfileImg,
 	reqPatchMyProfileInfo,
 	reqPostReportUser,
@@ -19,13 +21,13 @@ const getMyProfileInfo = (userId: string) => {
 };
 
 // 등록한 매칭 리스트
-const getMyHostedMatchingList = (userId: string) => {
-	return http.get(`/api/users/my-page/hosted/${userId}`);
+const getMyHostedMatchingList = (data: string) => {
+	return http.get(`/api/users/my-page/hosted/${data}`, { params: { userId: data } });
 };
 
 // 신청한 매칭 리스트
-const getMyAppliedMatchingList = (userId: string) => {
-	return http.get(`/api/users/my-page/apply/${userId}`);
+const getMyAppliedMatchingList = (data: string) => {
+	return http.get(`/api/users/my-page/hosted/${data}`, { params: { userId: data } });
 };
 
 // 프로필 이미지 올리기
