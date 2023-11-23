@@ -17,7 +17,7 @@ import useCookies from 'utils/useCookies';
 import useRouterHook from 'utils/useRouterHook';
 import usersService from 'service/users/service';
 import AuthService from 'service/auth/service';
-import axios from 'axios';
+// import axios from 'axios';
 
 import { NTRPOptions, ageOptions } from 'constants/filterOption';
 import Selector from 'components/contents/postMatching/selector';
@@ -255,7 +255,7 @@ export default function EditMyInfo() {
 				});
 
 				setMessage('success', '수정되었습니다.');
-				// movePage('/my');
+				replace('/my');
 			} catch (e) {
 				console.log(e);
 			}
