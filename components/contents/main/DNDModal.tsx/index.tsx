@@ -38,39 +38,11 @@ const testItems = [
 	{ id: '4', title: '타이틀 5', index: 5 },
 ];
 
-// const testData = {
-// 	id: 1,
-// 	creatorUserId: 2,
-// 	title: '퇴근 후 같이 테니스 치실분!',
-// 	content: '초보자 환영합니다.',
-
-// 	location: '서울특별시 강남구 삼성동 삼성로 566 위드 테니스아카데미',
-// 	lat: 37.5121584863211,
-// 	lon: 127.054408208511,
-// 	locationImg: '',
-
-// 	date: '2023-11-30',
-// 	startTime: '20:00',
-// 	endTime: '22:00',
-// 	recruitDueDateTime: '2023-11-27T17:00',
-
-// 	recruitNum: 2,
-// 	cost: 50000,
-// 	isReserved: false,
-
-// 	ntrp: 'BEGINNER',
-// 	ageGroup: 'TWENTIES',
-// 	recruitStatus: 'OPEN',
-// 	matchingType: 'SINGLE',
-// 	confirmedNum: 1,
-// 	createTime: '2023-11-17T07:18:44',
-// };
-
-interface DetailMatchContentProps {
+interface IDNDModalProps {
 	height?: string;
 }
 
-export default function DetailMatching() {
+export default function DNDModal(props: IDNDModalProps) {
 	const { getQueryPathName, movePage } = useRouterHook();
 	const [recruitStatusModalVisible, setRecruitStatusModalVisible] = useState(false);
 	const [matchingInfo, setMatchingInfo] = useState(undefined);
@@ -172,197 +144,61 @@ export default function DetailMatching() {
 
 	return (
 		<>
-			<DetailMatchingContainer>
-				<ProfileContainer>
-					<ProfileBox>
-						<ImageWrap>
-							<ImageBox width={'140px'} height={'140px'}>
-								{/* <img src={`${prefix}/images/profile-img.png`} alt='profile-image' /> */}
-
-								{writerInfo && writerInfo.profileImg ? (
-									<IMG
-										src={
-											writerInfo.profileImg ||
-											'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1697976551262_750.jpeg'
-										}
-										alt='프로필 이미지'
-									/>
-								) : (
-									<div
-										style={{ width: '100%', height: '100%', backgroundColor: 'lightgray' }}></div>
-								)}
-							</ImageBox>
-							<p>{writerInfo && writerInfo.nickname}</p>
-						</ImageWrap>
-						<UserInfoModal
-							userId={writerId}
-							// userId={matchingInfo?.creatorUserId}
-							isOpen={isUserInfoModalOpen}
-							toggleModal={toggleUserInfoModal}
-							onCancel={() => setIsUserInfoModalOpen(false)}
-						/>
-						<ButtonBox>
-							<RoundButton colorstyle={'is-green'} onClick={toggleUserInfoModal}>
-								등록자 정보
-							</RoundButton>
-						</ButtonBox>
-					</ProfileBox>
-				</ProfileContainer>
-
-				<ProgressBarContainer>
-					<p>
-						{/* “모집 기간이 <span>2</span>일 <span>7</span>시간 남았습니다.“ */}
-						<br />{' '}
-						<span style={{ color: `${PrimaryColor}` }}>
-							{matchingInfo && formatDateTime(matchingInfo.recruitDueDateTime).split('년')[1]}{' '}
-						</span>
-						모집 마감!
-					</p>
-					<Progress
-						strokeLinecap='round'
-						percent={75}
-						showInfo={false}
-						strokeColor={PrimaryColor}
-					/>
-				</ProgressBarContainer>
-
-				<ContentContainer>
-					<DetailMatchItemBox>
-						<label htmlFor='detailMatchTitle'>제목</label>
-						<DetailMatchContent>
-							<p>{matchingInfo && matchingInfo.title}</p>
-						</DetailMatchContent>
-					</DetailMatchItemBox>
-
-					<FlexBox>
-						<DetailMatchItemBox>
-							<label htmlFor='detailMatchAge'>연령대</label>
-							<DetailMatchContent>
-								<p>
-									{matchingInfo &&
-										ageGroupName.filter((ele) => ele.value === matchingInfo.ageGroup)[0].label}
-								</p>
-							</DetailMatchContent>
-						</DetailMatchItemBox>
-						<DetailMatchItemBox>
-							<label htmlFor='detailMatchNTRP'>NTRP</label>
-							<DetailMatchContent>
-								<p>
-									{matchingInfo &&
-										ntrpName
-											.filter((ele) => ele.value === matchingInfo.ntrp)[0]
-											.label.split(' (')[0]}
-								</p>
-							</DetailMatchContent>
-						</DetailMatchItemBox>
-					</FlexBox>
-
-					<DetailMatchItemBox>
-						<label htmlFor='detailMatchItem'>매칭 항목</label>
-						<DetailMatchContent>
-							<p>
-								{matchingInfo &&
-									matchTypeName.filter((ele) => ele.value === matchingInfo.matchingType)[0]
-										.label}{' '}
-								/ {matchingInfo && matchingInfo.date} / {matchingInfo && matchingInfo.startTime} ~{' '}
-								{matchingInfo && matchingInfo.endTime}
-							</p>
-						</DetailMatchContent>
-					</DetailMatchItemBox>
-
-					<DetailMatchItemBox>
-						<label htmlFor='detailMatchAddree'>주소</label>
-						<DetailMatchContent>
-							<p>{matchingInfo && matchingInfo.location}</p>
-						</DetailMatchContent>
-					</DetailMatchItemBox>
-
-					<DetailMatchItemBox>
-						<label htmlFor='detailMatchAddree'>길 찾기</label>
-						<MapBox>
-							<div id={'staticMap'} style={{ width: '100%', height: '400px' }}></div>
-						</MapBox>
-					</DetailMatchItemBox>
-
-					<DetailMatchItemBox>
-						<label htmlFor='detailMatchInfo'>구장 이미지</label>
-						<DetailMatchContent height={'300px'}>
-							<img src={`${matchingInfo && matchingInfo.location}`} id='detailMatchInfo' />
-						</DetailMatchContent>
-					</DetailMatchItemBox>
-
-					<DetailMatchItemBox>
-						<label htmlFor='detailMatchInfo'>본문 내용</label>
-						<DetailMatchContent height={'300px'}>
-							<p>{matchingInfo && matchingInfo.content}</p>
-						</DetailMatchContent>
-					</DetailMatchItemBox>
-				</ContentContainer>
-
-				<FloatBox>
-					<RoundButton onClick={() => movePage(`/main/detailMatch/${matchId}/edit-matching`)}>
-						수정하기
-					</RoundButton>
-					<RoundButton onClick={() => setRecruitStatusModalVisible(true)}>모집 현황</RoundButton>
-				</FloatBox>
-
-				{/* 모집현황 modal --------------------------------- */}
-				{/* <ModalBox
-					isOpen={recruitStatusModalVisible}
-					heightType={true}
-					toggleModal={toggleModal}
-					onCancel={closeRecruitStatusModal}>
-					<ModalAlignContainer>
-						<div className='modalBoxes'>
-							<DragDropContext onDragEnd={onDragEnd}>
-								{Object.keys(recruitList).map((key) => (
-									<ModalWrapBox key={key}>
-										<div className='is-modal-wrap-header'>
-											<p>신청인원</p>
-											<p>10명</p>
-										</div>
-										<Droppable key={key} droppableId={key}>
-											{(provided) => (
-												<div
-													className='is-modal-wrap-body'
-													{...provided.droppableProps}
-													ref={provided.innerRef}>
-													{recruitList[key].map((item, index) => (
-														<Draggable key={item.id} draggableId={item.id} index={index}>
-															{(provided) => (
-																<div
-																	ref={provided.innerRef}
-																	{...provided.draggableProps}
-																	{...provided.dragHandleProps}>
-																	<ModalWrapItem>
-																		<div className='box-top'>
-																			<ImageBox width='80px' height='80px'>
-																				<img src='/images/main-img1.png' alt='image' />
-																			</ImageBox>
-																			<p>뿡뿡이 {item.index}</p>
-																		</div>
-																		<div className='box-footer'>
-																			<div className='is-btn black'>정보</div>
-																			<div className='is-btn gray'>신고</div>
-																		</div>
-																	</ModalWrapItem>
-																</div>
-															)}
-														</Draggable>
-													))}
-												</div>
-											)}
-										</Droppable>
-									</ModalWrapBox>
-								))}
-							</DragDropContext>
-						</div>
-						<ButtonBox>
-							<RoundButton colorstyle={'is-black'}>모집완료</RoundButton>
-						</ButtonBox>
-					</ModalAlignContainer>
-				</ModalBox> */}
-			</DetailMatchingContainer>
+			<ModalBox
+				isOpen={recruitStatusModalVisible}
+				heightType={true}
+				toggleModal={toggleModal}
+				onCancel={closeRecruitStatusModal}>
+				<ModalAlignContainer>
+					<div className='modalBoxes'>
+						<DragDropContext onDragEnd={onDragEnd}>
+							{Object.keys(recruitList).map((key) => (
+								<ModalWrapBox key={key}>
+									<div className='is-modal-wrap-header'>
+										<p>신청인원</p>
+										<p>10명</p>
+									</div>
+									<Droppable key={key} droppableId={key}>
+										{(provided) => (
+											<div
+												className='is-modal-wrap-body'
+												{...provided.droppableProps}
+												ref={provided.innerRef}>
+												{recruitList[key].map((item, index) => (
+													<Draggable key={item.id} draggableId={item.id} index={index}>
+														{(provided) => (
+															<div
+																ref={provided.innerRef}
+																{...provided.draggableProps}
+																{...provided.dragHandleProps}>
+																<ModalWrapItem>
+																	<div className='box-top'>
+																		<ImageBox width='80px' height='80px'>
+																			<img src='/images/main-img1.png' alt='image' />
+																		</ImageBox>
+																		<p>뿡뿡이 {item.index}</p>
+																	</div>
+																	<div className='box-footer'>
+																		<div className='is-btn black'>정보</div>
+																		<div className='is-btn gray'>신고</div>
+																	</div>
+																</ModalWrapItem>
+															</div>
+														)}
+													</Draggable>
+												))}
+											</div>
+										)}
+									</Droppable>
+								</ModalWrapBox>
+							))}
+						</DragDropContext>
+					</div>
+					<ButtonBox>
+						<RoundButton colorstyle={'is-black'}>모집완료</RoundButton>
+					</ButtonBox>
+				</ModalAlignContainer>
+			</ModalBox>
 		</>
 	);
 }
