@@ -64,7 +64,7 @@ export default function PostMatching() {
 	const [matchDate, setMatchDate] = useState(null);
 	const [matchStartTime, setMatchStartTime] = useState('');
 	const [matchEndTime, setMatchEndTime] = useState('');
-	yup;
+
 	const [deadlineDate, setDeadlineDate] = useState('');
 	const [deadlineTime, setDeadlineTime] = useState('');
 	const [courtInfos, setCourtInfos] = useState({ address: '', lat: '', lon: '' });
