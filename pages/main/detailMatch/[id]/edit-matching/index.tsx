@@ -20,7 +20,7 @@ import useRouterHook from 'utils/useRouterHook';
 import axios from 'axios';
 import AuthService from 'service/auth/service';
 import useToast from 'utils/useToast';
-import { ageOptions, matchingTypesOptions } from 'constants/filterOption';
+import { NTRPOptions, ageOptions, matchingTypesOptions } from 'constants/filterOption';
 import { InputErrorText } from 'styles/ts/components/text';
 import { prefix } from '../../../../../constants/prefix';
 import useCookies from 'utils/useCookies';
@@ -249,7 +249,7 @@ export default function EditMatching() {
 			formData.append('imageFile', fileData);
 			const fileUrl = await AuthService.uploadImg(formData);
 			const res = await MatchesService.modifyMatchingList(getCookie('id'), {
-				params: formData,
+				// params: formData,
 				body: {
 					...editedData,
 					locationImg: fileUrl.data.response,
@@ -328,13 +328,7 @@ export default function EditMatching() {
 						<label htmlFor='selectedNTRP'>모집 NTRP</label>
 						<Selector
 							idString='selectedNTRP'
-							options={[
-								{ value: 'DEVELOPMENT', label: 'NewBie (1.0 ~ 2.0)' },
-								{ value: 'BEGINNER', label: 'Beginner (2.5 ~ 3.5)' },
-								{ value: 'INTERMEDIATE', label: 'Intermediate (4.0 ~ 4.5)' },
-								{ value: 'ADVANCED', label: 'Advanced (5.0 ~ 5.5)' },
-								{ value: 'PRO', label: 'Pro (6.0 ~ 7.0)' },
-							]}
+							options={NTRPOptions}
 							{...editMatchingResister('selectedNTRP')}
 							value={editMatchingGetValues('selectedNTRP')}
 							onChangeHandler={(e: string) => {
