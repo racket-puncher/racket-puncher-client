@@ -4,7 +4,7 @@ import { rem } from 'polished';
 import { ImageBox } from 'styles/ts/components/box';
 import { FontFamilyRegular, FontSizeSpSm } from 'styles/ts/common';
 import DatePicker from 'react-mobile-datepicker';
-import { dateFormatter, stringToDateFormatter } from 'utils/formatter';
+import { dddFormatter, dateFormatter, stringToDateFormatter } from 'utils/formatter';
 
 interface IPickerProps {
 	readonly name: string;
@@ -33,8 +33,9 @@ export default function DPicker(props: IPickerProps) {
 
 	const handleSelect = (selectedDate: Date) => {
 		setDateState(selectedDate);
-		props.setState(props.name, dateFormatter(selectedDate));
+		props.setState(props.name, dddFormatter(selectedDate));
 		setIsOpen(false);
+		console.log(dddFormatter(selectedDate));
 	};
 	// 못선택하게 하는 방법...?!
 

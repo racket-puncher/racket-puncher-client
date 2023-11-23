@@ -55,7 +55,10 @@ export default function TPicker(props: IPickerProps) {
 
 	const handleSelect = (selected: Date) => {
 		setTimeState(selected);
-		props.setState(props.name, timeFormatter(selected));
+		props.setState(
+			props.name,
+			!props.type[1] ? timeFormatter(selected, true) : timeFormatter(selected)
+		);
 		setIsOpen(false);
 	};
 
@@ -64,10 +67,12 @@ export default function TPicker(props: IPickerProps) {
 			<CustomDatePickerBox onClick={() => setIsOpen(true)}>
 				<p>
 					{timeState.getHours() > 9 ? `${timeState.getHours()}` : '0' + `${timeState.getHours()}`}시{' '}
-					{props.type[1] && timeState.getMinutes() > 9
-						? `${timeState.getMinutes()}`
-						: '0' + `${timeState.getMinutes()}`}
-					분
+					{!props.type[1]
+						? null
+						: timeState.getMinutes() > 9
+						  ? `${timeState.getMinutes()}`
+						  : '0' + `${timeState.getMinutes()}`}
+					{props.type[1] && '분'}
 				</p>
 
 				<ImageBox width={'24px'} height={'24px'}>

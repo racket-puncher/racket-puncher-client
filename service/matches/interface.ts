@@ -1,6 +1,6 @@
 // 매칭글 게시
 export interface reqRegMatchingApiData {
-	params: any;
+	// params: any;
 	body: {
 		title: string; // 제목
 		ageGroup: string; // 연령대
@@ -11,9 +11,9 @@ export interface reqRegMatchingApiData {
 		lat: string; // 위도
 		lon: string; // 경도
 
-		matchingDate: string; // 경기 날짜
-		matchingStartTime: string; // 경기 시작 시간
-		matchingEndTime: string; // 경기 종료 시간
+		date: string; // 경기 날짜
+		startTime: string; // 경기 시작 시간
+		endTime: string; // 경기 종료 시간
 		recruitDueDate: string; // 모집 종료 일(yyyy-mm-dd)
 		recruitDueTime: string; // 모집 종료 시간(hh)
 		recruitNum: number; // 모집 인원
@@ -21,7 +21,7 @@ export interface reqRegMatchingApiData {
 		cost: number; // 대여비
 		isReserved: boolean; // 예약 여부
 
-		locationImg: string; // 구장 이미지
+		locationImg: any; // 구장 이미지
 		content: string; // 본문
 	};
 }
@@ -34,7 +34,7 @@ export interface reqGetDetailMatchingListApiData {
 
 // 매칭글 수정(알림)
 export interface reqModifyMatchingApiData {
-	params: any;
+	// params: any;
 	body: {
 		title: string; // 제목
 		ageGroup: string; // 연령대
