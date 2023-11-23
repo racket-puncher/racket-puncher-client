@@ -11,13 +11,13 @@ import {
 } from './interface';
 
 // 회원정보 보기
-const getUserInfo = (userId: string) => {
-	return http.get(`/api/users/profile/${userId}`);
+const getUserInfo = (data: string) => {
+	return http.get(`/api/users/profile/${data}`, { params: { userId: data } });
 };
 
 // 내 프로필 정보 보기
-const getMyProfileInfo = (userId: string) => {
-	return http.get(`/api/users/my-page/${userId}`);
+const getMyProfileInfo = (data: string) => {
+	return http.get(`/api/users/my-page/${data}`, { params: { userId: data } });
 };
 
 // 등록한 매칭 리스트
