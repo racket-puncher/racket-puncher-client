@@ -62,7 +62,7 @@ export default function UserInfoModal(props: IUserInfoModalProps) {
 				console.log(err);
 			}
 		};
-		// getNSsetData();
+		getNSsetData();
 	}, []);
 	const { nickname, address, profileImg, gender, ntrp, winningRate, mannerPoint, ageGroup } =
 		userInfo;
@@ -100,7 +100,7 @@ export default function UserInfoModal(props: IUserInfoModalProps) {
 						</UserInfoItem>
 						<UserInfoItem>
 							<ItemName>지역: </ItemName>
-							<ItemContent>{address}</ItemContent>
+							<ItemContent>{address.split(' ')[0] + ' ' + address.split(' ')[1]}</ItemContent>
 						</UserInfoItem>
 						{/* <UserInfoItem>
 							<ItemName>승률: </ItemName>

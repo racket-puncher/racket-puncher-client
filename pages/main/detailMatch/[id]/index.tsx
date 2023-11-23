@@ -5,6 +5,7 @@ import { Progress } from 'antd';
 import { ImageBox } from 'styles/ts/components/box';
 import {
 	BlackColor,
+	FontFamilyMedium,
 	FontFamilyRegular,
 	FontFamilySemiBold,
 	FontSizeLg,
@@ -29,6 +30,7 @@ import useRouterHook from 'utils/useRouterHook';
 import { formatDateTime } from 'utils/formatter';
 import { ageGroupName, matchTypeName, ntrpName } from 'constants/userInfoOptions';
 import usersService from 'service/users/service';
+// import HostProfile from 'components/contents/main/hostProfile';
 
 const testItems = [
 	{ id: '0', title: '타이틀 1', index: 1 },
@@ -73,17 +75,16 @@ interface DetailMatchContentProps {
 export default function DetailMatching() {
 	const { getQueryPathName, movePage } = useRouterHook();
 	const [recruitStatusModalVisible, setRecruitStatusModalVisible] = useState(false);
-	const [matchingInfo, setMatchingInfo] = useState(undefined);
+	const [matchingInfo, setMatchingInfo] = useState(null);
 	const [writerId, setWriterId] = useState('');
-	const [writerInfo, setWriterInfo] = useState(undefined);
-	const [applyList, setApplyList] = useState({});
+	const [writerInfo, setWriterInfo] = useState(null);
+	const [applyList, setApplyList] = useState(null);
 	const [recruitList, setRecruitList] = useState({
 		beforeList: [],
 		afterList: [],
 	});
 	const matchId = getQueryPathName().id;
-	// const matchId = getQueryPathName().split('detailMatch/')[1].slice(1, 3);
-	console.log(matchId);
+
 	useEffect(() => {
 		if (!matchingInfo) {
 			const getNSsetMatchDetail = async (id) => {
@@ -91,27 +92,74 @@ export default function DetailMatching() {
 					const res = await MatchesService.getDetailMatchingList(id);
 					const data = res.data.response;
 					console.log(data);
-					setMatchingInfo(data);
+					setMatchingInfo({
+						id: data.id,
+						creatorUserId: data.creatorUserId,
+						title: data.title,
+						content: data.content,
+
+						location: data.location,
+						lat: data.lat * 1,
+						lon: data.lon * 1,
+						locationImg: data.locationImg,
+
+						date: data.date,
+						startTime: data.startTime,
+						endTime: data.endTime,
+						recruitDueDateTime: data.recruitDueDateTime,
+
+						recruitNum: data.recruitNum,
+						cost: data.cost,
+						isReserved: data.isReserved,
+
+						ntrp: data.ntrp,
+						ageGroup: data.ageGroup,
+						recruitStatus: data.recruitStatus,
+						matchingType: data.matchingType,
+						confirmedNum: data.confirmedNum,
+						createTime: data.createTime,
+					});
 					setWriterId(data.creatorUserId);
 				} catch (err) {
 					console.log(err);
 				}
 			};
-			const getNSsetWriter = async (id) => {
-				try {
-					const res = await usersService.getMyProfileInfo(id);
-					const data = res.data.response;
-					console.log(data);
-					setWriterInfo(data);
-				} catch (err) {
-					console.log(err);
-				}
-			};
-			getNSsetWriter(matchingInfo?.creatorUserId);
-			getNSsetMatchDetail(matchId);
+
+			matchId && getNSsetMatchDetail(matchId);
 		}
 		// getNSsetRecruitList();
-	}, [matchId, writerId]);
+	}, [matchId]);
+
+	useEffect(() => {
+		const getNSsetWriter = async (id) => {
+			try {
+				const res = await usersService.getUserInfo(id);
+				const data = res.data.response;
+				console.log(data);
+				setWriterInfo(data);
+			} catch (err) {
+				console.log(err);
+			}
+		};
+		writerId && getNSsetWriter(writerId);
+	}, [writerId]);
+
+	useEffect(() => {
+		const staticMapContainer = document.getElementById('staticMap');
+		const markerPosition = new kakao.maps.LatLng(33.450701, 126.570667);
+		// const markerPosition = new kakao.maps.LatLng(lon, lat);
+		const marker = {
+			position: markerPosition,
+		};
+		const staticMapOption = {
+			center: new kakao.maps.LatLng(33.450705, 126.570677),
+			// center: new kakao.maps.LatLng(setMatchingInfo.lat, setMatchingInfo.lon),
+			level: 2,
+			marker,
+		};
+
+		const staticMap = new kakao.maps.StaticMap(staticMapContainer, staticMapOption);
+	}, []);
 
 	// 모달
 	const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState(false);
@@ -155,21 +203,6 @@ export default function DetailMatching() {
 		setRecruitList(exampleData);
 	}, []);
 
-	useEffect(() => {
-		const staticMapContainer = document.getElementById('staticMap');
-		const markerPosition = new kakao.maps.LatLng(33.450701, 126.570667);
-		const marker = {
-			position: markerPosition,
-		};
-		const staticMapOption = {
-			center: new kakao.maps.LatLng(33.450705, 126.570677),
-			level: 2,
-			marker,
-		};
-
-		const staticMap = new kakao.maps.StaticMap(staticMapContainer, staticMapOption);
-	}, []);
-
 	return (
 		<>
 			<DetailMatchingContainer>
@@ -179,7 +212,7 @@ export default function DetailMatching() {
 							<ImageBox width={'140px'} height={'140px'}>
 								{/* <img src={`${prefix}/images/profile-img.png`} alt='profile-image' /> */}
 
-								{writerInfo && writerInfo.profileImg ? (
+								{writerInfo ? (
 									<IMG
 										src={
 											writerInfo.profileImg ||
@@ -196,7 +229,6 @@ export default function DetailMatching() {
 						</ImageWrap>
 						<UserInfoModal
 							userId={writerId}
-							// userId={matchingInfo?.creatorUserId}
 							isOpen={isUserInfoModalOpen}
 							toggleModal={toggleUserInfoModal}
 							onCancel={() => setIsUserInfoModalOpen(false)}
@@ -209,9 +241,11 @@ export default function DetailMatching() {
 					</ProfileBox>
 				</ProfileContainer>
 
+				{/* <HostProfile hostId={writerId} /> */}
+
 				<ProgressBarContainer>
 					<p>
-						{/* “모집 기간이 <span>2</span>일 <span>7</span>시간 남았습니다.“ */}
+						“모집 기간이 <span>2</span>일 <span>7</span>시간 남았습니다.“
 						<br />{' '}
 						<span style={{ color: `${PrimaryColor}` }}>
 							{matchingInfo && formatDateTime(matchingInfo.recruitDueDateTime).split('년')[1]}{' '}
@@ -287,7 +321,11 @@ export default function DetailMatching() {
 					<DetailMatchItemBox>
 						<label htmlFor='detailMatchInfo'>구장 이미지</label>
 						<DetailMatchContent height={'300px'}>
-							<img src={`${matchingInfo && matchingInfo.location}`} id='detailMatchInfo' />
+							<img
+								src={`${matchingInfo && matchingInfo.location}`}
+								id='detailMatchInfo'
+								alt={'구장이미지'}
+							/>
 						</DetailMatchContent>
 					</DetailMatchItemBox>
 
@@ -307,7 +345,7 @@ export default function DetailMatching() {
 				</FloatBox>
 
 				{/* 모집현황 modal --------------------------------- */}
-				{/* <ModalBox
+				<ModalBox
 					isOpen={recruitStatusModalVisible}
 					heightType={true}
 					toggleModal={toggleModal}
@@ -361,7 +399,7 @@ export default function DetailMatching() {
 							<RoundButton colorstyle={'is-black'}>모집완료</RoundButton>
 						</ButtonBox>
 					</ModalAlignContainer>
-				</ModalBox> */}
+				</ModalBox>
 			</DetailMatchingContainer>
 		</>
 	);
@@ -448,7 +486,7 @@ const DetailMatchContent = styled.div<DetailMatchContentProps>`
 	}
 
 	p {
-		font-family: ${FontFamilyRegular};
+		font-family: ${FontFamilyMedium};
 		font-size: ${FontSizeMd};
 		color: ${BlackColor};
 	}
