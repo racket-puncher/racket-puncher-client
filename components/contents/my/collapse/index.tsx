@@ -74,7 +74,7 @@ export default function MyListItem(props: IMyListItemProps) {
 		} else if (getCookie('id') !== '') {
 			getNSetData();
 		}
-	}, []);
+	}, [playerList]);
 
 	const mt = matchTypeName.filter((ele) => ele.value === matchingType)[0];
 	const items: IAntdCollapseProps['items'] = [
