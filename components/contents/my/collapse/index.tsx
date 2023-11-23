@@ -23,7 +23,7 @@ import useCookies from 'utils/useCookies';
 
 interface IMyListItemProps {
 	postInfo: {
-		readonly matchingId: string;
+		readonly id: string;
 		readonly key: string;
 		readonly date: string;
 		readonly title: string;
@@ -51,7 +51,9 @@ interface IMyListItemProps {
 export default function MyListItem(props: IMyListItemProps) {
 	// To do
 	const { getMatchingApplyState } = MatchesService;
-	const { matchingId, key, date, title, location, matchingType } = props.postInfo;
+
+	const { postInfo } = props;
+	const { key, date, title, location, matchingType } = props.postInfo;
 	const { checkLogin, getCookie } = useCookies();
 	const { replace } = useRouterHook();
 	const { setMessage } = useToast();
@@ -60,7 +62,7 @@ export default function MyListItem(props: IMyListItemProps) {
 	useEffect(() => {
 		const getNSetData = async () => {
 			try {
-				const res = await getMatchingApplyState(matchingId);
+				const res = await getMatchingApplyState(postInfo.id);
 				const data = res.data.response;
 				console.log(data);
 				setPlayersList(data.confirmedMembers);
@@ -74,7 +76,7 @@ export default function MyListItem(props: IMyListItemProps) {
 		} else if (getCookie('id') !== '') {
 			getNSetData();
 		}
-	}, [playerList]);
+	}, []);
 
 	const mt = matchTypeName.filter((ele) => ele.value === matchingType)[0];
 	const items: IAntdCollapseProps['items'] = [
@@ -84,7 +86,7 @@ export default function MyListItem(props: IMyListItemProps) {
 				<Header>
 					<DateNDay id='dataNDay'>{date.split('-')[1] + '/' + date.split('-')[2] || '-'}</DateNDay>
 					<TitleArea>
-						<TitleLink id='title' href={`/main/detailMatch/${matchingId}`} target={'_blank'}>
+						<TitleLink id='title' href={`/main/detailMatch/${postInfo.id}`} target={'_blank'}>
 							{title.length < 20 ? title : title.slice(0, 19) + '...' || '-'}
 						</TitleLink>{' '}
 						/ {location.split(' ')[0] + ' ' + location.split(' ')[1] || '-'} /{' '}

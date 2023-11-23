@@ -52,4 +52,5 @@ export default function MyMatchingList(props: IMyMatchingListProps) {
 const MyListContainer = styled.ul`
 	min-width: 100%;
 	margin-top: ${rem('20px')};
+	padding: 0px, ${rem('20px')};
 `;

@@ -10,6 +10,18 @@ export interface reqPostUserProfileImg {
 	};
 }
 
+export interface reqGetMyHostedList {
+	params: {
+		userId: string;
+	};
+}
+
+export interface reqGetMyAppliedList {
+	params: {
+		userId: any;
+	};
+}
+
 export interface reqPatchMyProfileInfo {
 	params: {
 		userId: any;
@@ -31,6 +43,6 @@ export interface reqPatchMyProfileInfo {
 export interface reqPostReportUser {
 	title: string; // 제목
 	content: string; // 내용
-	writerId: string; // 신고자 ID
-	reportedId: string; // 피신고자 ID
+	reportingUserId: string; // 신고자 ID
+	reportedUserId: string; // 피신고자 ID
 }

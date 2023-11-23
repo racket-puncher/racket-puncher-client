@@ -84,30 +84,6 @@ export default function DetailMatching() {
 	const matchId = getQueryPathName().id;
 	// const matchId = getQueryPathName().split('detailMatch/')[1].slice(1, 3);
 	console.log(matchId);
-
-	const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState(false);
-	const toggleUserInfoModal = () => setIsUserInfoModalOpen(!isUserInfoModalOpen);
-
-	const toggleModal = () => {
-		setRecruitStatusModalVisible((prev) => !prev);
-	};
-
-	const closeRecruitStatusModal = () => {
-		setRecruitStatusModalVisible(false);
-	};
-
-	const onDragEnd = ({ source, destination }) => {
-		if (!destination) return;
-
-		const scourceKey = source.droppableId;
-		const destinationKey = destination.droppableId;
-
-		const processArr = JSON.parse(JSON.stringify(recruitList));
-		const [targetItem] = processArr[scourceKey].splice(source.index, 1);
-		processArr[destinationKey].splice(destination.index, 0, targetItem);
-		setRecruitList(processArr);
-	};
-
 	useEffect(() => {
 		if (!matchingInfo) {
 			const getNSsetMatchDetail = async (id) => {
@@ -137,6 +113,26 @@ export default function DetailMatching() {
 		// getNSsetRecruitList();
 	}, [matchId, writerId]);
 
+	//모달
+	const [isUserInfoModalOpen, setIsUserInfoModalOpen] = useState(false);
+	const toggleUserInfoModal = () => setIsUserInfoModalOpen(!isUserInfoModalOpen);
+
+	const toggleModal = () => setRecruitStatusModalVisible((prev) => !prev);
+
+	const closeRecruitStatusModal = () => setRecruitStatusModalVisible(false);
+
+	const onDragEnd = ({ source, destination }) => {
+		if (!destination) return;
+
+		const scourceKey = source.droppableId;
+		const destinationKey = destination.droppableId;
+
+		const processArr = JSON.parse(JSON.stringify(recruitList));
+		const [targetItem] = processArr[scourceKey].splice(source.index, 1);
+		processArr[destinationKey].splice(destination.index, 0, targetItem);
+		setRecruitList(processArr);
+	};
+
 	useEffect(() => {
 		const getNSsetApplyList = async (id) => {
 			try {
@@ -149,7 +145,7 @@ export default function DetailMatching() {
 			}
 		};
 		getNSsetApplyList(matchId);
-	}, [matchId]);
+	}, []);
 
 	useEffect(() => {
 		const exampleData = {
@@ -307,10 +303,8 @@ export default function DetailMatching() {
 					<RoundButton onClick={() => movePage(`/main/detailMatch/${matchId}/edit-matching`)}>
 						수정하기
 					</RoundButton>
-				</FloatBox>
-				{/* <FloatBox>
 					<RoundButton onClick={() => setRecruitStatusModalVisible(true)}>모집 현황</RoundButton>
-				</FloatBox> */}
+				</FloatBox>
 
 				{/* 모집현황 modal --------------------------------- */}
 				<ModalBox
@@ -476,6 +470,9 @@ const FlexBox = styled.div`
 const ButtonBox = styled.div``;
 
 const FloatBox = styled.div`
+	display: flex;
+	flex-direction: row;
+	gap: ${rem('15px')};
 	max-width: ${rem('640px')};
 	width: 100%;
 	padding: 0 30px;
