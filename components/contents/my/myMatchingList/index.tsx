@@ -6,7 +6,7 @@ import MyListItem from '../collapse';
 import usersService from 'service/users/service';
 import useCookies from 'utils/useCookies';
 
-const listData = {};
+// const listData = {};
 
 interface IMyMatchingListProps {
 	listType: 'hosted' | 'applied';
@@ -29,7 +29,7 @@ export default function MyMatchingList(props: IMyMatchingListProps) {
 						? await getMyHostedMatchingList(id)
 						: await getMyAppliedMatchingList(id);
 				console.log(res.data.response);
-				setListData({ ...res.data.response });
+				setListData(res.data.response);
 			} catch (err) {
 				console.log(err);
 			}

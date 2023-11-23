@@ -1,4 +1,6 @@
 import http from '../../lib/http/httpInterceptor';
+import httpFile from 'lib/http/httpFileInterceptor';
+
 import {
 	reqGetUserInfoApiData,
 	reqPostUserProfileImg,
@@ -27,13 +29,15 @@ const getMyAppliedMatchingList = (userId: string) => {
 };
 
 // 프로필 이미지 올리기
-const postProfileImg = (userId: string, data: any) => {
-	return http.post(`/api/users/${userId}/upload-profile-image`, data);
+const postProfileImg = (data: reqPostUserProfileImg) => {
+	return http.post(`/api/users/${data.params.userId}/upload-profile-image`, null, {
+		params: data.params,
+	});
 };
 
 // 내 프로필 수정
 const patchMyProfileInfo = (data: reqPatchMyProfileInfo) => {
-	return http.patch('/api/users/my-page/modify/' + `${data.params.userId}`, data.body, {
+	return http.patch(`/api/users/my-page/modify/${data.params.userId}`, data.body, {
 		params: data.params,
 	});
 };

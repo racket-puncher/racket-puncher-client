@@ -121,7 +121,6 @@ export default function EditMyInfo() {
 					zipCode: data.zipCode,
 					address: data.address,
 					email: data.email,
-
 					profileImg: data.profileImg,
 				});
 
@@ -236,21 +235,41 @@ export default function EditMyInfo() {
 				editMyInfoGetValues('zipCode') === '' ? userInfo.zipCode : editMyInfoGetValues('zipCode'),
 			ntrp: editMyInfoGetValues('ntrp') === '' ? userInfo.ntrp : editMyInfoGetValues('ntrp'),
 		};
-		try {
-			// await AuthService.getNewToken(getCookie('accessToken'), getCookie('refreshToken'));
-			// setCK('accessToken', getCookie('accessToken'), 7);
-			const formData = new FormData();
-			formData.append('imageFile', fileData);
-			const fileUrl = await AuthService.uploadImg(formData);
-			const res = await usersService.patchMyProfileInfo({
-				params: { userId: getCookie('id') },
-				body: data,
-			});
+		if (fileInputRef !== null) {
+			try {
+				// await AuthService.getNewToken(getCookie('accessToken'), getCookie('refreshToken'));
+				// setCK('accessToken', getCookie('accessToken'), 7);
+				const formData = new FormData();
+				formData.append('imageFile', fileData);
+				const fileUrl = await AuthService.uploadImg(formData);
+				// const fileUrl = await usersService.postProfileImg({
+				// 	params: {
+				// 		userId: getCookie('id'),
+				// 		imagefile: formData,
+				// 	},
+				// });
+				console.log(fileUrl.data.response);
+				const res = await usersService.patchMyProfileInfo({
+					params: { userId: getCookie('id') },
+					body: { ...data, profileImg: String(fileUrl.data.response) },
+				});
 
-			setMessage('success', '수정되었습니다.');
-			movePage('/my');
-		} catch (e) {
-			console.log(e);
+				setMessage('success', '수정되었습니다.');
+				// movePage('/my');
+			} catch (e) {
+				console.log(e);
+			}
+		} else {
+			try {
+				const res = await usersService.patchMyProfileInfo({
+					params: { userId: getCookie('id') },
+					body: data,
+				});
+				setMessage('success', '수정되었습니다.');
+				movePage('/my');
+			} catch (e) {
+				console.log(e);
+			}
 		}
 	};
 

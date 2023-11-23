@@ -54,7 +54,7 @@ const MyPage = () => {
 
 	return (
 		<>
-			<MyProfile />
+			<MyProfile userId={getCookie('id')} />
 			<Link href={'/edit-my-info'} aria-label='프로필 수정페이지로 이동'>
 				<RoundButton colorstyle='is-black'>프로필 수정</RoundButton>
 			</Link>
