@@ -12,6 +12,7 @@ import {
 	reqPhoneVerifyApiData,
 	reqSignupApiData,
 } from './interface';
+import axios from 'axios';
 
 // 회원가입
 const signup = (data: reqSignupApiData) => {
@@ -74,9 +75,15 @@ const findPwd = (data: reqFindPwdApiData) => {
 	return http.post('/api/auth/password-reset', data);
 };
 
+const setCK = (name, value, exp) => {
+	const date = new Date();
+	date.setTime(date.getTime() + exp * 24 * 60 * 60 * 1000);
+	document.cookie = name + '=' + value + ';expires=' + date.toUTCString() + ';path=/';
+};
+
 // 새 토큰 받기
-const getNewToken = (a, b) => {
-	return http.post('/api/auth/reissue', {
+const getNewToken = async (a, b) => {
+	return await http.post('/api/auth/reissue', {
 		accessToken: a,
 		refreshToken: b,
 	});

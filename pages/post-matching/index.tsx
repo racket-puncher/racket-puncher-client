@@ -71,13 +71,9 @@ export default function PostMatching() {
 		{ value: null, label: '경기 유형을 먼저 선택해주세요.' },
 	]);
 	const selectHandler = (option: string) => {
-		option.includes('SINGLE')
-			? setOptionsForNOR([{ value: 1, label: '1 명' }])
-			: setOptionsForNOR([
-					{ value: 1, label: '1 명' },
-					{ value: 2, label: '2 명' },
-					{ value: 3, label: '3 명' },
-			  ]);
+		option === 'SINGLE'
+			? setOptionsForNOR([{ value: 2, label: '2 명' }])
+			: setOptionsForNOR([{ value: 4, label: '4 명' }]);
 	};
 
 	// 드로어
@@ -128,7 +124,6 @@ export default function PostMatching() {
 			!postMatchingWatch('deadlineDate') ||
 			!postMatchingWatch('deadlineTime') ||
 			!postMatchingWatch('courtAddress') ||
-			!postMatchingWatch('isCourtBooked') ||
 			!postMatchingWatch('courtFee') ||
 			!postMatchingWatch('mainText')
 		) {
@@ -143,7 +138,7 @@ export default function PostMatching() {
 			setMessage('error', '이미지를 추가해주세요.');
 			return;
 		}
-		const params = {
+		const posted = {
 			title: postMatchingGetValues('postTitle'),
 			matchingType: postMatchingGetValues('matchType'),
 			recruitNum: postMatchingGetValues('numOfRecruited'),
@@ -156,21 +151,23 @@ export default function PostMatching() {
 			recruitDueTime: postMatchingGetValues('deadlineTime'),
 			location: postMatchingGetValues('courtAddress'),
 			lat: `${courtInfos.lat}`,
-			len: `${courtInfos.lon}`,
+			lon: `${courtInfos.lon}`,
 			isReserved: postMatchingGetValues('isCourtBooked'),
 			cost: postMatchingGetValues('courtFee'),
 			content: postMatchingGetValues('mainText'),
 		};
-		console.log(params);
+		console.log(posted);
 
 		try {
-			await AuthService.getNewToken(getCookie('accessToken'), getCookie('refreshToken'));
 			const formData = new FormData();
 			formData.append('imageFile', fileData);
-			const fileUrl = await MatchesService.uploadMatchingImage('1', formData);
+			const fileUrl = await AuthService.uploadImg(formData);
 			const res = await MatchesService.regMatchingData({
-				...params,
-				locationImg: fileUrl.data.response,
+				params: formData,
+				body: {
+					...posted,
+					locationImg: fileUrl.data.response,
+				},
 			});
 		} catch (err) {
 			console.log(err);
@@ -427,6 +424,7 @@ export default function PostMatching() {
 							ref={fileInputRef}
 							onChange={handleFileChange}
 							accept={'image/*'}
+							multiple
 						/>
 					</ImageSection>
 				</InputBox>

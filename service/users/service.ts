@@ -32,8 +32,10 @@ const postProfileImg = (userId: string, data: any) => {
 };
 
 // 내 프로필 수정
-const patchMyProfileInfo = (userId: string, data: reqPatchMyProfileInfo) => {
-	return http.post(`/api/users/my-page/modify/${userId}`, data);
+const patchMyProfileInfo = (data: reqPatchMyProfileInfo) => {
+	return http.patch('/api/users/my-page/modify/' + `${data.params.userId}`, data.body, {
+		params: data.params,
+	});
 };
 
 // 회원 신고
