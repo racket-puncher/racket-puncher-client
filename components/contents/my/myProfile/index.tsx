@@ -30,7 +30,11 @@ import { ageGroupName, ntrpName } from 'constants/userInfoOptions';
 // 	imageURL: 'https://contents.sixshop.com/thumbnails/uploadedFiles/56465/post/image_1694838481851_1000.jpeg',
 // };
 
-export default function MyProfile() {
+interface IMyProfile {
+	userId: any;
+}
+
+export default function MyProfile(props: IMyProfile) {
 	const { getCookie } = useCookies();
 	// const { getNewToken } = AuthService;
 	const { getMyProfileInfo } = usersService;
@@ -78,7 +82,7 @@ export default function MyProfile() {
 				console.log(err);
 			}
 		};
-		getCookie('id') && getNSsetData(getCookie('id'));
+		getNSsetData(props.userId);
 	}, []);
 
 	return (
