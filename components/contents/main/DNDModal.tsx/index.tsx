@@ -267,28 +267,6 @@ const DetailMatchItemBox = styled.div`
 		color: ${InputLabelColor};
 	}
 `;
-const DetailMatchContent = styled.div<DetailMatchContentProps>`
-	display: flex;
-	justify-content: center;
-	align-items: center;
-
-	width: 100%;
-	height: ${(props) => (props.height ? props.height : '50px')};
-	border: 1px solid ${InputBorderColor};
-	background: ${InputBoxColor};
-	border-radius: 5px;
-	padding: 0 15px;
-
-	&:focus {
-		border: 1px solid ${PrimaryColor};
-	}
-
-	p {
-		font-family: ${FontFamilyRegular};
-		font-size: ${FontSizeMd};
-		color: ${BlackColor};
-	}
-`;
 
 const FlexBox = styled.div`
 	display: flex;
